@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
@@ -8,8 +8,11 @@ import Step1 from "@/icons/Step1";
 import Step2 from "@/icons/Step2";
 import Step3 from "@/icons/Step3";
 import Link from "@/icons/Link";
+import LoginModal from "@/components/modals/LoginModal";
 
 export default function HowItWorks() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const steps = [
     {
       number: 1,
@@ -76,6 +79,7 @@ export default function HowItWorks() {
 
                 <Button
                   size={"lg"}
+                  onClick={() => setIsModalOpen(true)}
                   className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold px-6 py-2 transition-all duration-200 flex items-center gap-2 w-fit"
                   style={{
                     boxShadow: "2px 2px 10px 0px rgba(203, 161, 53, 1)",
@@ -129,6 +133,7 @@ export default function HowItWorks() {
 
                       <Button
                         size={"lg"}
+                        onClick={() => setIsModalOpen(true)}
                         className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold px-6 py-2 transition-all duration-200 flex items-center gap-2 w-fit"
                       >
                         <ButtonIconComponent />
@@ -142,6 +147,13 @@ export default function HowItWorks() {
           </div>
         </div>
       </div>
+
+      {/* Login/Register Modal */}
+      <LoginModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        mode="register"
+      />
     </section>
   );
 }

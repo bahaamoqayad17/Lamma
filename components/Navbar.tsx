@@ -6,16 +6,18 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Menu, X, UserPlus } from "lucide-react";
 import LoginModal from "@/components/modals/LoginModal";
+import ContactModal from "@/components/modals/ContactModal";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
   const navigationItems = [
-    { href: "/contact", label: "تواصل معنا" },
-    { href: "/games", label: "الألعاب" },
-    { href: "/faq", label: "الأسئلة الشائعة" },
-    { href: "/how-we-work", label: "كيف نعمل" },
+    { href: "/contact", label: "تواصل معنا", isModal: true },
+    { href: "/games", label: "الألعاب", isModal: false },
+    { href: "/faq", label: "الأسئلة الشائعة", isModal: false },
+    { href: "/how-we-work", label: "كيف نعمل", isModal: false },
   ];
 
   return (
@@ -38,21 +40,31 @@ export default function Navbar() {
 
           {/* Desktop Navigation - Center */}
           <div className="hidden md:flex items-center space-x-8">
-            {navigationItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="text-white hover:text-amber-200 transition-colors duration-200 font-medium text-sm lg:text-base"
-              >
-                {item.label}
-              </Link>
-            ))}
+            {navigationItems.map((item) =>
+              item.isModal ? (
+                <button
+                  key={item.href}
+                  onClick={() => setIsContactModalOpen(true)}
+                  className="text-white hover:text-amber-200 transition-colors duration-200 font-medium text-sm lg:text-base cursor-pointer"
+                >
+                  {item.label}
+                </button>
+              ) : (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="text-white hover:text-amber-200 transition-colors duration-200 font-medium text-sm lg:text-base"
+                >
+                  {item.label}
+                </Link>
+              )
+            )}
           </div>
 
           {/* Login Button - Left side for RTL */}
           <div className="hidden md:flex items-center">
             <Button
-              onClick={() => setIsModalOpen(true)}
+              onClick={() => setIsLoginModalOpen(true)}
               className="bg-yellow-400 hover:bg-yellow-500 font-semibold px-6 py-2 shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2"
               size="lg"
             >
@@ -82,19 +94,32 @@ export default function Navbar() {
         {isMenuOpen && (
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-amber-800/50 rounded-lg mt-2">
-              {navigationItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="text-white hover:text-amber-200 block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {item.label}
-                </Link>
-              ))}
+              {navigationItems.map((item) =>
+                item.isModal ? (
+                  <button
+                    key={item.href}
+                    onClick={() => {
+                      setIsContactModalOpen(true);
+                      setIsMenuOpen(false);
+                    }}
+                    className="text-white hover:text-amber-200 block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 w-full text-right"
+                  >
+                    {item.label}
+                  </button>
+                ) : (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="text-white hover:text-amber-200 block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {item.label}
+                  </Link>
+                )
+              )}
               <div className="pt-4">
                 <Button
-                  onClick={() => setIsModalOpen(true)}
+                  onClick={() => setIsLoginModalOpen(true)}
                   className="w-full bg-yellow-400 hover:bg-yellow-500 font-semibold px-6 py-2 shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2"
                   size="lg"
                 >
@@ -109,9 +134,15 @@ export default function Navbar() {
 
       {/* Login/Register Modal */}
       <LoginModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
         mode="login"
+      />
+
+      {/* Contact Modal */}
+      <ContactModal
+        isOpen={isContactModalOpen}
+        onClose={() => setIsContactModalOpen(false)}
       />
     </nav>
   );
