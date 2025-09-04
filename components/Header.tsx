@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { RefreshCw } from "lucide-react";
+import Link from "@/icons/Link";
 
 export default function Header() {
   return (
@@ -27,7 +27,7 @@ export default function Header() {
           size="lg"
           className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold px-8 py-4 text-lg transition-all duration-200 flex items-center gap-3 mx-auto"
         >
-          <RefreshCw className="w-5 h-5" />
+          <Link />
           العب الان
         </Button>
       </div>

@@ -19,7 +19,7 @@ const cairo = localFont({
     {
       path: "../public/fonts/Cairo-ExtraBold.ttf",
       weight: "800",
-      style: "extra-bold",
+      style: "extrabold",
     },
     {
       path: "../public/fonts/Cairo-Black.ttf",
@@ -29,7 +29,7 @@ const cairo = localFont({
     {
       path: "../public/fonts/Cairo-SemiBold.ttf",
       weight: "600",
-      style: "semi-bold",
+      style: "semibold",
     },
     {
       path: "../public/fonts/Cairo-Medium.ttf",
@@ -44,7 +44,7 @@ const cairo = localFont({
     {
       path: "../public/fonts/Cairo-ExtraLight.ttf",
       weight: "200",
-      style: "light",
+      style: "extralight",
     },
   ],
   variable: "--font-cairo",
