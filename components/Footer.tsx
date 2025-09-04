@@ -38,7 +38,7 @@ export default function Footer() {
         {/* Upper Section - Logo and Social Icons */}
         <div className="flex flex-col sm:flex-row items-center justify-between py-6 gap-4">
           {/* Social Media Icons - Right side */}
-          <div className="flex items-center space-x-4 order-2 sm:order-2">
+          <div className="flex items-center space-x-4">
             {socialLinks.map((social) => {
               const IconComponent = social.icon;
               return (
@@ -57,7 +57,7 @@ export default function Footer() {
           </div>
 
           {/* Logo - Left side */}
-          <div className="flex-shrink-0 order-1 sm:order-1">
+          <div className="flex-shrink-0">
             <Link href="/" className="flex items-center">
               <Image
                 src="/logo-footer.png"
