@@ -5,9 +5,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Menu, X, UserPlus } from "lucide-react";
+import LoginModal from "@/components/modals/LoginModal";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const navigationItems = [
     { href: "/contact", label: "تواصل معنا" },
@@ -50,6 +52,7 @@ export default function Navbar() {
           {/* Login Button - Left side for RTL */}
           <div className="hidden md:flex items-center">
             <Button
+              onClick={() => setIsModalOpen(true)}
               className="bg-yellow-400 hover:bg-yellow-500 font-semibold px-6 py-2 shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2"
               size="lg"
             >
@@ -91,7 +94,8 @@ export default function Navbar() {
               ))}
               <div className="pt-4">
                 <Button
-                  className="bg-yellow-400 hover:bg-yellow-500 font-semibold px-6 py-2 shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2"
+                  onClick={() => setIsModalOpen(true)}
+                  className="w-full bg-yellow-400 hover:bg-yellow-500 font-semibold px-6 py-2 shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2"
                   size="lg"
                 >
                   <UserPlus className="w-4 h-4" />
@@ -102,6 +106,13 @@ export default function Navbar() {
           </div>
         )}
       </div>
+
+      {/* Login/Register Modal */}
+      <LoginModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        mode="login"
+      />
     </nav>
   );
 }
