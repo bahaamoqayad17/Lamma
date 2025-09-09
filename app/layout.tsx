@@ -62,19 +62,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ar" dir="rtl">
-      <body
-        style={{
-          backgroundImage: "url('/home-bg.svg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-        }}
-        className={`${cairo.variable} antialiased`}
-      >
-        <Navbar />
-        {children}
-        <Footer />
-      </body>
+      <body className={`${cairo.variable} antialiased`}>{children}</body>
     </html>
   );
 }
