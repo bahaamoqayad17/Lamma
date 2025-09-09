@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import Link from "@/icons/Link";
 import React from "react";
+import NextLink from "next/link";
 
 export default function Mafia() {
   return (
@@ -37,10 +38,15 @@ export default function Mafia() {
         {/* Play Now button */}
         <Button
           size="lg"
-          className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold px-8 py-4 text-lg transition-all duration-200 flex items-center gap-3 mx-auto"
+          className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold px-8 py-4 text-lg transition-all duration-200"
         >
-          <Link />
-          العب الان
+          <NextLink
+            href={"/mafia/start"}
+            className="flex items-center gap-3 mx-auto"
+          >
+            <Link />
+            العب الان
+          </NextLink>
         </Button>
       </div>
     </main>
