@@ -3,9 +3,10 @@ import mongoose, { InferSchemaType } from "mongoose";
 const questionSchema = new mongoose.Schema(
   {
     category: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
-    questionText: { type: String, required: true },
-    answerText: { type: String, required: true },
-    points: { type: Number, required: true },
+    file: { type: String },
+    question: { type: String },
+    answer: { type: String },
+    points: { type: Number },
   },
   { timestamps: true }
 );
@@ -13,8 +14,9 @@ const questionSchema = new mongoose.Schema(
 export type QuestionType = Omit<InferSchemaType<typeof questionSchema>, ""> & {
   _id: mongoose.Types.ObjectId | string;
   category: mongoose.Types.ObjectId | string;
-  questionText: string;
-  answerText: string;
+  question: string;
+  answer: string;
+  file: string;
   points: number;
 };
 

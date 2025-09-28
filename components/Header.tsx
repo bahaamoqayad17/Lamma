@@ -1,10 +1,14 @@
+"use client";
+
 import React from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import Link from "@/icons/Link";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
+  const router = useRouter();
   return (
     <header className="relative min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8">
       {/* Hero Section */}
@@ -35,7 +39,10 @@ export default function Header() {
       {/* Game Cards Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto w-full h-90">
         {/* Seen Jeem Game Card */}
-        <Card className="bg-amber-50 border-2 border-amber-200 shadow-lg hover:shadow-xl transition-shadow duration-300 relative">
+        <Card
+          className="bg-amber-50 border-2 border-amber-200 shadow-lg hover:shadow-xl transition-shadow duration-300 relative cursor-pointer"
+          onClick={() => router.push("/seen-jeem")}
+        >
           <Image
             src="/seen-jeem.png"
             alt="سين جيم - لعبة الأسئلة والأجوبة"
@@ -46,7 +53,10 @@ export default function Header() {
         </Card>
 
         {/* Mafia Game Card */}
-        <Card className="bg-amber-50 border-2 border-amber-200 shadow-lg hover:shadow-xl transition-shadow duration-300 relative">
+        <Card
+          className="bg-amber-50 border-2 border-amber-200 shadow-lg hover:shadow-xl transition-shadow duration-300 relative cursor-pointer"
+          onClick={() => router.push("/mafia")}
+        >
           <Image
             src="/mafia.png"
             alt="مافيا - لعبة المافيا"
