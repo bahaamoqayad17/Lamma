@@ -41,7 +41,7 @@ export default function Header() {
         {/* Seen Jeem Game Card */}
         <Card
           className="bg-amber-50 border-2 border-amber-200 shadow-lg hover:shadow-xl transition-shadow duration-300 relative cursor-pointer"
-          onClick={() => router.push("/seen-jeem")}
+          onClick={() => router.push("/lamma")}
         >
           <Image
             src="/seen-jeem.png"

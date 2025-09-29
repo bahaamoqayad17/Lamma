@@ -31,7 +31,7 @@ export default function Mafia() {
             على اللاعبين أسئلة متنوعة في مجالات الثقافة العامة، الرياضة، الفنون،
             العلوم، والتاريخ، ويتنافسون فيما بينهم للإجابة بأسرع وقت ممكن أو
             بأكبر قدر من الدقة.  تهدف اللعبة إلى الدمج بين المتعة والمعرفة، فهي
-            ليست مجرد اختبار معلومات بل وسيلة للتعلم بطريقة مسلية، وتحفيز روح
+            ليست مجرد اختبار معلومات بل وسيلة للتعلم بطريقة مسلية، وتحفيز روح1
             التحدي بين الأصدقاء أو أفراد العائلة.
           </p>
         </div>
@@ -42,7 +42,7 @@ export default function Mafia() {
           className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold px-8 py-4 text-lg transition-all duration-200"
         >
           <NextLink
-            href={"/seen-jeem/start"}
+            href={"/lamma/start"}
             className="flex items-center gap-3 mx-auto"
           >
             <Link />
