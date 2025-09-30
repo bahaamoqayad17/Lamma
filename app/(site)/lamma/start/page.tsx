@@ -6,7 +6,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import CategoryCard from "@/components/CategoryCard";
-import { ArrowLeft, Copy, LogOut, ChevronDown, ArrowDown } from "lucide-react";
+import { ArrowLeft, LogOut, ArrowDown } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 // Sample categories data
 const politicsCategories = [
@@ -33,7 +34,7 @@ const seriesCategories = [
 export default function Start() {
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]); // Pre-selected cards as shown in image
   const maxSelections = 5;
-
+  const router = useRouter();
   const handleCardClick = (cardId: number) => {
     setSelectedCategories((prev) => {
       if (prev.includes(cardId)) {
@@ -323,6 +324,7 @@ export default function Start() {
           <Button
             size="lg"
             className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold px-12 py-4 text-lg transition-all duration-200 flex items-center gap-3 mx-auto"
+            onClick={() => router.push("/lamma/in-game")}
           >
             ابدأ المباراة
             <ArrowLeft />
