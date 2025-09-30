@@ -1,12 +1,15 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
+import Image from "next/image";
 import QuestionCard from "@/components/QuestionCard";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import Link from "next/link";
-import { LogOut, SkipForward } from "lucide-react";
+import { LogOut, SkipForward, Timer } from "lucide-react";
 export default function InGame() {
+  const [step, setStep] = useState<"list" | "question">("list");
+  const [selectedQuestion, setSelectedQuestion] = useState<any>(null);
+  const [showAnswer, setShowAnswer] = useState(false);
   // Sample data for the game - you can replace this with actual data from your API
   const gameData = [
     {
@@ -17,7 +20,12 @@ export default function InGame() {
       questions: [
         {
           _id: "64f8a1b9c2e8a1f23d9a1001",
-          category: "64f8a1b9c2e8a1f23d9a0001",
+          category: {
+            _id: "64f8a1b9c2e8a1f23d9a0001",
+            name: "فئة الرياضة",
+            description: "أسئلة متنوعة حول الرياضة",
+            image: "seen-jeem.png",
+          },
           file: null,
           question: "من فاز بكأس العالم الأخير؟",
           answer: "الأرجنتين",
@@ -25,7 +33,12 @@ export default function InGame() {
         },
         {
           _id: "64f8a1b9c2e8a1f23d9a1002",
-          category: "64f8a1b9c2e8a1f23d9a0001",
+          category: {
+            _id: "64f8a1b9c2e8a1f23d9a0001",
+            name: "فئة الرياضة",
+            description: "أسئلة متنوعة حول الرياضة",
+            image: "seen-jeem.png",
+          },
           file: null,
           question: "كم عدد اللاعبين في فريق كرة السلة؟",
           answer: "خمسة",
@@ -33,7 +46,12 @@ export default function InGame() {
         },
         {
           _id: "64f8a1b9c2e8a1f23d9a1003",
-          category: "64f8a1b9c2e8a1f23d9a0001",
+          category: {
+            _id: "64f8a1b9c2e8a1f23d9a0001",
+            name: "فئة الرياضة",
+            description: "أسئلة متنوعة حول الرياضة",
+            image: "seen-jeem.png",
+          },
           file: "sprint.jpg",
           question: "ما هو الرقم القياسي لسباق 100 متر؟",
           answer: "9.58 ثانية",
@@ -41,7 +59,12 @@ export default function InGame() {
         },
         {
           _id: "64f8a1b9c2e8a1f23d9a1004",
-          category: "64f8a1b9c2e8a1f23d9a0001",
+          category: {
+            _id: "64f8a1b9c2e8a1f23d9a0001",
+            name: "فئة الرياضة",
+            description: "أسئلة متنوعة حول الرياضة",
+            image: "seen-jeem.png",
+          },
           file: null,
           question: "أي دولة اخترعت رياضة الجودو؟",
           answer: "اليابان",
@@ -49,7 +72,12 @@ export default function InGame() {
         },
         {
           _id: "64f8a1b9c2e8a1f23d9a1005",
-          category: "64f8a1b9c2e8a1f23d9a0001",
+          category: {
+            _id: "64f8a1b9c2e8a1f23d9a0001",
+            name: "فئة الرياضة",
+            description: "أسئلة متنوعة حول الرياضة",
+            image: "seen-jeem.png",
+          },
           file: null,
           question: "أي فريق لديه أكبر عدد من ألقاب دوري أبطال أوروبا؟",
           answer: "ريال مدريد",
@@ -57,7 +85,12 @@ export default function InGame() {
         },
         {
           _id: "64f8a1b9c2e8a1f23d9a1006",
-          category: "64f8a1b9c2e8a1f23d9a0001",
+          category: {
+            _id: "64f8a1b9c2e8a1f23d9a0001",
+            name: "فئة الرياضة",
+            description: "أسئلة متنوعة حول الرياضة",
+            image: "seen-jeem.png",
+          },
           file: null,
           question: "من هو أسرع عداء في العالم؟",
           answer: "يوسين بولت",
@@ -74,7 +107,12 @@ export default function InGame() {
       questions: [
         {
           _id: "64f8a1b9c2e8a1f23d9a2001",
-          category: "64f8a1b9c2e8a1f23d9a0002",
+          category: {
+            _id: "64f8a1b9c2e8a1f23d9a0002",
+            name: "فئة التاريخ",
+            description: "أسئلة متنوعة حول التاريخ",
+            image: "seen-jeem.png",
+          },
           file: null,
           question: "متى انتهت الحرب العالمية الثانية؟",
           answer: "1945",
@@ -82,7 +120,12 @@ export default function InGame() {
         },
         {
           _id: "64f8a1b9c2e8a1f23d9a2002",
-          category: "64f8a1b9c2e8a1f23d9a0002",
+          category: {
+            _id: "64f8a1b9c2e8a1f23d9a0002",
+            name: "فئة التاريخ",
+            description: "أسئلة متنوعة حول التاريخ",
+            image: "seen-jeem.png",
+          },
           file: null,
           question: "من هو أول خليفة للمسلمين؟",
           answer: "أبو بكر الصديق",
@@ -90,7 +133,12 @@ export default function InGame() {
         },
         {
           _id: "64f8a1b9c2e8a1f23d9a2003",
-          category: "64f8a1b9c2e8a1f23d9a0002",
+          category: {
+            _id: "64f8a1b9c2e8a1f23d9a0002",
+            name: "فئة التاريخ",
+            description: "أسئلة متنوعة حول التاريخ",
+            image: "seen-jeem.png",
+          },
           file: null,
           question: "أين تم اكتشاف مقبرة توت عنخ آمون؟",
           answer: "مصر",
@@ -98,7 +146,12 @@ export default function InGame() {
         },
         {
           _id: "64f8a1b9c2e8a1f23d9a2004",
-          category: "64f8a1b9c2e8a1f23d9a0002",
+          category: {
+            _id: "64f8a1b9c2e8a1f23d9a0002",
+            name: "فئة التاريخ",
+            description: "أسئلة متنوعة حول التاريخ",
+            image: "seen-jeem.png",
+          },
           file: null,
           question: "متى تأسست الدولة العثمانية؟",
           answer: "1299",
@@ -106,7 +159,12 @@ export default function InGame() {
         },
         {
           _id: "64f8a1b9c2e8a1f23d9a2005",
-          category: "64f8a1b9c2e8a1f23d9a0002",
+          category: {
+            _id: "64f8a1b9c2e8a1f23d9a0002",
+            name: "فئة التاريخ",
+            description: "أسئلة متنوعة حول التاريخ",
+            image: "seen-jeem.png",
+          },
           file: null,
           question: "من هو مؤسس الدولة الأموية؟",
           answer: "معاوية بن أبي سفيان",
@@ -114,7 +172,12 @@ export default function InGame() {
         },
         {
           _id: "64f8a1b9c2e8a1f23d9a2006",
-          category: "64f8a1b9c2e8a1f23d9a0002",
+          category: {
+            _id: "64f8a1b9c2e8a1f23d9a0002",
+            name: "فئة التاريخ",
+            description: "أسئلة متنوعة حول التاريخ",
+            image: "seen-jeem.png",
+          },
           file: null,
           question: "أين وقعت معركة اليرموك؟",
           answer: "سوريا",
@@ -130,7 +193,12 @@ export default function InGame() {
       questions: [
         {
           _id: "64f8a1b9c2e8a1f23d9a3001",
-          category: "64f8a1b9c2e8a1f23d9a0003",
+          category: {
+            _id: "64f8a1b9c2e8a1f23d9a0003",
+            name: "فئة العلوم",
+            description: "أسئلة متنوعة حول العلوم",
+            image: "seen-jeem.png",
+          },
           file: null,
           question: "ما هو العنصر الكيميائي للذهب؟",
           answer: "Au",
@@ -138,7 +206,12 @@ export default function InGame() {
         },
         {
           _id: "64f8a1b9c2e8a1f23d9a3002",
-          category: "64f8a1b9c2e8a1f23d9a0003",
+          category: {
+            _id: "64f8a1b9c2e8a1f23d9a0003",
+            name: "فئة العلوم",
+            description: "أسئلة متنوعة حول العلوم",
+            image: "seen-jeem.png",
+          },
           file: null,
           question: "كم عدد الكواكب في المجموعة الشمسية؟",
           answer: "8",
@@ -146,7 +219,12 @@ export default function InGame() {
         },
         {
           _id: "64f8a1b9c2e8a1f23d9a3003",
-          category: "64f8a1b9c2e8a1f23d9a0003",
+          category: {
+            _id: "64f8a1b9c2e8a1f23d9a0003",
+            name: "فئة العلوم",
+            description: "أسئلة متنوعة حول العلوم",
+            image: "seen-jeem.png",
+          },
           file: null,
           question: "ما هو أسرع حيوان في العالم؟",
           answer: "الفهد",
@@ -154,7 +232,12 @@ export default function InGame() {
         },
         {
           _id: "64f8a1b9c2e8a1f23d9a3004",
-          category: "64f8a1b9c2e8a1f23d9a0003",
+          category: {
+            _id: "64f8a1b9c2e8a1f23d9a0003",
+            name: "فئة العلوم",
+            description: "أسئلة متنوعة حول العلوم",
+            image: "seen-jeem.png",
+          },
           file: null,
           question: "ما هو أكبر محيط في العالم؟",
           answer: "المحيط الهادئ",
@@ -162,7 +245,12 @@ export default function InGame() {
         },
         {
           _id: "64f8a1b9c2e8a1f23d9a3005",
-          category: "64f8a1b9c2e8a1f23d9a0003",
+          category: {
+            _id: "64f8a1b9c2e8a1f23d9a0003",
+            name: "فئة العلوم",
+            description: "أسئلة متنوعة حول العلوم",
+            image: "seen-jeem.png",
+          },
           file: null,
           question: "ما هو أعمق محيط في العالم؟",
           answer: "المحيط الهادئ",
@@ -170,7 +258,12 @@ export default function InGame() {
         },
         {
           _id: "64f8a1b9c2e8a1f23d9a3006",
-          category: "64f8a1b9c2e8a1f23d9a0003",
+          category: {
+            _id: "64f8a1b9c2e8a1f23d9a0003",
+            name: "فئة العلوم",
+            description: "أسئلة متنوعة حول العلوم",
+            image: "seen-jeem.png",
+          },
           file: null,
           question: "ما هو أطول نهر في العالم؟",
           answer: "نهر النيل",
@@ -186,7 +279,12 @@ export default function InGame() {
       questions: [
         {
           _id: "64f8a1b9c2e8a1f23d9a4001",
-          category: "64f8a1b9c2e8a1f23d9a0004",
+          category: {
+            _id: "64f8a1b9c2e8a1f23d9a0004",
+            name: "فئة الأدب",
+            description: "أسئلة متنوعة حول الأدب",
+            image: "seen-jeem.png",
+          },
           file: null,
           question: "من هو مؤلف كتاب الأغاني؟",
           answer: "الأصبهاني",
@@ -194,7 +292,12 @@ export default function InGame() {
         },
         {
           _id: "64f8a1b9c2e8a1f23d9a4002",
-          category: "64f8a1b9c2e8a1f23d9a0004",
+          category: {
+            _id: "64f8a1b9c2e8a1f23d9a0004",
+            name: "فئة الأدب",
+            description: "أسئلة متنوعة حول الأدب",
+            image: "seen-jeem.png",
+          },
           file: null,
           question: "ما هو ديوان المعلقات؟",
           answer: "قصائد عربية قديمة",
@@ -202,7 +305,12 @@ export default function InGame() {
         },
         {
           _id: "64f8a1b9c2e8a1f23d9a4003",
-          category: "64f8a1b9c2e8a1f23d9a0004",
+          category: {
+            _id: "64f8a1b9c2e8a1f23d9a0004",
+            name: "فئة الأدب",
+            description: "أسئلة متنوعة حول الأدب",
+            image: "seen-jeem.png",
+          },
           file: null,
           question: "من هو شاعر النيل؟",
           answer: "حافظ إبراهيم",
@@ -210,7 +318,12 @@ export default function InGame() {
         },
         {
           _id: "64f8a1b9c2e8a1f23d9a4004",
-          category: "64f8a1b9c2e8a1f23d9a0004",
+          category: {
+            _id: "64f8a1b9c2e8a1f23d9a0004",
+            name: "فئة الأدب",
+            description: "أسئلة متنوعة حول الأدب",
+            image: "seen-jeem.png",
+          },
           file: null,
           question: "من هو مؤلف كتاب ألف ليلة وليلة؟",
           answer: "مجهول",
@@ -218,7 +331,12 @@ export default function InGame() {
         },
         {
           _id: "64f8a1b9c2e8a1f23d9a4005",
-          category: "64f8a1b9c2e8a1f23d9a0004",
+          category: {
+            _id: "64f8a1b9c2e8a1f23d9a0004",
+            name: "فئة الأدب",
+            description: "أسئلة متنوعة حول الأدب",
+            image: "seen-jeem.png",
+          },
           file: null,
           question: "من هو شاعر القطرين؟",
           answer: "أحمد شوقي",
@@ -226,7 +344,12 @@ export default function InGame() {
         },
         {
           _id: "64f8a1b9c2e8a1f23d9a4006",
-          category: "64f8a1b9c2e8a1f23d9a0004",
+          category: {
+            _id: "64f8a1b9c2e8a1f23d9a0004",
+            name: "فئة الأدب",
+            description: "أسئلة متنوعة حول الأدب",
+            image: "seen-jeem.png",
+          },
           file: null,
           question: "من هو مؤلف كتاب البخلاء؟",
           answer: "الجاحظ",
@@ -242,7 +365,12 @@ export default function InGame() {
       questions: [
         {
           _id: "64f8a1b9c2e8a1f23d9a5001",
-          category: "64f8a1b9c2e8a1f23d9a0005",
+          category: {
+            _id: "64f8a1b9c2e8a1f23d9a0005",
+            name: "فئة الجغرافيا",
+            description: "أسئلة متنوعة حول الجغرافيا",
+            image: "seen-jeem.png",
+          },
           file: null,
           question: "ما هي عاصمة فرنسا؟",
           answer: "باريس",
@@ -250,7 +378,12 @@ export default function InGame() {
         },
         {
           _id: "64f8a1b9c2e8a1f23d9a5002",
-          category: "64f8a1b9c2e8a1f23d9a0005",
+          category: {
+            _id: "64f8a1b9c2e8a1f23d9a0005",
+            name: "فئة الجغرافيا",
+            description: "أسئلة متنوعة حول الجغرافيا",
+            image: "seen-jeem.png",
+          },
           file: null,
           question: "ما هي أكبر دولة في العالم؟",
           answer: "روسيا",
@@ -258,7 +391,12 @@ export default function InGame() {
         },
         {
           _id: "64f8a1b9c2e8a1f23d9a5003",
-          category: "64f8a1b9c2e8a1f23d9a0005",
+          category: {
+            _id: "64f8a1b9c2e8a1f23d9a0005",
+            name: "فئة الجغرافيا",
+            description: "أسئلة متنوعة حول الجغرافيا",
+            image: "seen-jeem.png",
+          },
           file: null,
           question: "ما هي أعلى قمة في العالم؟",
           answer: "إفرست",
@@ -266,7 +404,12 @@ export default function InGame() {
         },
         {
           _id: "64f8a1b9c2e8a1f23d9a5004",
-          category: "64f8a1b9c2e8a1f23d9a0005",
+          category: {
+            _id: "64f8a1b9c2e8a1f23d9a0005",
+            name: "فئة الجغرافيا",
+            description: "أسئلة متنوعة حول الجغرافيا",
+            image: "seen-jeem.png",
+          },
           file: null,
           question: "ما هي أصغر دولة في العالم؟",
           answer: "الفاتيكان",
@@ -274,7 +417,12 @@ export default function InGame() {
         },
         {
           _id: "64f8a1b9c2e8a1f23d9a5005",
-          category: "64f8a1b9c2e8a1f23d9a0005",
+          category: {
+            _id: "64f8a1b9c2e8a1f23d9a0005",
+            name: "فئة الجغرافيا",
+            description: "أسئلة متنوعة حول الجغرافيا",
+            image: "seen-jeem.png",
+          },
           file: null,
           question: "ما هي عاصمة أستراليا؟",
           answer: "كانبرا",
@@ -282,7 +430,12 @@ export default function InGame() {
         },
         {
           _id: "64f8a1b9c2e8a1f23d9a5006",
-          category: "64f8a1b9c2e8a1f23d9a0005",
+          category: {
+            _id: "64f8a1b9c2e8a1f23d9a0005",
+            name: "فئة الجغرافيا",
+            description: "أسئلة متنوعة حول الجغرافيا",
+            image: "seen-jeem.png",
+          },
           file: null,
           question: "ما هي أكبر صحراء في العالم؟",
           answer: "الصحراء الكبرى",
@@ -298,7 +451,12 @@ export default function InGame() {
       questions: [
         {
           _id: "64f8a1b9c2e8a1f23d9a6001",
-          category: "64f8a1b9c2e8a1f23d9a0006",
+          category: {
+            _id: "64f8a1b9c2e8a1f23d9a0006",
+            name: "فئة الفنون",
+            description: "أسئلة متنوعة حول الفنون",
+            image: "seen-jeem.png",
+          },
           file: null,
           question: "من هو مؤلف لوحة الموناليزا؟",
           answer: "ليوناردو دافنشي",
@@ -306,7 +464,12 @@ export default function InGame() {
         },
         {
           _id: "64f8a1b9c2e8a1f23d9a6002",
-          category: "64f8a1b9c2e8a1f23d9a0006",
+          category: {
+            _id: "64f8a1b9c2e8a1f23d9a0006",
+            name: "فئة الفنون",
+            description: "أسئلة متنوعة حول الفنون",
+            image: "seen-jeem.png",
+          },
           file: null,
           question: "ما هو نوع الفن الذي يسمى بالرسم بالزيت؟",
           answer: "الرسم الزيتي",
@@ -314,7 +477,12 @@ export default function InGame() {
         },
         {
           _id: "64f8a1b9c2e8a1f23d9a6003",
-          category: "64f8a1b9c2e8a1f23d9a0006",
+          category: {
+            _id: "64f8a1b9c2e8a1f23d9a0006",
+            name: "فئة الفنون",
+            description: "أسئلة متنوعة حول الفنون",
+            image: "seen-jeem.png",
+          },
           file: null,
           question: "من هو مؤلف سمفونية البيتهوفن التاسعة؟",
           answer: "بيتهوفن",
@@ -322,7 +490,12 @@ export default function InGame() {
         },
         {
           _id: "64f8a1b9c2e8a1f23d9a6004",
-          category: "64f8a1b9c2e8a1f23d9a0006",
+          category: {
+            _id: "64f8a1b9c2e8a1f23d9a0006",
+            name: "فئة الفنون",
+            description: "أسئلة متنوعة حول الفنون",
+            image: "seen-jeem.png",
+          },
           file: null,
           question: "ما هو نوع الفن الذي يسمى بالتصوير الفوتوغرافي؟",
           answer: "التصوير",
@@ -330,7 +503,12 @@ export default function InGame() {
         },
         {
           _id: "64f8a1b9c2e8a1f23d9a6005",
-          category: "64f8a1b9c2e8a1f23d9a0006",
+          category: {
+            _id: "64f8a1b9c2e8a1f23d9a0006",
+            name: "فئة الفنون",
+            description: "أسئلة متنوعة حول الفنون",
+            image: "seen-jeem.png",
+          },
           file: null,
           question: "من هو مؤلف مسرحية هاملت؟",
           answer: "شكسبير",
@@ -338,7 +516,12 @@ export default function InGame() {
         },
         {
           _id: "64f8a1b9c2e8a1f23d9a6006",
-          category: "64f8a1b9c2e8a1f23d9a0006",
+          category: {
+            _id: "64f8a1b9c2e8a1f23d9a0006",
+            name: "فئة الفنون",
+            description: "أسئلة متنوعة حول الفنون",
+            image: "seen-jeem.png",
+          },
           file: null,
           question: "ما هو نوع الفن الذي يسمى بالنحت؟",
           answer: "النحت",
@@ -349,6 +532,8 @@ export default function InGame() {
   ];
 
   const handleQuestionSelect = (question: any) => {
+    setSelectedQuestion(question);
+    setStep("question");
     console.log("Selected question:", question);
     // Handle question selection logic here
   };
@@ -407,17 +592,106 @@ export default function InGame() {
       <div className="min-h-screen bg-gray-100 py-8">
         <div className="container mx-auto px-4">
           {/* Main Game Grid - 6 Question Cards */}
-          <div className="grid grid-cols-3 gap-6 mb-8">
-            {gameData.map((category) => (
-              <div key={category._id} className="w-full">
-                <QuestionCard
-                  data={category}
-                  onQuestionSelect={handleQuestionSelect}
-                  className="h-full"
-                />
+          {step === "list" && (
+            <div className="grid grid-cols-3 gap-6 mb-8">
+              {gameData.map((category) => (
+                <div key={category._id} className="w-full">
+                  <QuestionCard
+                    data={category}
+                    onQuestionSelect={handleQuestionSelect}
+                    className="h-full"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+          {step === "question" && selectedQuestion && (
+            <div className="w-full mx-auto mb-8">
+              {/* Question Display Container */}
+              <div className="rounded-xl overflow-hidden shadow-lg">
+                {/* Top Header Bar */}
+                <div className="px-6 py-4 flex items-center justify-between">
+                  {/* Right - Points */}
+                  <div className="text-black font-bold text-lg">
+                    {selectedQuestion.points} نقطة
+                  </div>
+
+                  {/* Center - Timer */}
+                  <div className="border border-[#6A0DAD] rounded-full px-4 py-2 flex items-center space-x-2">
+                    <span className="text-black">
+                      <Timer color="#6A0DAD" />
+                    </span>
+                    <span className="text-black font-medium text-sm">
+                      00:00:00
+                    </span>
+                  </div>
+                  {/* Left - Category Button */}
+
+                  <div className="bg-purple-100 px-8 py-3 rounded-full">
+                    <span className="text-black font-bold text-lg">
+                      {selectedQuestion.category.name}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Question Content */}
+                <div className="p-8">
+                  {/* Question Text */}
+                  <div className="text-center mb-8 flex flex-col items-center justify-center gap-6">
+                    {showAnswer ? (
+                      <h1 className="text-black text-xl md:text-2xl font-medium leading-relaxed text-green-500">
+                        الإجابة الصحيحة هي : {selectedQuestion.answer}
+                      </h1>
+                    ) : (
+                      <h1 className="text-black text-xl md:text-2xl font-medium leading-relaxed">
+                        {selectedQuestion.question}
+                      </h1>
+                    )}
+                    {selectedQuestion.file && (
+                      <Image
+                        src={selectedQuestion.file}
+                        alt="Question Image"
+                        width={450}
+                        height={450}
+                        className="object-cover"
+                      />
+                    )}
+                  </div>
+                </div>
+
+                {/* Bottom Section */}
+                <div className="border-t border-gray-300 px-6 py-4">
+                  {!showAnswer ? (
+                    <div className="flex">
+                      <button
+                        className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 cursor-pointer"
+                        onClick={() => setShowAnswer(true)}
+                      >
+                        عرض الاجابة
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="flex justify-center items-center flex-col gap-4">
+                        <h2 className="text-black font-bold text-lg">
+                          أي الفريقين أجاب بشكل صحيح
+                        </h2>
+
+                        <div className="flex gap-4">
+                          <span className="text-black font-bold text-md border border-gray-300 rounded-xl px-4 py-2 hover:bg-gray-300 transition-all duration-200 cursor-pointer">
+                            فريق باكستاان
+                          </span>
+                          <span className="text-black font-bold text-md border border-gray-300 rounded-xl px-4 py-2 hover:bg-gray-300 transition-all duration-200 cursor-pointer">
+                            فريق الأمل
+                          </span>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
-            ))}
-          </div>
+            </div>
+          )}
 
           {/* Bottom Section - Power-up Cards and Score Display */}
           <div className="flex justify-between items-center md:mx-16">

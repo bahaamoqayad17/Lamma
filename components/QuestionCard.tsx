@@ -1,6 +1,4 @@
-"use client";
-
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
@@ -33,10 +31,6 @@ export default function QuestionCard({
   onQuestionSelect,
   className,
 }: QuestionCardProps) {
-  const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(
-    null
-  );
-
   // Group questions by points for display
   const questionsByPoints = data.questions.reduce((acc, question) => {
     if (!acc[question.points]) {
@@ -51,7 +45,6 @@ export default function QuestionCard({
     .sort((a, b) => a - b);
 
   const handleQuestionClick = (question: Question) => {
-    setSelectedQuestion(question);
     onQuestionSelect?.(question);
   };
 
