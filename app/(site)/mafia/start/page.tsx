@@ -8,8 +8,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, Copy, LogOut } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function Start() {
+  const router = useRouter();
   const [gameName, setGameName] = useState("");
   const [playerCount, setPlayerCount] = useState("");
   const [gameUrl] = useState("https://www.behance.net/shahedhamami");
@@ -149,6 +151,7 @@ export default function Start() {
             <Button
               size="lg"
               className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold px-8 py-4 text-lg transition-all duration-200 flex items-center gap-3 mx-auto"
+              onClick={() => router.push("/mafia/in-game")}
             >
               ابدأ المباراة
               <ArrowLeft />
