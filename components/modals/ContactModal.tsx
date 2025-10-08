@@ -4,8 +4,10 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { X, RefreshCw } from "lucide-react";
+import { X } from "lucide-react";
 import Link from "@/icons/Link";
+import { createContact } from "@/actions/contact-actions";
+import { toast } from "react-toastify";
 
 interface ContactModalProps {
   isOpen: boolean;
@@ -14,25 +16,93 @@ interface ContactModalProps {
 
 export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    name: "",
     email: "",
+    subject: "",
     message: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
+
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors({
+        ...errors,
+        [name]: "",
+      });
+    }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = "الاسم مطلوب";
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = "البريد الإلكتروني مطلوب";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "البريد الإلكتروني غير صحيح";
+    }
+
+    if (!formData.subject.trim()) {
+      newErrors.subject = "الموضوع مطلوب";
+    }
+
+    if (!formData.message.trim()) {
+      newErrors.message = "الرسالة مطلوبة";
+    } else if (formData.message.trim().length < 10) {
+      newErrors.message = "الرسالة يجب أن تكون أكثر من 10 أحرف";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log("Contact form submitted:", formData);
+
+    if (!validateForm()) {
+      toast.error("يرجى تصحيح الأخطاء في النموذج");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      await createContact(formData);
+
+      toast.success("تم إرسال رسالتك بنجاح! سنتواصل معك قريباً");
+
+      // Reset form
+      setFormData({
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
+      });
+      setErrors({});
+
+      // Close modal after successful submission
+    } catch (error) {
+      console.error("Error submitting contact form:", error);
+      toast.error("حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى");
+    } finally {
+      setIsSubmitting(false);
+      setTimeout(() => {
+        onClose();
+      }, 800);
+    }
   };
 
   if (!isOpen) return null;
@@ -76,53 +146,60 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Name Fields Row */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* First Name */}
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <Label
-                      htmlFor="firstName"
-                      className="text-white text-sm font-medium"
-                    >
-                      الاسم الأول
-                    </Label>
-                    <span className="text-yellow-400 text-lg">☆</span>
-                  </div>
-                  <Input
-                    id="firstName"
-                    name="firstName"
-                    type="text"
-                    placeholder="الاسم الأول"
-                    value={formData.firstName}
-                    onChange={handleInputChange}
-                    className="bg-gray-800/50 border-yellow-400/50 text-white placeholder-gray-400 rounded-lg"
-                    required
-                  />
+              {/* Name Field */}
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Label
+                    htmlFor="name"
+                    className="text-white text-sm font-medium"
+                  >
+                    الاسم الكامل
+                  </Label>
+                  <span className="text-yellow-400 text-lg">☆</span>
                 </div>
+                <Input
+                  id="name"
+                  name="name"
+                  type="text"
+                  placeholder="الاسم الكامل"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  className={`bg-gray-800/50 border-yellow-400/50 text-white placeholder-gray-400 rounded-lg ${
+                    errors.name ? "border-red-500" : ""
+                  }`}
+                  required
+                />
+                {errors.name && (
+                  <p className="text-red-400 text-sm">{errors.name}</p>
+                )}
+              </div>
 
-                {/* Last Name */}
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <Label
-                      htmlFor="lastName"
-                      className="text-white text-sm font-medium"
-                    >
-                      الاسم الأول
-                    </Label>
-                    <span className="text-yellow-400 text-lg">☆</span>
-                  </div>
-                  <Input
-                    id="lastName"
-                    name="lastName"
-                    type="text"
-                    placeholder="الاسم الأول"
-                    value={formData.lastName}
-                    onChange={handleInputChange}
-                    className="bg-gray-800/50 border-yellow-400/50 text-white placeholder-gray-400 rounded-lg"
-                    required
-                  />
+              {/* Subject Field */}
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Label
+                    htmlFor="subject"
+                    className="text-white text-sm font-medium"
+                  >
+                    الموضوع
+                  </Label>
+                  <span className="text-yellow-400 text-lg">☆</span>
                 </div>
+                <Input
+                  id="subject"
+                  name="subject"
+                  type="text"
+                  placeholder="موضوع الرسالة"
+                  value={formData.subject}
+                  onChange={handleInputChange}
+                  className={`bg-gray-800/50 border-yellow-400/50 text-white placeholder-gray-400 rounded-lg ${
+                    errors.subject ? "border-red-500" : ""
+                  }`}
+                  required
+                />
+                {errors.subject && (
+                  <p className="text-red-400 text-sm">{errors.subject}</p>
+                )}
               </div>
 
               {/* Email Field */}
@@ -132,20 +209,25 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                     htmlFor="email"
                     className="text-white text-sm font-medium"
                   >
-                    البريد الالكتروني
+                    البريد الإلكتروني
                   </Label>
-                  <span className="text-green-400 text-lg">○</span>
+                  <span className="text-yellow-400 text-lg">☆</span>
                 </div>
                 <Input
                   id="email"
                   name="email"
                   type="email"
-                  placeholder="example12@123.com"
+                  placeholder="example@email.com"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className="bg-gray-800/50 border-yellow-400/50 text-white placeholder-gray-400 rounded-lg"
+                  className={`bg-gray-800/50 border-yellow-400/50 text-white placeholder-gray-400 rounded-lg ${
+                    errors.email ? "border-red-500" : ""
+                  }`}
                   required
                 />
+                {errors.email && (
+                  <p className="text-red-400 text-sm">{errors.email}</p>
+                )}
               </div>
 
               {/* Message Field */}
@@ -166,21 +248,27 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                   placeholder="اكتب رسالتك هنا..."
                   value={formData.message}
                   onChange={handleInputChange}
-                  className="w-full bg-gray-800/50 border-yellow-400/50 text-white placeholder-gray-400 rounded-lg px-3 py-2 border focus:outline-none focus:ring-2 focus:ring-yellow-400/50"
+                  className={`w-full bg-gray-800/50 border-yellow-400/50 text-white placeholder-gray-400 rounded-lg px-3 py-2 border focus:outline-none focus:ring-2 focus:ring-yellow-400/50 ${
+                    errors.message ? "border-red-500" : ""
+                  }`}
                   required
                 />
+                {errors.message && (
+                  <p className="text-red-400 text-sm">{errors.message}</p>
+                )}
               </div>
 
               {/* Submit Button */}
               <Button
                 type="submit"
-                className="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold py-3 rounded-lg transition-all duration-200 flex items-center gap-2"
+                disabled={isSubmitting}
+                className="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold py-3 rounded-lg transition-all duration-200 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{
                   boxShadow: "2px 2px 10px 0px rgba(203, 161, 53, 1)",
                 }}
               >
                 <Link />
-                ارسال
+                {isSubmitting ? "جاري الإرسال..." : "إرسال"}
               </Button>
             </form>
           </div>

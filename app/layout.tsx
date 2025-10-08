@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const cairo = localFont({
   src: [
@@ -60,6 +62,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ar" dir="rtl">
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={true}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
       <body className={`${cairo.variable} antialiased`}>{children}</body>
     </html>
   );
