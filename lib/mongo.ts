@@ -10,11 +10,12 @@ import "../models/Game";
 import "../models/MafiaSession";
 import "../models/HelpingCard";
 
-const MONGODB_URI =
-  "mongodb+srv://Projects:MW4oAAkNPNlhvwRl@projects.vvekv6h.mongodb.net/Lamma";
+const MONGODB_URI = process.env.NEXT_PUBLIC_MONGODB_URI!;
 
 if (!MONGODB_URI) {
-  throw new Error("Please define the MONGODB_URI environment variable");
+  throw new Error(
+    "Please define the NEXT_PUBLIC_MONGODB_URI environment variable"
+  );
 }
 
 export async function connectToDatabase() {
