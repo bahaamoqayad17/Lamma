@@ -22,7 +22,13 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { FieldWrap, Mounted } from "@/components/ui/field-wrap";
 import {
   Table,
@@ -195,22 +201,22 @@ export const TableCardFooterTemplate: FC<ITableCardFooterTemplateProps> = ({
       <div className="flex items-center justify-between w-full">
         <div className="flex items-center gap-2">
           <Select
-            value={table.getState().pagination.pageSize}
-            onChange={(e) => {
-              table.setPageSize(Number(e.target.value));
+            value={table.getState().pagination.pageSize.toString()}
+            onValueChange={(value) => {
+              table.setPageSize(Number(value));
             }}
-            className="!w-fit"
-            name="pageSize"
+            defaultValue="10"
           >
-            {[5, 10, 20, 30, 40, 50].map((pageSize) => (
-              <option
-                className="bg-zinc-100 text-black dark:bg-zinc-800 dark:text-white"
-                key={pageSize}
-                value={pageSize}
-              >
-                Show {pageSize}
-              </option>
-            ))}
+            <SelectTrigger className="w-fit">
+              <SelectValue placeholder="Show items" />
+            </SelectTrigger>
+            <SelectContent>
+              {[5, 10, 20, 30, 40, 50].map((pageSize) => (
+                <SelectItem key={pageSize} value={pageSize.toString()}>
+                  Show {pageSize}
+                </SelectItem>
+              ))}
+            </SelectContent>
           </Select>
         </div>
         <div className="flex items-center gap-2">
@@ -316,7 +322,6 @@ function DataTable<TData>({
             <Badge
               variant="outline"
               className="bg-blue-100 text-blue-800 rounded-full text-xs"
-              rounded="rounded-full"
             >
               {table.getFilteredRowModel().rows.length} عناصر
             </Badge>

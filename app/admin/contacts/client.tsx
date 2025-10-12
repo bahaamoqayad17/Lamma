@@ -47,7 +47,7 @@ export default function ContactsClient({ data }: { data: ContactType[] }) {
         const date = info.getValue();
         return (
           <span className="text-sm text-gray-500">
-            {date ? new Date(date).toLocaleDateString("ar-SA") : "-"}
+            {date ? new Date(date).toLocaleDateString("en-US") : "-"}
           </span>
         );
       },
