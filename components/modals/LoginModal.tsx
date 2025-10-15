@@ -24,9 +24,12 @@ export default function LoginModal({
     password: "",
     confirmPassword: "",
     username: "",
+    rememberMe: false,
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   // Update current mode when prop changes
   React.useEffect(() => {
@@ -40,10 +43,91 @@ export default function LoginModal({
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log("Form submitted:", formData);
+    setIsLoading(true);
+    setError("");
+
+    try {
+      if (currentMode === "register") {
+        // Validate password confirmation
+        if (formData.password !== formData.confirmPassword) {
+          setError("كلمات المرور غير متطابقة");
+          setIsLoading(false);
+          return;
+        }
+
+        // Register API call
+        const response = await fetch("/api/auth/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username: formData.username,
+            email: formData.email,
+            password: formData.password,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (data.status) {
+          // Registration successful
+          console.log("Registration successful:", data);
+          onClose(); // Close modal
+          // You might want to show a success message or redirect
+        } else {
+          // Handle registration errors
+          if (data.error === "alreadyTaken") {
+            setError("البريد الإلكتروني أو اسم المستخدم مستخدم بالفعل");
+          } else if (
+            data.error === "Password must be at least 6 characters long"
+          ) {
+            setError("كلمة المرور يجب أن تكون 6 أحرف على الأقل");
+          } else {
+            setError(data.error || "حدث خطأ أثناء التسجيل");
+          }
+        }
+      } else {
+        // Login API call
+        const response = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: formData.email,
+            password: formData.password,
+            rememberMe: formData.rememberMe,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (data.status) {
+          // Login successful
+          console.log("Login successful:", data);
+          onClose(); // Close modal
+          // You might want to redirect or update user state
+          window.location.reload(); // Simple way to refresh the page
+        } else {
+          // Handle login errors
+          if (data.error === "invalidEmailOrPassword") {
+            setError("البريد الإلكتروني أو كلمة المرور غير صحيحة");
+          } else if (data.error === "userNotVerified") {
+            setError("الحساب غير مفعل، يرجى التحقق من بريدك الإلكتروني");
+          } else {
+            setError(data.error || "حدث خطأ أثناء تسجيل الدخول");
+          }
+        }
+      }
+    } catch (error) {
+      console.error("API Error:", error);
+      setError("حدث خطأ في الاتصال، يرجى المحاولة مرة أخرى");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleModeSwitch = () => {
@@ -55,9 +139,11 @@ export default function LoginModal({
       password: "",
       confirmPassword: "",
       username: "",
+      rememberMe: false,
     });
     setShowPassword(false);
     setShowConfirmPassword(false);
+    setError(""); // Clear any existing errors
   };
 
   if (!isOpen) return null;
@@ -126,6 +212,11 @@ export default function LoginModal({
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-6">
+              {error && (
+                <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-3 text-red-300 text-sm text-center">
+                  {error}
+                </div>
+              )}
               {currentMode === "register" && (
                 <>
                   {/* Username Field */}
@@ -203,6 +294,25 @@ export default function LoginModal({
                 </div>
               </div>
 
+              {/* Remember Me Checkbox - Only for login mode */}
+              {currentMode === "login" && (
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="rememberMe"
+                    name="rememberMe"
+                    checked={formData.rememberMe}
+                    onChange={(e) =>
+                      setFormData({ ...formData, rememberMe: e.target.checked })
+                    }
+                    className="w-4 h-4 text-yellow-400 bg-gray-800 border-yellow-400/50 rounded focus:ring-yellow-400 focus:ring-2"
+                  />
+                  <Label htmlFor="rememberMe" className="text-white text-sm">
+                    تذكرني
+                  </Label>
+                </div>
+              )}
+
               {/* Confirm Password Field - Only for register mode */}
               {currentMode === "register" && (
                 <div className="space-y-2">
@@ -243,12 +353,17 @@ export default function LoginModal({
               {/* Submit Button */}
               <Button
                 type="submit"
-                className="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold py-3 rounded-lg transition-all duration-200"
+                disabled={isLoading}
+                className="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold py-3 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{
                   boxShadow: "2px 2px 10px 0px rgba(203, 161, 53, 1)",
                 }}
               >
-                {currentMode === "register" ? "انشاء حساب" : "تسجيل الدخول"}
+                {isLoading
+                  ? "جاري التسجيل..."
+                  : currentMode === "register"
+                  ? "انشاء حساب"
+                  : "تسجيل الدخول"}
               </Button>
             </form>
 

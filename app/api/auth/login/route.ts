@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
     });
   }
 
-  if (!user.isVerified) {
+  if (!user.isActive) {
     return NextResponse.json({
       status: false,
       error: "userNotVerified",
@@ -44,13 +44,8 @@ export async function POST(request: NextRequest) {
     user: {
       id: user._id.toString(),
       email: user.email,
-      name: user.name,
+      username: user.username,
       role: user.role,
-      id_number: user.id_number,
-      tax_number: user.tax_number,
-      bank_iban: user.bank_iban,
-      bank_name: user.bank_name,
-      commercial_number: user.commercial_number,
     },
   };
 
@@ -72,15 +67,9 @@ export async function POST(request: NextRequest) {
       user: {
         id: user._id,
         email: user.email,
-        name: user.name,
+        username: user.username,
         role: user.role,
-        isVerified: user.isVerified,
         isActive: user.isActive,
-        id_number: user.id_number,
-        tax_number: user.tax_number,
-        bank_iban: user.bank_iban,
-        bank_name: user.bank_name,
-        commercial_number: user.commercial_number,
       },
     },
     {
