@@ -74,6 +74,9 @@ export default function RootLayout({
         pauseOnHover
         theme="dark"
       />
+      <head>
+        <link rel="icon" href="/logo.png" />
+      </head>
       <body className={`${cairo.variable} antialiased`}>{children}</body>
     </html>
   );

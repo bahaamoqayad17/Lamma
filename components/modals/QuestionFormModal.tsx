@@ -19,10 +19,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CategoryType } from "@/models/Category";
+import { QuestionType } from "@/models/Question";
 import { Label } from "@/components/ui/label";
 import { toast } from "react-toastify";
 
-interface CategoryFormModalProps {
+interface QuestionFormModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (
@@ -30,47 +31,53 @@ interface CategoryFormModalProps {
   ) => Promise<{ success: boolean; message: string }>;
   isLoading?: boolean;
   categories?: CategoryType[];
-  editingCategory?: CategoryType | null;
+  editingQuestion?: QuestionType | null;
 }
 
-export default function CategoryFormModal({
+export default function QuestionFormModal({
   isOpen,
   onClose,
   onSubmit,
   isLoading = false,
   categories = [],
-  editingCategory = null,
-}: CategoryFormModalProps) {
+  editingQuestion = null,
+}: QuestionFormModalProps) {
   const [formData, setFormData] = useState({
-    name: "",
-    description: "",
+    question: "",
+    answer: "",
+    points: 0,
+    file: "",
     categoryId: "",
   });
 
-  const [categoryImage, setCategoryImage] = useState<File | null>(null);
+  const [questionFile, setQuestionFile] = useState<File | null>(null);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   // Effect to populate form when editing
   useEffect(() => {
-    if (editingCategory) {
+    if (editingQuestion) {
       setFormData({
-        name: editingCategory.name || "",
-        description: editingCategory.description || "",
-        categoryId: editingCategory.category
-          ? String(editingCategory.category)
+        question: editingQuestion.question || "",
+        answer: editingQuestion.answer || "",
+        points: editingQuestion.points || 0,
+        file: editingQuestion.file || "",
+        categoryId: editingQuestion.category
+          ? String(editingQuestion.category)
           : "",
       });
     } else {
       setFormData({
-        name: "",
-        description: "",
+        question: "",
+        answer: "",
+        points: 0,
+        file: "",
         categoryId: "",
       });
     }
-    setCategoryImage(null);
+    setQuestionFile(null);
     setErrors({});
-  }, [editingCategory, isOpen]);
+  }, [editingQuestion, isOpen]);
 
   const handleInputChange = (field: string, value: any) => {
     setFormData((prev) => ({
@@ -87,14 +94,14 @@ export default function CategoryFormModal({
   };
 
   const handleFileChange = (file: File | null) => {
-    setCategoryImage(file);
+    setQuestionFile(file);
   };
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!formData.name?.trim()) {
-      newErrors.name = "اسم الفئة مطلوب";
+    if (!formData.question?.trim()) {
+      newErrors.question = "اسم السؤال مطلوب";
     }
 
     setErrors(newErrors);
@@ -108,32 +115,36 @@ export default function CategoryFormModal({
       const formDataToSubmit = new FormData();
 
       // Add text fields
-      formDataToSubmit.append("name", formData.name);
-      formDataToSubmit.append("description", formData.description);
+      formDataToSubmit.append("question", formData.question);
+      formDataToSubmit.append("answer", formData.answer);
+      formDataToSubmit.append("points", formData.points.toString());
+      formDataToSubmit.append("file", formData.file);
       formDataToSubmit.append("categoryId", formData.categoryId);
 
       // Add image file
-      if (categoryImage) {
-        formDataToSubmit.append("categoryImage", categoryImage);
+      if (questionFile) {
+        formDataToSubmit.append("questionFile", questionFile);
       }
 
       const response = await onSubmit(formDataToSubmit);
       if (response.success) {
-        toast.success(response.message || "تم إضافة الفئة بنجاح");
+        toast.success(response.message || "تم إضافة السؤال بنجاح");
         handleClose();
       } else {
-        toast.error(response.message || "حدث خطأ أثناء إضافة الفئة");
+        toast.error(response.message || "حدث خطأ أثناء إضافة السؤال");
       }
     }
   };
 
   const handleClose = () => {
     setFormData({
-      name: "",
-      description: "",
+      question: "",
+      answer: "",
+      points: 0,
+      file: "",
       categoryId: "",
     });
-    setCategoryImage(null);
+    setQuestionFile(null);
     setErrors({});
     onClose();
   };
@@ -143,12 +154,12 @@ export default function CategoryFormModal({
       <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
         <div>
           <DialogTitle>
-            {editingCategory ? "تعديل الفئة" : "إضافة تصنيف جديد"}
+            {editingQuestion ? "تعديل السؤال" : "إضافة سؤال جديد"}
           </DialogTitle>
           <DialogDescription>
-            {editingCategory
-              ? "قم بتعديل البيانات المطلوبة للتصنيف"
-              : "قم بملء البيانات المطلوبة لإضافة تصنيف جديد"}
+            {editingQuestion
+              ? "قم بتعديل البيانات المطلوبة للسؤال"
+              : "قم بملء البيانات المطلوبة لإضافة سؤال جديد"}
           </DialogDescription>
         </div>
 
@@ -156,15 +167,17 @@ export default function CategoryFormModal({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Category Name */}
             <div className="md:col-span-2">
-              <Label>اسم الفئة</Label>
+              <Label>اسم السؤال</Label>
               <FieldWrap>
                 <Input
-                  value={formData.name || ""}
-                  onChange={(e) => handleInputChange("name", e.target.value)}
-                  placeholder="أدخل اسم الفئة"
-                  className={errors.name ? "border-red-500" : ""}
+                  value={formData.question || ""}
+                  onChange={(e) =>
+                    handleInputChange("question", e.target.value)
+                  }
+                  placeholder="أدخل اسم السؤال"
+                  className={errors.question ? "border-red-500" : ""}
                 />
-                {errors.name && (
+                {errors.question && (
                   <span className="text-red-500 text-sm">{errors.name}</span>
                 )}
               </FieldWrap>
@@ -172,14 +185,12 @@ export default function CategoryFormModal({
 
             {/* Description */}
             <div className="md:col-span-2">
-              <Label>وصف الفئة</Label>
+              <Label>إجابة السؤال</Label>
               <FieldWrap>
                 <textarea
-                  value={formData.description || ""}
-                  onChange={(e) =>
-                    handleInputChange("description", e.target.value)
-                  }
-                  placeholder="أدخل وصف الفئة"
+                  value={formData.answer || ""}
+                  onChange={(e) => handleInputChange("answer", e.target.value)}
+                  placeholder="أدخل إجابة السؤال"
                   className="w-full px-3 py-2 border rounded-md resize-none border-gray-300"
                   rows={3}
                 />
@@ -188,7 +199,7 @@ export default function CategoryFormModal({
 
             {/* Parent Category */}
             <div className="md:col-span-2">
-              <Label>الفئة الأب (اختياري)</Label>
+              <Label>الفئة</Label>
               <FieldWrap>
                 <Select
                   value={formData.categoryId || "none"}
@@ -200,10 +211,10 @@ export default function CategoryFormModal({
                   }
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="اختر الفئة الأب (اختياري)" />
+                    <SelectValue placeholder="اختر الفئة" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="none">لا يوجد تصنيف أب</SelectItem>
+                    <SelectItem value="none">لا يوجد فئة</SelectItem>
                     {categories.map((category) => (
                       <SelectItem
                         key={category._id.toString()}
@@ -219,20 +230,20 @@ export default function CategoryFormModal({
 
             {/* Category Image Upload */}
             <div className="md:col-span-2">
-              <Label>صورة الفئة</Label>
+              <Label>ملف للسؤال (إن وجد)</Label>
               <FieldWrap>
                 <Input
                   type="file"
-                  accept="image/*"
+                  accept="*/*"
                   onChange={(e) => {
                     const file = e.target.files?.[0] || null;
                     handleFileChange(file);
                   }}
                   className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                 />
-                {categoryImage && (
+                {questionFile && (
                   <p className="text-sm text-gray-600 mt-1">
-                    الصورة المحددة: {categoryImage.name}
+                    الملف المحدد: {questionFile.name}
                   </p>
                 )}
               </FieldWrap>
@@ -242,12 +253,12 @@ export default function CategoryFormModal({
           <div className="flex justify-between w-full">
             <Button type="submit" variant="outline" disabled={isLoading}>
               {isLoading
-                ? editingCategory
+                ? editingQuestion
                   ? "جاري التحديث..."
                   : "جاري الإضافة..."
-                : editingCategory
-                ? "تحديث الفئة"
-                : "إضافة الفئة"}
+                : editingQuestion
+                ? "تحديث السؤال"
+                : "إضافة السؤال"}
             </Button>
             <Button
               type="button"
