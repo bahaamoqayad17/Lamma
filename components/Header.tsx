@@ -37,7 +37,7 @@ export default function Header() {
       </div>
 
       {/* Game Cards Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto w-full h-90">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto w-full h-[100vh] md:h-90">
         {/* Seen Jeem Game Card */}
         <Card
           className="bg-amber-50 border-2 border-amber-200 shadow-lg hover:shadow-xl transition-shadow duration-300 relative cursor-pointer"

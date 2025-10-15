@@ -77,10 +77,9 @@ export default function InGame() {
       </div>
 
       {/* Main Game Area */}
-      <div className="relative z-10 flex h-[calc(100vh-120px)]">
-        {/* Main Game Area */}
-        {/* Left Sidebar */}
-        <div className="w-80 bg-black/30 backdrop-blur-sm border-r border-gray-700 flex flex-col h-full">
+      <div className="relative z-10 flex flex-col lg:flex-row h-[calc(100vh-120px)] lg:h-[calc(100vh-120px)] pb-64 lg:pb-0">
+        {/* Left Sidebar - Hidden on mobile, visible on larger screens */}
+        <div className="hidden lg:flex w-80 bg-black/30 backdrop-blur-sm border-r border-gray-700 flex-col h-full">
           {/* Chat Tabs */}
           <div className="p-4 border-b border-gray-700">
             <div className="flex space-y-2">
@@ -137,14 +136,46 @@ export default function InGame() {
         </div>
         <div className="flex-1 relative flex items-center justify-center">
           {/* Central Mafia Title */}
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
-            <h1 className="text-6xl md:text-8xl font-bold text-white text-center">
+          <div className="absolute top-4 lg:top-1/2 left-1/2 transform -translate-x-1/2 lg:-translate-y-1/2 z-20">
+            <h1 className="text-3xl lg:text-6xl xl:text-8xl font-bold text-white text-center">
               مافيا
             </h1>
           </div>
 
-          {/* Character Circle */}
-          <div className="relative w-full h-full flex items-center justify-center">
+          {/* Mobile Grid Layout */}
+          <div className="md:hidden w-full h-full flex flex-col items-center justify-center p-4">
+            <div className="grid grid-cols-3 gap-4 mt-16 w-full max-w-sm">
+              {players.map((player) => (
+                <div key={player.id} className="flex flex-col items-center">
+                  <div className="relative">
+                    <div className="rounded-full bg-[#FCCB97] w-16 h-16 border-2 border-[#FFEA00] hover:border-yellow-600 transition-colors cursor-pointer flex items-center justify-center">
+                      <Image
+                        src="/citizen.png"
+                        alt={player.name}
+                        width={48}
+                        height={48}
+                        className="rounded-full"
+                      />
+                    </div>
+                    {player.isCurrentUser && (
+                      <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
+                    )}
+                  </div>
+                  <div className="mt-1 text-center">
+                    <div className="text-white text-xs font-medium">
+                      {player.name}
+                    </div>
+                    {!player.isCurrentUser && (
+                      <div className="text-gray-400 text-xs">#{player.id}</div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop Circular Layout */}
+          <div className="hidden md:block relative w-full h-full flex items-center justify-center">
             {players.map((player, index) => {
               const position = getCharacterPosition(index, players.length);
               return (
@@ -191,6 +222,62 @@ export default function InGame() {
                 </div>
               );
             })}
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Chat - Bottom of screen on mobile only */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-black/80 backdrop-blur-sm border-t border-gray-700 z-20">
+        {/* Chat Tabs */}
+        <div className="p-3 border-b border-gray-700">
+          <div className="flex gap-2">
+            <button
+              onClick={() => setActiveTab("general")}
+              className={`px-3 py-2 rounded text-sm font-medium transition-colors flex-1 cursor-pointer ${
+                activeTab === "general"
+                  ? "bg-[#FCCB97] text-black font-bold"
+                  : "text-gray-400 hover:text-white"
+              }`}
+            >
+              العامة
+            </button>
+            <button
+              onClick={() => setActiveTab("killers")}
+              className={`px-3 py-2 rounded text-sm font-medium transition-colors flex-1 cursor-pointer ${
+                activeTab === "killers"
+                  ? "bg-[#FCCB97] text-black font-bold"
+                  : "text-gray-400 hover:text-white"
+              }`}
+            >
+              القتلة
+            </button>
+          </div>
+        </div>
+
+        {/* Chat Messages Area */}
+        <div className="h-32 p-3 overflow-y-auto">
+          <div className="space-y-2">
+            <div className="text-gray-400 text-sm text-center py-4">
+              لا توجد رسائل بعد
+            </div>
+          </div>
+        </div>
+
+        {/* Message Input */}
+        <div className="p-3 border-t border-gray-700">
+          <div className="flex items-center gap-2">
+            <Button
+              size="sm"
+              className="bg-yellow-600 hover:bg-yellow-500 text-white p-2"
+            >
+              <Send className="w-4 h-4" />
+            </Button>
+            <Input
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="اكتب رسالة"
+              className="flex-1 bg-gray-800 border-yellow-600 text-white placeholder-gray-400"
+            />
           </div>
         </div>
       </div>

@@ -56,7 +56,7 @@ export default function QuestionCard({
       )}
     >
       {/* Category Header */}
-      <div className="bg-yellow-400 rounded-t-lg px-6 py-4 text-center w-60 mx-auto">
+      <div className="bg-yellow-400 rounded-t-lg px-6 py-4 text-center w-full">
         <h1 className="text-3xl font-bold text-black">{data.name}</h1>
       </div>
 

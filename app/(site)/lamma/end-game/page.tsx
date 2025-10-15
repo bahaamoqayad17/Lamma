@@ -3,7 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, Trophy } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 
@@ -15,14 +15,14 @@ export default function EndGame() {
         alt=""
         width={300}
         height={300}
-        className="absolute left-0 bottom-0"
+        className="absolute left-0 bottom-0 w-24 h-24 sm:w-48 sm:h-48 md:w-72 md:h-72 lg:w-80 lg:h-80"
       />
       <Image
         src="/right-win.png"
         alt=""
         width={300}
         height={300}
-        className="absolute right-0 bottom-0"
+        className="absolute right-0 bottom-0 w-24 h-24 sm:w-48 sm:h-48 md:w-72 md:h-72 lg:w-80 lg:h-80"
       />
       <div className="relative z-10 flex items-center justify-between p-4 md:px-10 sm:p-6 bg-[#6A0DAD] backdrop-blur-sm">
         {/* Logo - Left side for RTL */}

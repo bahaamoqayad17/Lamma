@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Search, Plus, Minus } from "lucide-react";
 
 export default function Faq() {
@@ -47,7 +46,7 @@ export default function Faq() {
   };
 
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8">
+    <section className="py-16 px-4 sm:px-6 lg:px-8" id="faq">
       <div className="container mx-auto max-w-4xl">
         {/* Title Section */}
         <div className="text-center mb-12">

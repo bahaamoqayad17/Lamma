@@ -334,23 +334,35 @@ export default function Start() {
 
       {/* Right Sidebar - Selected Categories - Only show when categories are selected */}
       {selectedCategories.length > 0 && (
-        <div className="absolute top-20 right-4 w-80 bg-transparent p-2 h-fit flex flex-col z-20">
-          <div className="space-y-3">
+        <div className="fixed right-[50%] translate-x-1/2 md:translate-x-0 top-20 md:right-0 bg-transparent p-2 md:h-[80vh] flex flex-col justify-between z-20">
+          {/* Scrollable categories */}
+          <div className="space-y-3 overflow-y-auto overflow-x-hidden flex-1 p-2 bg-white flex rounded-lg md:block md:bg-transparent">
             {getSelectedCategoryData().map((category) => (
-              <div key={category?.id} className="relative">
+              <div key={category?.id} className="relative w-fit md:w-[200px]">
                 <CategoryCard
                   image={category?.image || ""}
                   title={category?.title || ""}
                   isSelected={true}
                   onClick={() => handleCardClick(category?.id || 0)}
                   imageAlt={`Selected category ${category?.id}`}
-                  className="w-full scale-75 origin-center"
+                  className="w-full origin-center"
                 />
+
+                <div
+                  onClick={() =>
+                    setSelectedCategories((prev) =>
+                      prev.filter((cId) => cId !== category?.id)
+                    )
+                  }
+                  className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center cursor-pointer hover:bg-red-600 transition-colors"
+                >
+                  <span className="text-white text-lg font-bold">×</span>
+                </div>
               </div>
             ))}
           </div>
 
-          {/* Scroll Down Arrow in Sidebar */}
+          {/* Arrow fixed below the scroll */}
           <div className="mt-4 flex justify-center">
             <button
               onClick={handleScrollDown}

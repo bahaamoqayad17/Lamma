@@ -44,7 +44,7 @@ export default function HowItWorks() {
   ];
 
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8">
+    <section className="py-16 px-4 sm:px-6 lg:px-8" id="how-we-work">
       <div className="container mx-auto max-w-6xl">
         <div className="grid grid-cols-1 lg:grid-cols-3 items-start relative w-full">
           {/* Right Side - Title and Third Step */}
@@ -63,7 +63,7 @@ export default function HowItWorks() {
                   backgroundColor: "rgba(252, 203, 151, 0.1)",
                   boxShadow: "6px 6px 10px 0 rgba(252, 203, 151, 0.3)",
                 }}
-                className="border-2 border-[#FCCB97] flex flex-col justify-center items-center"
+                className="border-2 border-[#FCCB97] flex flex-col justify-center items-center mb-8 md:mb-0"
               >
                 <CardHeader className="">
                   <CardTitle className="text-xl font-bold text-white flex items-center gap-3">

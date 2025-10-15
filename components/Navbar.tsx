@@ -14,10 +14,10 @@ export default function Navbar() {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
   const navigationItems = [
-    { href: "/contact", label: "تواصل معنا", isModal: true },
-    { href: "/games", label: "الألعاب", isModal: false },
-    { href: "/faq", label: "الأسئلة الشائعة", isModal: false },
-    { href: "/how-we-work", label: "كيف نعمل", isModal: false },
+    { href: "#contact", label: "تواصل معنا", isModal: true },
+    { href: "#games", label: "الألعاب", isModal: false },
+    { href: "#faq", label: "الأسئلة الشائعة", isModal: false },
+    { href: "#how-we-work", label: "كيف نعمل", isModal: false },
   ];
 
   return (

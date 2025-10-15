@@ -51,8 +51,8 @@ const cairo = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Lamma",
-  description: "Lamma",
+  title: "لمة - موقع ألعاب أونلاين",
+  description: "لمة - موقع ألعاب أونلاين",
 };
 
 export default function RootLayout({

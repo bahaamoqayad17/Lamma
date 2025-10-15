@@ -117,7 +117,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
 
       {/* Modal */}
       <div
-        className="relative max-w-3xl w-full h-[83%] flex items-center justify-center"
+        className="relative max-w-3xl w-full h-full md:h-[83%] flex items-center justify-center"
         style={{
           backgroundImage: "url('/contact-bg.svg')",
           backgroundSize: "cover",
@@ -151,7 +151,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                 <div className="flex items-center gap-2">
                   <Label
                     htmlFor="name"
-                    className="text-white text-sm font-medium"
+                    className="text-white text-sm font-medium mb-0"
                   >
                     الاسم الكامل
                   </Label>
@@ -179,7 +179,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                 <div className="flex items-center gap-2">
                   <Label
                     htmlFor="subject"
-                    className="text-white text-sm font-medium"
+                    className="text-white text-sm font-medium mb-0"
                   >
                     الموضوع
                   </Label>
@@ -207,7 +207,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                 <div className="flex items-center gap-2">
                   <Label
                     htmlFor="email"
-                    className="text-white text-sm font-medium"
+                    className="text-white text-sm font-medium mb-0"
                   >
                     البريد الإلكتروني
                   </Label>
@@ -235,7 +235,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                 <div className="flex items-center gap-2">
                   <Label
                     htmlFor="message"
-                    className="text-white text-sm font-medium"
+                    className="text-white text-sm font-medium mb-0"
                   >
                     الرسالة
                   </Label>

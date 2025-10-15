@@ -593,7 +593,7 @@ export default function InGame() {
         <div className="container mx-auto px-4">
           {/* Main Game Grid - 6 Question Cards */}
           {step === "list" && (
-            <div className="grid grid-cols-3 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
               {gameData.map((category) => (
                 <div key={category._id} className="w-full">
                   <QuestionCard
@@ -694,10 +694,10 @@ export default function InGame() {
           )}
 
           {/* Bottom Section - Power-up Cards and Score Display */}
-          <div className="flex justify-between items-center md:mx-16">
+          <div className="flex flex-col gap-8 md:gap-0 md:flex-row justify-between items-center md:mx-16">
             {/* Horizontal Score Display */}
-            <div className="bg-[#E0D9EB] rounded-full px-12 py-4 shadow-sm border border-gray-200">
-              <div className="flex items-center justify-between flex-col sm:flex-row gap-4 sm:gap-0">
+            <div className="bg-[#E0D9EB] rounded-full md:px-12 px-4 py-4 shadow-sm border border-gray-200">
+              <div className="flex items-center justify-between gap-4">
                 {/* Team Hope Score */}
                 <div className="flex flex-col items-center space-y-2">
                   <div className="flex items-center space-x-2">
