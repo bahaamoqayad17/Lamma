@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongo";
 import User from "@/models/User";
 import PasswordReset from "@/models/PasswordReset";
-import { sendEmail } from "@/lib/email";
+import { sendPasswordResetEmail } from "@/lib/email";
 
 export async function POST(request: NextRequest) {
   try {
@@ -42,11 +42,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Send password reset email using the reusable email service
-    await sendEmail(
-      email.toLowerCase(),
-      "Password Reset",
-      `Please use the following code to reset your password: ${verificationCode}`
-    );
+    await sendPasswordResetEmail(email.toLowerCase(), verificationCode);
 
     return NextResponse.json({
       status: true,

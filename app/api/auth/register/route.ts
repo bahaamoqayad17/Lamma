@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 
 import { connectToDatabase } from "@/lib/mongo";
 import User from "@/models/User";
+import { sendWelcomeEmail } from "@/lib/email";
 export async function POST(request: NextRequest) {
   try {
     const { email, password, username } = await request.json();
@@ -77,6 +78,9 @@ export async function POST(request: NextRequest) {
         expiresIn: "30d",
       }
     );
+
+    // Send welcome email
+    await sendWelcomeEmail(newUser.email, newUser.username);
 
     return NextResponse.json(
       {
