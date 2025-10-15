@@ -23,6 +23,7 @@ export default function LoginModal({
     email: "",
     password: "",
     confirmPassword: "",
+    username: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -53,6 +54,7 @@ export default function LoginModal({
       email: "",
       password: "",
       confirmPassword: "",
+      username: "",
     });
     setShowPassword(false);
     setShowConfirmPassword(false);
@@ -124,6 +126,30 @@ export default function LoginModal({
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-6">
+              {currentMode === "register" && (
+                <>
+                  {/* Username Field */}
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="username"
+                      className="text-white text-sm font-medium"
+                    >
+                      اسم المستخدم
+                    </Label>
+                    <Input
+                      id="username"
+                      name="username"
+                      type="text"
+                      placeholder="اسم المستخدم"
+                      value={formData.username}
+                      onChange={handleInputChange}
+                      className="bg-gray-800/50 border-yellow-400/50 text-white placeholder-gray-400 rounded-lg"
+                      required
+                    />
+                  </div>
+                </>
+              )}
+
               {/* Email Field */}
               <div className="space-y-2">
                 <Label

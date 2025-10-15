@@ -54,7 +54,7 @@ export default function Start() {
         </div>
 
         {/* Exit button - Right side for RTL */}
-        <Link href="/mafia">
+        <Link href="/">
           <Button
             variant="ghost"
             className="flex items-center gap-2 text-white hover:text-yellow-400 hover:bg-white/10 transition-all duration-200"
