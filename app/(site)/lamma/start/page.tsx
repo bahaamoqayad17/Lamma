@@ -83,7 +83,7 @@ export default function Start() {
         </div>
 
         {/* Exit button - Right side for RTL */}
-        <Link href="/lamma">
+        <Link href="/">
           <Button
             variant="ghost"
             className="flex items-center gap-2 text-white hover:text-yellow-400 hover:bg-white/10 transition-all duration-200"
@@ -114,10 +114,10 @@ export default function Start() {
 
         {/* Politics Section */}
         <div className="mb-16">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-800 text-center mb-8">
+          <h2 className="text-2xl md:text-5xl font-bold text-gray-800 text-center mb-8">
             سياسة
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 max-w-6xl mx-auto">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mx-auto">
             {politicsCategories.map((category) => (
               <CategoryCard
                 key={category.id}
@@ -134,10 +134,10 @@ export default function Start() {
 
         {/* Series Section */}
         <div className="mb-16">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-800 text-center mb-8">
+          <h2 className="text-2xl md:text-5xl font-bold text-gray-800 text-center mb-8">
             المسلسلات
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 max-w-6xl mx-auto">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mx-auto">
             {seriesCategories.map((category) => (
               <CategoryCard
                 key={category.id}

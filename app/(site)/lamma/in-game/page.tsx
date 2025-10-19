@@ -26,7 +26,7 @@ export default function InGame() {
             description: "أسئلة متنوعة حول الرياضة",
             image: "seen-jeem.png",
           },
-          file: null,
+          file: "seen-jeem.png",
           question: "من فاز بكأس العالم الأخير؟",
           answer: "الأرجنتين",
           points: 200,
@@ -39,7 +39,7 @@ export default function InGame() {
             description: "أسئلة متنوعة حول الرياضة",
             image: "seen-jeem.png",
           },
-          file: null,
+          file: "seen-jeem.png",
           question: "كم عدد اللاعبين في فريق كرة السلة؟",
           answer: "خمسة",
           points: 200,
@@ -52,7 +52,7 @@ export default function InGame() {
             description: "أسئلة متنوعة حول الرياضة",
             image: "seen-jeem.png",
           },
-          file: "sprint.jpg",
+          file: "seen-jeem.png",
           question: "ما هو الرقم القياسي لسباق 100 متر؟",
           answer: "9.58 ثانية",
           points: 400,
@@ -65,7 +65,7 @@ export default function InGame() {
             description: "أسئلة متنوعة حول الرياضة",
             image: "seen-jeem.png",
           },
-          file: null,
+          file: "seen-jeem.png",
           question: "أي دولة اخترعت رياضة الجودو؟",
           answer: "اليابان",
           points: 400,
@@ -78,7 +78,7 @@ export default function InGame() {
             description: "أسئلة متنوعة حول الرياضة",
             image: "seen-jeem.png",
           },
-          file: null,
+          file: "seen-jeem.png",
           question: "أي فريق لديه أكبر عدد من ألقاب دوري أبطال أوروبا؟",
           answer: "ريال مدريد",
           points: 600,
@@ -91,7 +91,7 @@ export default function InGame() {
             description: "أسئلة متنوعة حول الرياضة",
             image: "seen-jeem.png",
           },
-          file: null,
+          file: "seen-jeem.png",
           question: "من هو أسرع عداء في العالم؟",
           answer: "يوسين بولت",
           points: 600,
@@ -113,7 +113,7 @@ export default function InGame() {
             description: "أسئلة متنوعة حول التاريخ",
             image: "seen-jeem.png",
           },
-          file: null,
+          file: "seen-jeem.png",
           question: "متى انتهت الحرب العالمية الثانية؟",
           answer: "1945",
           points: 200,
@@ -126,7 +126,7 @@ export default function InGame() {
             description: "أسئلة متنوعة حول التاريخ",
             image: "seen-jeem.png",
           },
-          file: null,
+          file: "seen-jeem.png",
           question: "من هو أول خليفة للمسلمين؟",
           answer: "أبو بكر الصديق",
           points: 200,
@@ -139,7 +139,7 @@ export default function InGame() {
             description: "أسئلة متنوعة حول التاريخ",
             image: "seen-jeem.png",
           },
-          file: null,
+          file: "seen-jeem.png",
           question: "أين تم اكتشاف مقبرة توت عنخ آمون؟",
           answer: "مصر",
           points: 400,
@@ -152,7 +152,7 @@ export default function InGame() {
             description: "أسئلة متنوعة حول التاريخ",
             image: "seen-jeem.png",
           },
-          file: null,
+          file: "seen-jeem.png",
           question: "متى تأسست الدولة العثمانية؟",
           answer: "1299",
           points: 400,
@@ -165,7 +165,7 @@ export default function InGame() {
             description: "أسئلة متنوعة حول التاريخ",
             image: "seen-jeem.png",
           },
-          file: null,
+          file: "seen-jeem.png",
           question: "من هو مؤسس الدولة الأموية؟",
           answer: "معاوية بن أبي سفيان",
           points: 600,
@@ -178,7 +178,7 @@ export default function InGame() {
             description: "أسئلة متنوعة حول التاريخ",
             image: "seen-jeem.png",
           },
-          file: null,
+          file: "seen-jeem.png",
           question: "أين وقعت معركة اليرموك؟",
           answer: "سوريا",
           points: 600,
@@ -199,7 +199,7 @@ export default function InGame() {
             description: "أسئلة متنوعة حول العلوم",
             image: "seen-jeem.png",
           },
-          file: null,
+          file: "seen-jeem.png",
           question: "ما هو العنصر الكيميائي للذهب؟",
           answer: "Au",
           points: 200,
@@ -212,7 +212,7 @@ export default function InGame() {
             description: "أسئلة متنوعة حول العلوم",
             image: "seen-jeem.png",
           },
-          file: null,
+          file: "seen-jeem.png",
           question: "كم عدد الكواكب في المجموعة الشمسية؟",
           answer: "8",
           points: 200,
@@ -225,7 +225,7 @@ export default function InGame() {
             description: "أسئلة متنوعة حول العلوم",
             image: "seen-jeem.png",
           },
-          file: null,
+          file: "seen-jeem.png",
           question: "ما هو أسرع حيوان في العالم؟",
           answer: "الفهد",
           points: 400,
@@ -238,7 +238,7 @@ export default function InGame() {
             description: "أسئلة متنوعة حول العلوم",
             image: "seen-jeem.png",
           },
-          file: null,
+          file: "seen-jeem.png",
           question: "ما هو أكبر محيط في العالم؟",
           answer: "المحيط الهادئ",
           points: 400,
@@ -251,7 +251,7 @@ export default function InGame() {
             description: "أسئلة متنوعة حول العلوم",
             image: "seen-jeem.png",
           },
-          file: null,
+          file: "seen-jeem.png",
           question: "ما هو أعمق محيط في العالم؟",
           answer: "المحيط الهادئ",
           points: 600,
@@ -264,7 +264,7 @@ export default function InGame() {
             description: "أسئلة متنوعة حول العلوم",
             image: "seen-jeem.png",
           },
-          file: null,
+          file: "seen-jeem.png",
           question: "ما هو أطول نهر في العالم؟",
           answer: "نهر النيل",
           points: 600,
@@ -285,7 +285,7 @@ export default function InGame() {
             description: "أسئلة متنوعة حول الأدب",
             image: "seen-jeem.png",
           },
-          file: null,
+          file: "seen-jeem.png",
           question: "من هو مؤلف كتاب الأغاني؟",
           answer: "الأصبهاني",
           points: 200,
@@ -298,7 +298,7 @@ export default function InGame() {
             description: "أسئلة متنوعة حول الأدب",
             image: "seen-jeem.png",
           },
-          file: null,
+          file: "seen-jeem.png",
           question: "ما هو ديوان المعلقات؟",
           answer: "قصائد عربية قديمة",
           points: 200,
@@ -311,7 +311,7 @@ export default function InGame() {
             description: "أسئلة متنوعة حول الأدب",
             image: "seen-jeem.png",
           },
-          file: null,
+          file: "seen-jeem.png",
           question: "من هو شاعر النيل؟",
           answer: "حافظ إبراهيم",
           points: 400,
@@ -324,7 +324,7 @@ export default function InGame() {
             description: "أسئلة متنوعة حول الأدب",
             image: "seen-jeem.png",
           },
-          file: null,
+          file: "seen-jeem.png",
           question: "من هو مؤلف كتاب ألف ليلة وليلة؟",
           answer: "مجهول",
           points: 400,
@@ -337,7 +337,7 @@ export default function InGame() {
             description: "أسئلة متنوعة حول الأدب",
             image: "seen-jeem.png",
           },
-          file: null,
+          file: "seen-jeem.png",
           question: "من هو شاعر القطرين؟",
           answer: "أحمد شوقي",
           points: 600,
@@ -350,7 +350,7 @@ export default function InGame() {
             description: "أسئلة متنوعة حول الأدب",
             image: "seen-jeem.png",
           },
-          file: null,
+          file: "seen-jeem.png",
           question: "من هو مؤلف كتاب البخلاء؟",
           answer: "الجاحظ",
           points: 600,
@@ -371,7 +371,7 @@ export default function InGame() {
             description: "أسئلة متنوعة حول الجغرافيا",
             image: "seen-jeem.png",
           },
-          file: null,
+          file: "seen-jeem.png",
           question: "ما هي عاصمة فرنسا؟",
           answer: "باريس",
           points: 200,
@@ -384,7 +384,7 @@ export default function InGame() {
             description: "أسئلة متنوعة حول الجغرافيا",
             image: "seen-jeem.png",
           },
-          file: null,
+          file: "seen-jeem.png",
           question: "ما هي أكبر دولة في العالم؟",
           answer: "روسيا",
           points: 200,
@@ -397,7 +397,7 @@ export default function InGame() {
             description: "أسئلة متنوعة حول الجغرافيا",
             image: "seen-jeem.png",
           },
-          file: null,
+          file: "seen-jeem.png",
           question: "ما هي أعلى قمة في العالم؟",
           answer: "إفرست",
           points: 400,
@@ -410,7 +410,7 @@ export default function InGame() {
             description: "أسئلة متنوعة حول الجغرافيا",
             image: "seen-jeem.png",
           },
-          file: null,
+          file: "seen-jeem.png",
           question: "ما هي أصغر دولة في العالم؟",
           answer: "الفاتيكان",
           points: 400,
@@ -423,7 +423,7 @@ export default function InGame() {
             description: "أسئلة متنوعة حول الجغرافيا",
             image: "seen-jeem.png",
           },
-          file: null,
+          file: "seen-jeem.png",
           question: "ما هي عاصمة أستراليا؟",
           answer: "كانبرا",
           points: 600,
@@ -436,7 +436,7 @@ export default function InGame() {
             description: "أسئلة متنوعة حول الجغرافيا",
             image: "seen-jeem.png",
           },
-          file: null,
+          file: "seen-jeem.png",
           question: "ما هي أكبر صحراء في العالم؟",
           answer: "الصحراء الكبرى",
           points: 600,
@@ -457,7 +457,7 @@ export default function InGame() {
             description: "أسئلة متنوعة حول الفنون",
             image: "seen-jeem.png",
           },
-          file: null,
+          file: "seen-jeem.png",
           question: "من هو مؤلف لوحة الموناليزا؟",
           answer: "ليوناردو دافنشي",
           points: 200,
@@ -470,7 +470,7 @@ export default function InGame() {
             description: "أسئلة متنوعة حول الفنون",
             image: "seen-jeem.png",
           },
-          file: null,
+          file: "seen-jeem.png",
           question: "ما هو نوع الفن الذي يسمى بالرسم بالزيت؟",
           answer: "الرسم الزيتي",
           points: 200,
@@ -483,7 +483,7 @@ export default function InGame() {
             description: "أسئلة متنوعة حول الفنون",
             image: "seen-jeem.png",
           },
-          file: null,
+          file: "seen-jeem.png",
           question: "من هو مؤلف سمفونية البيتهوفن التاسعة؟",
           answer: "بيتهوفن",
           points: 400,
@@ -496,7 +496,7 @@ export default function InGame() {
             description: "أسئلة متنوعة حول الفنون",
             image: "seen-jeem.png",
           },
-          file: null,
+          file: "seen-jeem.png",
           question: "ما هو نوع الفن الذي يسمى بالتصوير الفوتوغرافي؟",
           answer: "التصوير",
           points: 400,
@@ -509,7 +509,7 @@ export default function InGame() {
             description: "أسئلة متنوعة حول الفنون",
             image: "seen-jeem.png",
           },
-          file: null,
+          file: "seen-jeem.png",
           question: "من هو مؤلف مسرحية هاملت؟",
           answer: "شكسبير",
           points: 600,
@@ -522,7 +522,7 @@ export default function InGame() {
             description: "أسئلة متنوعة حول الفنون",
             image: "seen-jeem.png",
           },
-          file: null,
+          file: "seen-jeem.png",
           question: "ما هو نوع الفن الذي يسمى بالنحت؟",
           answer: "النحت",
           points: 600,
@@ -590,7 +590,7 @@ export default function InGame() {
         </div>
       </div>
       <div className="min-h-screen bg-gray-100 py-8">
-        <div className="container mx-auto px-4">
+        <div className="mx-auto px-4">
           {/* Main Game Grid - 6 Question Cards */}
           {step === "list" && (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -648,13 +648,14 @@ export default function InGame() {
                       </h1>
                     )}
                     {selectedQuestion.file && (
-                      <Image
-                        src={selectedQuestion.file}
-                        alt="Question Image"
-                        width={450}
-                        height={450}
-                        className="object-cover"
-                      />
+                      <div className="w-full h-180 relative">
+                        <Image
+                          src={`/${selectedQuestion.file}`}
+                          alt="Question Image"
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
                     )}
                   </div>
                 </div>
@@ -678,10 +679,24 @@ export default function InGame() {
                         </h2>
 
                         <div className="flex gap-4">
-                          <span className="text-black font-bold text-md border border-gray-300 rounded-xl px-4 py-2 hover:bg-gray-300 transition-all duration-200 cursor-pointer">
+                          <span
+                            onClick={() => {
+                              setShowAnswer(false);
+                              setSelectedQuestion(null);
+                              setStep("list");
+                            }}
+                            className="text-black font-bold text-md border border-gray-300 rounded-xl px-4 py-2 hover:bg-gray-300 transition-all duration-200 cursor-pointer"
+                          >
                             فريق باكستاان
                           </span>
-                          <span className="text-black font-bold text-md border border-gray-300 rounded-xl px-4 py-2 hover:bg-gray-300 transition-all duration-200 cursor-pointer">
+                          <span
+                            onClick={() => {
+                              setShowAnswer(false);
+                              setSelectedQuestion(null);
+                              setStep("list");
+                            }}
+                            className="text-black font-bold text-md border border-gray-300 rounded-xl px-4 py-2 hover:bg-gray-300 transition-all duration-200 cursor-pointer"
+                          >
                             فريق الأمل
                           </span>
                         </div>

@@ -3,6 +3,7 @@
 import { connectToDatabase } from "@/lib/mongo";
 import { uploadFileToS3 } from "@/lib/s3-utils";
 import Question from "@/models/Question";
+import { revalidatePath } from "next/cache";
 
 export const getQuestions = async () => {
   try {
@@ -94,6 +95,8 @@ export async function createQuestion(formData: FormData) {
     const populatedQuestion = await Question.findById(newQuestion._id).populate(
       "category"
     );
+
+    revalidatePath("/admin/questions");
 
     return {
       success: true,
@@ -197,6 +200,8 @@ export async function updateQuestion(id: string, formData: FormData) {
       { new: true }
     ).populate("category");
 
+    revalidatePath("/admin/questions");
+
     return {
       success: true,
       message: "تم تحديث السؤال بنجاح",
@@ -216,9 +221,10 @@ export const deleteQuestion = async (id: string) => {
   try {
     await connectToDatabase();
     await Question.findByIdAndDelete(id);
-    return { success: true, message: "تم حذف السؤال بنجاح" };
+    revalidatePath("/admin/questions");
+    return { success: true, message: "تم حذف السؤال بنجاح", data: null };
   } catch (error) {
     console.error(error);
-    return { success: false, message: "فشل حذف السؤال" };
+    return { success: false, message: "فشل حذف السؤال", data: null };
   }
 };

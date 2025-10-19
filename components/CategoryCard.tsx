@@ -24,7 +24,7 @@ export default function CategoryCard({
   return (
     <div
       className={cn(
-        "relative w-full max-w-[200px] mx-auto cursor-pointer transition-all duration-200 hover:scale-105",
+        "relative w-full mx-auto cursor-pointer transition-all duration-200 hover:scale-105",
         className
       )}
       onClick={onClick}

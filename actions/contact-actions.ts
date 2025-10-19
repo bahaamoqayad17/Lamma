@@ -2,12 +2,15 @@
 
 import { connectToDatabase } from "@/lib/mongo";
 import Contact from "@/models/Contact";
+import { revalidatePath } from "next/cache";
 
 export const createContact = async (data: any) => {
   try {
     await connectToDatabase();
 
     await Contact.create(data);
+
+    revalidatePath("/admin/contacts");
 
     return { success: true, message: "Contact created successfully" };
   } catch (error) {
