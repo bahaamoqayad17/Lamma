@@ -129,7 +129,9 @@ export default function CategoriesClient({ data }: { data: CategoryType[] }) {
     }),
     columnHelper.accessor("category", {
       cell: (info) => {
-        return <p className="text-gray-700">{info.getValue() || "لا يوجد"}</p>;
+        return (
+          <p className="text-gray-700">{info.getValue()?.name || "لا يوجد"}</p>
+        );
       },
       header: "الفئة الرئيسية",
     }),

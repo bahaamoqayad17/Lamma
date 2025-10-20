@@ -46,11 +46,17 @@ export default function QuestionFormModal({
     question: "",
     answer: "",
     points: 0,
-    file: "",
+    file_question: "",
+    file_answer: "",
     categoryId: "",
   });
 
-  const [questionFile, setQuestionFile] = useState<File | null>(null);
+  const [questionFileQuestion, setQuestionFileQuestion] = useState<File | null>(
+    null
+  );
+  const [questionFileAnswer, setQuestionFileAnswer] = useState<File | null>(
+    null
+  );
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -61,7 +67,8 @@ export default function QuestionFormModal({
         question: editingQuestion.question || "",
         answer: editingQuestion.answer || "",
         points: editingQuestion.points || 0,
-        file: editingQuestion.file || "",
+        file_question: editingQuestion.file_question || "",
+        file_answer: editingQuestion.file_answer || "",
         categoryId: editingQuestion.category
           ? String(editingQuestion.category)
           : "",
@@ -71,11 +78,13 @@ export default function QuestionFormModal({
         question: "",
         answer: "",
         points: 0,
-        file: "",
+        file_question: "",
+        file_answer: "",
         categoryId: "",
       });
     }
-    setQuestionFile(null);
+    setQuestionFileQuestion(null);
+    setQuestionFileAnswer(null);
     setErrors({});
   }, [editingQuestion, isOpen]);
 
@@ -93,8 +102,12 @@ export default function QuestionFormModal({
     }
   };
 
-  const handleFileChange = (file: File | null) => {
-    setQuestionFile(file);
+  const handleQuestionFileChange = (file: File | null) => {
+    setQuestionFileQuestion(file);
+  };
+
+  const handleAnswerFileChange = (file: File | null) => {
+    setQuestionFileAnswer(file);
   };
 
   const validateForm = () => {
@@ -118,12 +131,14 @@ export default function QuestionFormModal({
       formDataToSubmit.append("question", formData.question);
       formDataToSubmit.append("answer", formData.answer);
       formDataToSubmit.append("points", formData.points.toString());
-      formDataToSubmit.append("file", formData.file);
       formDataToSubmit.append("categoryId", formData.categoryId);
 
-      // Add image file
-      if (questionFile) {
-        formDataToSubmit.append("questionFile", questionFile);
+      // Add files
+      if (questionFileQuestion) {
+        formDataToSubmit.append("file_question", questionFileQuestion);
+      }
+      if (questionFileAnswer) {
+        formDataToSubmit.append("file_answer", questionFileAnswer);
       }
 
       const response = await onSubmit(formDataToSubmit);
@@ -141,10 +156,12 @@ export default function QuestionFormModal({
       question: "",
       answer: "",
       points: 0,
-      file: "",
+      file_question: "",
+      file_answer: "",
       categoryId: "",
     });
-    setQuestionFile(null);
+    setQuestionFileQuestion(null);
+    setQuestionFileAnswer(null);
     setErrors({});
     onClose();
   };
@@ -183,7 +200,7 @@ export default function QuestionFormModal({
               </FieldWrap>
             </div>
 
-            {/* Description */}
+            {/* Answer */}
             <div className="md:col-span-2">
               <Label>إجابة السؤال</Label>
               <FieldWrap>
@@ -193,6 +210,22 @@ export default function QuestionFormModal({
                   placeholder="أدخل إجابة السؤال"
                   className="w-full px-3 py-2 border rounded-md resize-none border-gray-300"
                   rows={3}
+                />
+              </FieldWrap>
+            </div>
+
+            {/* Points */}
+            <div className="md:col-span-2">
+              <Label>النقاط</Label>
+              <FieldWrap>
+                <Input
+                  type="number"
+                  value={Number.isFinite(formData.points) ? formData.points : 0}
+                  onChange={(e) =>
+                    handleInputChange("points", Number(e.target.value || 0))
+                  }
+                  placeholder="أدخل عدد النقاط"
+                  min={0}
                 />
               </FieldWrap>
             </div>
@@ -228,22 +261,43 @@ export default function QuestionFormModal({
               </FieldWrap>
             </div>
 
-            {/* Category Image Upload */}
+            {/* Question File Upload */}
             <div className="md:col-span-2">
-              <Label>ملف للسؤال (إن وجد)</Label>
+              <Label>ملف السؤال (إن وجد)</Label>
               <FieldWrap>
                 <Input
                   type="file"
                   accept="*/*"
                   onChange={(e) => {
                     const file = e.target.files?.[0] || null;
-                    handleFileChange(file);
+                    handleQuestionFileChange(file);
                   }}
                   className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                 />
-                {questionFile && (
+                {questionFileQuestion && (
                   <p className="text-sm text-gray-600 mt-1">
-                    الملف المحدد: {questionFile.name}
+                    الملف المحدد: {questionFileQuestion.name}
+                  </p>
+                )}
+              </FieldWrap>
+            </div>
+
+            {/* Answer File Upload */}
+            <div className="md:col-span-2">
+              <Label>ملف الإجابة (إن وجد)</Label>
+              <FieldWrap>
+                <Input
+                  type="file"
+                  accept="*/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0] || null;
+                    handleAnswerFileChange(file);
+                  }}
+                  className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                />
+                {questionFileAnswer && (
+                  <p className="text-sm text-gray-600 mt-1">
+                    الملف المحدد: {questionFileAnswer.name}
                   </p>
                 )}
               </FieldWrap>

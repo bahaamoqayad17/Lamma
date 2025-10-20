@@ -16,7 +16,7 @@ export default function InGame() {
       _id: "64f8a1b9c2e8a1f23d9a0001",
       name: "فئة الرياضة",
       description: "أسئلة متنوعة حول الرياضة",
-      image: "seen-jeem.png",
+      image: "category.png",
       questions: [
         {
           _id: "64f8a1b9c2e8a1f23d9a1001",

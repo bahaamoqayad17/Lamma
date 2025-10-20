@@ -15,12 +15,13 @@ const politicsCategories = [
   { id: 2, title: "test2", image: "/seen-jeem.png" },
   { id: 3, title: "test3", image: "/seen-jeem.png" },
   { id: 4, title: "test4", image: "/seen-jeem.png" },
+  { id: 12, title: "test12", image: "/seen-jeem.png" },
   { id: 5, title: "test5", image: "/seen-jeem.png" },
   { id: 6, title: "test6", image: "/seen-jeem.png" },
   { id: 7, title: "test7", image: "/seen-jeem.png" },
   { id: 8, title: "test8", image: "/seen-jeem.png" },
   { id: 9, title: "test9", image: "/seen-jeem.png" },
-  { id: 10, title: "test10", image: "/seen-jeem.png" },
+  { id: 11, title: "test11", image: "/seen-jeem.png" },
 ];
 
 const seriesCategories = [
@@ -29,6 +30,7 @@ const seriesCategories = [
   { id: 13, title: "test13", image: "/seen-jeem.png" },
   { id: 14, title: "test14", image: "/seen-jeem.png" },
   { id: 15, title: "test15", image: "/seen-jeem.png" },
+  { id: 16, title: "test16", image: "/seen-jeem.png" },
 ];
 
 export default function Start() {
@@ -100,7 +102,7 @@ export default function Start() {
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 px-4 py-8 md:px-10">
+      <div className="relative z-10 px-4 py-8 md:px-10 mx-60">
         {/* Page Title Section */}
         <div className="text-center mb-12">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
@@ -117,7 +119,7 @@ export default function Start() {
           <h2 className="text-2xl md:text-5xl font-bold text-gray-800 text-center mb-8">
             سياسة
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mx-auto">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8 mx-auto">
             {politicsCategories.map((category) => (
               <CategoryCard
                 key={category.id}
@@ -137,7 +139,7 @@ export default function Start() {
           <h2 className="text-2xl md:text-5xl font-bold text-gray-800 text-center mb-8">
             المسلسلات
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mx-auto">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8 mx-auto">
             {seriesCategories.map((category) => (
               <CategoryCard
                 key={category.id}
@@ -338,7 +340,7 @@ export default function Start() {
           {/* Scrollable categories */}
           <div className="space-y-3 overflow-y-auto overflow-x-hidden flex-1 p-2 bg-white flex rounded-lg md:block md:bg-transparent">
             {getSelectedCategoryData().map((category) => (
-              <div key={category?.id} className="relative w-fit md:w-[200px]">
+              <div key={category?.id} className="relative w-fit md:w-[150px]">
                 <CategoryCard
                   image={category?.image || ""}
                   title={category?.title || ""}

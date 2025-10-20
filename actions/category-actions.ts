@@ -8,7 +8,10 @@ import { revalidatePath } from "next/cache";
 export const getCategories = async () => {
   try {
     await connectToDatabase();
-    const categories = await Category.find().sort({ createdAt: -1 }).lean();
+    const categories = await Category.find()
+      .sort({ createdAt: -1 })
+      .populate("category")
+      .lean();
     return {
       success: true,
       message: "تم تحميل الفئات بنجاح",

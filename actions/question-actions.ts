@@ -8,7 +8,10 @@ import { revalidatePath } from "next/cache";
 export const getQuestions = async () => {
   try {
     await connectToDatabase();
-    const questions = await Question.find().sort({ createdAt: -1 }).lean();
+    const questions = await Question.find()
+      .sort({ createdAt: -1 })
+      .populate("category")
+      .lean();
     return {
       success: true,
       message: "تم تحميل الأسئلة بنجاح",
@@ -30,8 +33,9 @@ export async function createQuestion(formData: FormData) {
     const answer = formData.get("answer") as string;
     const points = formData.get("points") as string;
 
-    // Get image file
-    const questionFile = formData.get("questionFile") as File;
+    // Get files
+    const fileQuestion = formData.get("file_question") as File;
+    const fileAnswer = formData.get("file_answer") as File;
 
     // Validate required fields
     if (!question?.trim()) {
@@ -54,14 +58,15 @@ export async function createQuestion(formData: FormData) {
       };
     }
 
-    // Upload image to S3
-    let questionFileUrl = "";
+    // Upload files to S3
+    let fileQuestionUrl = "";
+    let fileAnswerUrl = "";
 
-    if (questionFile && questionFile.size > 0) {
+    if (fileQuestion && (fileQuestion as any).size > 0) {
       try {
-        const arrayBuffer = await questionFile.arrayBuffer();
+        const arrayBuffer = await (fileQuestion as any).arrayBuffer();
         const buffer = Buffer.from(arrayBuffer);
-        const sanitizedFileName = questionFile.name.replace(
+        const sanitizedFileName = (fileQuestion as any).name.replace(
           /[^a-zA-Z0-9.-]/g,
           "_"
         );
@@ -69,15 +74,41 @@ export async function createQuestion(formData: FormData) {
         const uploadResult = await uploadFileToS3(
           buffer,
           sanitizedFileName,
-          questionFile.type,
+          (fileQuestion as any).type,
           "questions/"
         );
-        questionFileUrl = uploadResult.publicUrl;
+        fileQuestionUrl = uploadResult.publicUrl;
       } catch (error) {
-        console.error("Error uploading question image:", error);
+        console.error("Error uploading question file:", error);
         return {
           success: false,
-          message: "حدث خطأ أثناء رفع صورة السؤال",
+          message: "حدث خطأ أثناء رفع ملف السؤال",
+          data: null,
+        };
+      }
+    }
+
+    if (fileAnswer && (fileAnswer as any).size > 0) {
+      try {
+        const arrayBuffer = await (fileAnswer as any).arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+        const sanitizedFileName = (fileAnswer as any).name.replace(
+          /[^a-zA-Z0-9.-]/g,
+          "_"
+        );
+
+        const uploadResult = await uploadFileToS3(
+          buffer,
+          sanitizedFileName,
+          (fileAnswer as any).type,
+          "answers/"
+        );
+        fileAnswerUrl = uploadResult.publicUrl;
+      } catch (error) {
+        console.error("Error uploading answer file:", error);
+        return {
+          success: false,
+          message: "حدث خطأ أثناء رفع ملف الإجابة",
           data: null,
         };
       }
@@ -87,8 +118,9 @@ export async function createQuestion(formData: FormData) {
     const newQuestion = await Question.create({
       question: question.trim(),
       answer: answer.trim(),
-      points: points.trim(),
-      file: questionFileUrl,
+      points: Number(points) || 0,
+      file_question: fileQuestionUrl,
+      file_answer: fileAnswerUrl,
       category: categoryId || null,
     });
 
@@ -123,8 +155,9 @@ export async function updateQuestion(id: string, formData: FormData) {
     const answer = formData.get("answer") as string;
     const points = formData.get("points") as string;
 
-    // Get image file
-    const questionFile = formData.get("questionFile") as File;
+    // Get files
+    const fileQuestion = formData.get("file_question") as File;
+    const fileAnswer = formData.get("file_answer") as File;
 
     // Validate required fields
     if (!question?.trim()) {
@@ -158,14 +191,15 @@ export async function updateQuestion(id: string, formData: FormData) {
       };
     }
 
-    // Upload new file to S3 if provided
-    let questionFileUrl = currentQuestion.file;
+    // Upload new files to S3 if provided
+    let fileQuestionUrl = currentQuestion.file_question || "";
+    let fileAnswerUrl = currentQuestion.file_answer || "";
 
-    if (questionFile && questionFile.size > 0) {
+    if (fileQuestion && (fileQuestion as any).size > 0) {
       try {
-        const arrayBuffer = await questionFile.arrayBuffer();
+        const arrayBuffer = await (fileQuestion as any).arrayBuffer();
         const buffer = Buffer.from(arrayBuffer);
-        const sanitizedFileName = questionFile.name.replace(
+        const sanitizedFileName = (fileQuestion as any).name.replace(
           /[^a-zA-Z0-9.-]/g,
           "_"
         );
@@ -173,15 +207,41 @@ export async function updateQuestion(id: string, formData: FormData) {
         const uploadResult = await uploadFileToS3(
           buffer,
           sanitizedFileName,
-          questionFile.type,
+          (fileQuestion as any).type,
           "questions/"
         );
-        questionFileUrl = uploadResult.publicUrl;
+        fileQuestionUrl = uploadResult.publicUrl;
       } catch (error) {
         console.error("Error uploading question file:", error);
         return {
           success: false,
           message: "حدث خطأ أثناء رفع ملف السؤال",
+          data: null,
+        };
+      }
+    }
+
+    if (fileAnswer && (fileAnswer as any).size > 0) {
+      try {
+        const arrayBuffer = await (fileAnswer as any).arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+        const sanitizedFileName = (fileAnswer as any).name.replace(
+          /[^a-zA-Z0-9.-]/g,
+          "_"
+        );
+
+        const uploadResult = await uploadFileToS3(
+          buffer,
+          sanitizedFileName,
+          (fileAnswer as any).type,
+          "answers/"
+        );
+        fileAnswerUrl = uploadResult.publicUrl;
+      } catch (error) {
+        console.error("Error uploading answer file:", error);
+        return {
+          success: false,
+          message: "حدث خطأ أثناء رفع ملف الإجابة",
           data: null,
         };
       }
@@ -193,8 +253,9 @@ export async function updateQuestion(id: string, formData: FormData) {
       {
         question: question.trim(),
         answer: answer?.trim() || "",
-        points: points?.trim() || "",
-        file: questionFileUrl,
+        points: Number(points) || 0,
+        file_question: fileQuestionUrl,
+        file_answer: fileAnswerUrl,
         category: categoryId || null,
       },
       { new: true }

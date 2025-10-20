@@ -3,7 +3,8 @@ import mongoose, { InferSchemaType } from "mongoose";
 const questionSchema = new mongoose.Schema(
   {
     category: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
-    file: { type: String },
+    file_question: { type: String },
+    file_answer: { type: String },
     question: { type: String },
     answer: { type: String },
     points: { type: Number },
@@ -16,7 +17,8 @@ export type QuestionType = Omit<InferSchemaType<typeof questionSchema>, ""> & {
   category: mongoose.Types.ObjectId | string;
   question: string;
   answer: string;
-  file: string;
+  file_answer: string;
+  file_question: string;
   points: number;
 };
 
