@@ -126,7 +126,7 @@ export default function QuestionsClient({
       ),
       header: "الوصف",
     }),
-    columnHelper.accessor("file", {
+    columnHelper.accessor("file_question", {
       cell: (info) => (
         <span className="text-gray-700">
           {info.getValue()?.name ? (
@@ -145,6 +145,25 @@ export default function QuestionsClient({
       ),
       header: "ملف السؤال",
     }),
+    columnHelper.accessor("file_answer", {
+      cell: (info) => (
+        <span className="text-gray-700">
+          {info.getValue()?.name ? (
+            <>
+              <Image
+                src={info.getValue() || ""}
+                alt="image"
+                width={100}
+                height={100}
+              />
+            </>
+          ) : (
+            "لا يوجد"
+          )}
+        </span>
+      ),
+      header: "ملف الإجابة",
+    }),
     columnHelper.accessor("category", {
       cell: (info) => {
         return (
@@ -152,6 +171,12 @@ export default function QuestionsClient({
         );
       },
       header: "الفئة",
+    }),
+    columnHelper.accessor("points", {
+      cell: (info) => {
+        return <p className="text-gray-700">{info.getValue() || 0}</p>;
+      },
+      header: "النقاط",
     }),
     columnHelper.accessor("createdAt", {
       cell: (info) => {
