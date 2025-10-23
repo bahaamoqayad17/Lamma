@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
   const { email, password, rememberMe } = await request.json();
   await connectToDatabase();
 
-  const user = await User.findOne({ email }).lean();
+  const user = await User.findOne({ email });
 
   if (!user) {
     return NextResponse.json({

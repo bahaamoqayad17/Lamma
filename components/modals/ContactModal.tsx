@@ -155,7 +155,6 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                   >
                     الاسم الكامل
                   </Label>
-                  <span className="text-yellow-400 text-lg">☆</span>
                 </div>
                 <Input
                   id="name"
@@ -183,7 +182,6 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                   >
                     الموضوع
                   </Label>
-                  <span className="text-yellow-400 text-lg">☆</span>
                 </div>
                 <Input
                   id="subject"
@@ -211,7 +209,6 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                   >
                     البريد الإلكتروني
                   </Label>
-                  <span className="text-yellow-400 text-lg">☆</span>
                 </div>
                 <Input
                   id="email"
@@ -239,7 +236,6 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                   >
                     الرسالة
                   </Label>
-                  <span className="text-yellow-400 text-lg">☆</span>
                 </div>
                 <textarea
                   id="message"

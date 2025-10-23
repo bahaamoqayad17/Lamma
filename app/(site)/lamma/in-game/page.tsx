@@ -6,6 +6,7 @@ import QuestionCard from "@/components/QuestionCard";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { LogOut, SkipForward, Timer } from "lucide-react";
+import ResetTimer from "@/icons/ResetTimer";
 export default function InGame() {
   const [step, setStep] = useState<"list" | "question">("list");
   const [selectedQuestion, setSelectedQuestion] = useState<any>(null);
@@ -606,9 +607,14 @@ export default function InGame() {
             </div>
           )}
           {step === "question" && selectedQuestion && (
-            <div className="w-full mx-auto mb-8">
+            <div className="mx-20 mb-8 ">
               {/* Question Display Container */}
-              <div className="rounded-xl overflow-hidden shadow-lg">
+              <div
+                className="rounded-xl border border-[#FCCB97]"
+                style={{
+                  boxShadow: "10px 10px 20px 0px #FCCB9733",
+                }}
+              >
                 {/* Top Header Bar */}
                 <div className="px-6 py-4 flex items-center justify-between">
                   {/* Right - Points */}
@@ -618,11 +624,13 @@ export default function InGame() {
 
                   {/* Center - Timer */}
                   <div className="border border-[#6A0DAD] rounded-full px-4 py-2 flex items-center space-x-2">
-                    <span className="text-black">
-                      <Timer color="#6A0DAD" />
-                    </span>
+                    <ResetTimer />
+
                     <span className="text-black font-medium text-sm">
                       00:00:00
+                    </span>
+                    <span className="text-black">
+                      <Timer color="#6A0DAD" />
                     </span>
                   </div>
                   {/* Left - Category Button */}
@@ -665,7 +673,7 @@ export default function InGame() {
                   {!showAnswer ? (
                     <div className="flex">
                       <button
-                        className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 cursor-pointer"
+                        className="text-purple-600 hover:text-white hover:bg-purple-700 px-6 py-3 rounded-lg font-medium transition-colors duration-200 cursor-pointer"
                         onClick={() => setShowAnswer(true)}
                       >
                         عرض الاجابة
@@ -673,32 +681,42 @@ export default function InGame() {
                     </div>
                   ) : (
                     <>
-                      <div className="flex justify-center items-center flex-col gap-4">
-                        <h2 className="text-black font-bold text-lg">
-                          أي الفريقين أجاب بشكل صحيح
-                        </h2>
+                      <div className="flex w-[58%] justify-between items-center gap-4">
+                        <div className="flex">
+                          <button
+                            className="text-[#FF6F00] hover:text-white hover:bg-[#FF6F00] px-6 py-3 rounded-lg font-medium transition-colors duration-200 cursor-pointer"
+                            onClick={() => setShowAnswer(true)}
+                          >
+                            تصحيح الإجابة
+                          </button>
+                        </div>
+                        <div className="flex justify-center items-center flex-col gap-4">
+                          <h2 className="text-black font-bold text-lg">
+                            أي الفريقين أجاب بشكل صحيح
+                          </h2>
 
-                        <div className="flex gap-4">
-                          <span
-                            onClick={() => {
-                              setShowAnswer(false);
-                              setSelectedQuestion(null);
-                              setStep("list");
-                            }}
-                            className="text-black font-bold text-md border border-gray-300 rounded-xl px-4 py-2 hover:bg-gray-300 transition-all duration-200 cursor-pointer"
-                          >
-                            فريق باكستاان
-                          </span>
-                          <span
-                            onClick={() => {
-                              setShowAnswer(false);
-                              setSelectedQuestion(null);
-                              setStep("list");
-                            }}
-                            className="text-black font-bold text-md border border-gray-300 rounded-xl px-4 py-2 hover:bg-gray-300 transition-all duration-200 cursor-pointer"
-                          >
-                            فريق الأمل
-                          </span>
+                          <div className="flex gap-4">
+                            <span
+                              onClick={() => {
+                                setShowAnswer(false);
+                                setSelectedQuestion(null);
+                                setStep("list");
+                              }}
+                              className="text-black font-bold text-md border border-gray-300 rounded-xl px-4 py-2 hover:bg-gray-300 transition-all duration-200 cursor-pointer"
+                            >
+                              فريق باكستاان
+                            </span>
+                            <span
+                              onClick={() => {
+                                setShowAnswer(false);
+                                setSelectedQuestion(null);
+                                setStep("list");
+                              }}
+                              className="text-black font-bold text-md border border-gray-300 rounded-xl px-4 py-2 hover:bg-gray-300 transition-all duration-200 cursor-pointer"
+                            >
+                              فريق الأمل
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </>

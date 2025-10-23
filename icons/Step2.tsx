@@ -22,7 +22,7 @@ export default function Step2() {
         stroke="#FCBB00"
         strokeWidth="2"
         strokeMiterlimit="10"
-        stroke-linecap="round"
+        strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
@@ -55,7 +55,7 @@ export default function Step2() {
         strokeWidth="2"
         strokeMiterlimit="10"
         strokeLinecap="round"
-        stroke-linejoin="round"
+        strokeLinejoin="round"
       />
       <path
         d="M11.75 27.5H19.25C25.5 27.5 28 25 28 18.75V16.25C28 10 25.5 7.5 19.25 7.5H11.75C5.5 7.5 3 10 3 16.25V18.75C3 25 5.5 27.5 11.75 27.5Z"

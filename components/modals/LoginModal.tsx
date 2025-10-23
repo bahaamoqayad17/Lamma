@@ -23,7 +23,7 @@ export default function LoginModal({
     email: "",
     password: "",
     confirmPassword: "",
-    username: "",
+    name: "",
     rememberMe: false,
   });
   const [showPassword, setShowPassword] = useState(false);
@@ -64,7 +64,7 @@ export default function LoginModal({
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            username: formData.username,
+            name: formData.name,
             email: formData.email,
             password: formData.password,
           }),
@@ -80,7 +80,7 @@ export default function LoginModal({
         } else {
           // Handle registration errors
           if (data.error === "alreadyTaken") {
-            setError("البريد الإلكتروني أو اسم المستخدم مستخدم بالفعل");
+            setError("البريد الإلكتروني أو الاسم مستخدم بالفعل");
           } else if (
             data.error === "Password must be at least 6 characters long"
           ) {
@@ -138,7 +138,7 @@ export default function LoginModal({
       email: "",
       password: "",
       confirmPassword: "",
-      username: "",
+      name: "",
       rememberMe: false,
     });
     setShowPassword(false);
@@ -219,20 +219,20 @@ export default function LoginModal({
               )}
               {currentMode === "register" && (
                 <>
-                  {/* Username Field */}
+                  {/* Name Field */}
                   <div className="space-y-2">
                     <Label
-                      htmlFor="username"
+                      htmlFor="name"
                       className="text-white text-sm font-medium"
                     >
-                      اسم المستخدم
+                      الاسم
                     </Label>
                     <Input
-                      id="username"
-                      name="username"
+                      id="name"
+                      name="name"
                       type="text"
-                      placeholder="اسم المستخدم"
-                      value={formData.username}
+                      placeholder="الاسم"
+                      value={formData.name}
                       onChange={handleInputChange}
                       className="bg-gray-800/50 border-yellow-400/50 text-white placeholder-gray-400 rounded-lg"
                       required

@@ -8,10 +8,10 @@ import User from "@/models/User";
 import { sendWelcomeEmail } from "@/lib/email";
 export async function POST(request: NextRequest) {
   try {
-    const { email, password, username } = await request.json();
+    const { email, password, name } = await request.json();
 
     // Basic validation
-    if (!username || !email || !password) {
+    if (!name || !email || !password) {
       return NextResponse.json(
         { status: false, error: "All required fields must be filled" },
         { status: 400 }
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
 
     // Check if user exists
     const existingUser = await User.findOne({
-      $or: [{ email }, { username }],
+      $or: [{ email }],
     });
 
     if (existingUser) {
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
         {
           status: false,
           error: "alreadyTaken",
-          field: email || username,
+          field: email || name,
         },
         { status: 409 }
       );
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
 
     // Create user (do NOT persist passwordConfirm)
     const newUser = await User.create({
-      username,
+      name,
       email,
       password: hashedPassword,
       isActive: true, // ensure default
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
       user: {
         id: newUser._id.toString(),
         email: newUser!.email,
-        username: newUser!.username,
+        name: newUser!.name,
         role: newUser!.role,
       },
     };
@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
     );
 
     // Send welcome email
-    await sendWelcomeEmail(newUser.email, newUser.username);
+    await sendWelcomeEmail(newUser.email, newUser.name);
 
     return NextResponse.json(
       {
@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
         user: {
           id: newUser._id,
           email: newUser!.email,
-          username: newUser!.username,
+          name: newUser!.name,
           role: newUser!.role,
           isActive: newUser!.isActive,
         },

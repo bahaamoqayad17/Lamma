@@ -9,12 +9,6 @@ const userSchema = new mongoose.Schema(
       trim: true,
       maxlength: 100,
     },
-    username: {
-      type: String,
-      required: true,
-      unique: true,
-      trim: true,
-    },
     email: {
       type: String,
       required: true,
@@ -30,6 +24,14 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       minLength: 6,
+    },
+    mafiaBalance: {
+      type: Number,
+      default: 0,
+    },
+    lammaBalance: {
+      type: Number,
+      default: 0,
     },
     isActive: {
       type: Boolean,
@@ -61,10 +63,11 @@ userSchema.set("toJSON", {
   },
 });
 
-export type UserType = Omit<InferSchemaType<typeof userSchema>, "role"> & {
+export type UserType = Omit<InferSchemaType<typeof userSchema>, ""> & {
   _id: mongoose.Types.ObjectId | string;
   name: string;
-  username: string;
+  mafiaBalance: number;
+  lammaBalance: number;
   email: string;
   password?: string; // Optional because it gets deleted in toJSON
   mobile_number: string;
