@@ -590,7 +590,7 @@ export default function InGame() {
           </Link>
         </div>
       </div>
-      <div className="min-h-screen bg-gray-100 py-8">
+      <div className="min-h-screen bg-[#E6E6E6] py-8">
         <div className="mx-auto px-4">
           {/* Main Game Grid - 6 Question Cards */}
           {step === "list" && (
@@ -607,10 +607,10 @@ export default function InGame() {
             </div>
           )}
           {step === "question" && selectedQuestion && (
-            <div className="mx-20 mb-8 ">
+            <div className="mx-20 mb-8">
               {/* Question Display Container */}
               <div
-                className="rounded-xl border border-[#FCCB97]"
+                className="rounded-xl bg-white border border-[#FCCB97]"
                 style={{
                   boxShadow: "10px 10px 20px 0px #FCCB9733",
                 }}

@@ -4,6 +4,8 @@ import "./globals.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+export const force = "force-dynamic";
+
 const cairo = localFont({
   src: [
     {

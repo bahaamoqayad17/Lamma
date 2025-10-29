@@ -3,7 +3,6 @@
 import { connectToDatabase } from "@/lib/mongo";
 import { uploadFileToS3 } from "@/lib/s3-utils";
 import Category from "@/models/Category";
-import { revalidatePath } from "next/cache";
 
 export const getCategories = async () => {
   try {
@@ -92,8 +91,6 @@ export async function createCategory(formData: FormData) {
       image: categoryImageUrl,
       category: categoryId || null,
     });
-
-    revalidatePath("/admin/categories");
 
     return {
       success: true,
@@ -197,8 +194,6 @@ export async function updateCategory(id: string, formData: FormData) {
       .populate("category")
       .lean();
 
-    revalidatePath("/admin/categories");
-
     return {
       success: true,
       message: "تم تحديث التصنيف بنجاح",
@@ -218,7 +213,7 @@ export const deleteCategory = async (id: string) => {
   try {
     await connectToDatabase();
     await Category.findByIdAndDelete(id);
-    revalidatePath("/admin/categories");
+
     return { success: true, message: "تم حذف الفئة بنجاح", data: null };
   } catch (error) {
     console.error(error);
