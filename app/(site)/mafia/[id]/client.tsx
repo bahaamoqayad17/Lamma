@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send, LogOut } from "lucide-react";
 
-export default function InGame() {
+export default function InGame({ data }: { data: MafiaSessionType }) {
   const [activeTab, setActiveTab] = useState("killers");
   const [message, setMessage] = useState("");
 

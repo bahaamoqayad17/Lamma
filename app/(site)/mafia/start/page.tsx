@@ -7,15 +7,22 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, Copy, LogOut } from "lucide-react";
+import { ArrowLeft, Copy, LogOut, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { v4 as uuidv4 } from "uuid";
+import { startGame } from "@/actions/mafia-actions";
+import { toast } from "react-toastify";
 
 export default function Start() {
   const router = useRouter();
   const [gameName, setGameName] = useState("");
   const [playerCount, setPlayerCount] = useState("");
-  const [gameUrl] = useState("https://www.behance.net/shahedhamami");
+  const [gameId] = useState(uuidv4());
+  const [gameUrl] = useState(
+    `${process.env.NEXT_PUBLIC_APP_URL}/mafia/${gameId}`
+  );
   const [isCopied, setIsCopied] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleCopyUrl = async () => {
     try {
@@ -25,6 +32,22 @@ export default function Start() {
     } catch (err) {
       console.error("Failed to copy URL: ", err);
     }
+  };
+
+  const handleStartGame = async () => {
+    setIsLoading(true);
+    const { success, message, data } = await startGame(
+      gameName,
+      Number(playerCount),
+      gameId
+    );
+    if (success) {
+      toast.success("لعبة مباشرة قيد التحميل...");
+      router.push(`/mafia/${gameId}`);
+    } else {
+      toast.error("فشل بدء اللعبة");
+    }
+    setIsLoading(false);
   };
 
   return (
@@ -151,10 +174,15 @@ export default function Start() {
             <Button
               size="lg"
               className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold px-8 py-4 text-lg transition-all duration-200 flex items-center gap-3 mx-auto"
-              onClick={() => router.push("/mafia/in-game")}
+              onClick={handleStartGame}
+              disabled={isLoading}
             >
-              ابدأ المباراة
-              <ArrowLeft />
+              {isLoading ? "جاري بدء اللعبة..." : "ابدأ المباراة"}
+              {isLoading ? (
+                <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+              ) : (
+                <ArrowLeft />
+              )}
             </Button>
           </CardContent>
         </Card>

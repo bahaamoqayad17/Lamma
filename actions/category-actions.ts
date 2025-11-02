@@ -220,3 +220,34 @@ export const deleteCategory = async (id: string) => {
     return { success: false, message: "فشل حذف الفئة", data: null };
   }
 };
+
+export const getCategoriesForLamma = async () => {
+  try {
+    await connectToDatabase();
+
+    const categories = await Category.aggregate([
+      {
+        $match: {
+          category: { $exists: false },
+        },
+      },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "_id",
+          foreignField: "category",
+          as: "subcategories",
+        },
+      },
+    ]);
+
+    return {
+      success: true,
+      message: "تم تحميل الفئات بنجاح",
+      data: categories,
+    };
+  } catch (error) {
+    console.error(error);
+    return { success: false, message: "فشل تحميل الفئات", data: null };
+  }
+};
