@@ -25,13 +25,13 @@ const mafiaSessionSchema = new mongoose.Schema(
     },
     phase: {
       type: String,
-      enum: ["day", "night", "voting"],
-      default: "day",
+      enum: ["waiting", "action", "voting", "results"],
+      default: "waiting",
     },
     status: {
       type: String,
-      enum: ["in_progress", "ended"],
-      default: "in_progress",
+      enum: ["created", "started", "ended"],
+      default: "created",
     },
     winner: {
       type: String,
@@ -40,8 +40,93 @@ const mafiaSessionSchema = new mongoose.Schema(
     },
     players: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        user: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+          required: true,
+        },
+        host: {
+          type: Boolean,
+          default: false,
+        },
+        role: {
+          type: String,
+          enum: ["mafia", "doctor", "detective", "citizen"],
+          default: "citizen",
+        },
+        isActive: {
+          type: Boolean,
+          default: true,
+        },
+        eliminatedAt: {
+          type: Date,
+          default: null,
+        },
+      },
+    ],
+    phaseEndTime: {
+      type: Date,
+      default: null,
+    },
+    currentPhaseActions: {
+      mafiaKill: {
+        actor: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+          default: null,
+        },
+        target: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+          default: null,
+        },
+      },
+      doctorHeal: {
+        actor: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+          default: null,
+        },
+        target: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+          default: null,
+        },
+      },
+      detectiveReveal: {
+        actor: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+          default: null,
+        },
+        target: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+          default: null,
+        },
+        revealedRole: { type: String, default: null },
+      },
+    },
+    votes: [
+      {
+        voter: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+          required: true,
+        },
+        target: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+          default: null, // null means skip/no vote
+        },
+        roundNumber: {
+          type: Number,
+          required: true,
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now,
+        },
       },
     ],
     actions: [

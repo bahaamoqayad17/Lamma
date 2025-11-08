@@ -10,7 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, Copy, LogOut, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
-import { startGame } from "@/actions/mafia-actions";
+import { createMafiaGame } from "@/actions/mafia-actions";
 import { toast } from "react-toastify";
 
 export default function Start() {
@@ -35,17 +35,34 @@ export default function Start() {
   };
 
   const handleStartGame = async () => {
+    // Client-side validation
+    if (!gameName.trim()) {
+      toast.error("الرجاء إدخال اسم اللعبة");
+      return;
+    }
+
+    const playerCountNum = Number(playerCount);
+    if (!playerCountNum || playerCountNum < 4) {
+      toast.error("الحد الأدنى للاعبين هو 4");
+      return;
+    }
+
+    if (playerCountNum > 20) {
+      toast.error("الحد الأقصى للاعبين هو 20");
+      return;
+    }
+
     setIsLoading(true);
-    const { success, message, data } = await startGame(
-      gameName,
-      Number(playerCount),
+    const { success, message, data } = await createMafiaGame(
+      gameName.trim(),
+      playerCountNum,
       gameId
     );
     if (success) {
-      toast.success("لعبة مباشرة قيد التحميل...");
+      toast.success("تم إنشاء اللعبة بنجاح!");
       router.push(`/mafia/${gameId}`);
     } else {
-      toast.error("فشل بدء اللعبة");
+      toast.error(message || "فشل إنشاء اللعبة");
     }
     setIsLoading(false);
   };

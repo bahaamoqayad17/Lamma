@@ -228,7 +228,7 @@ export const getCategoriesForLamma = async () => {
     const categories = await Category.aggregate([
       {
         $match: {
-          category: { $exists: false },
+          category: null,
         },
       },
       {

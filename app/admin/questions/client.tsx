@@ -45,7 +45,9 @@ export default function QuestionsClient({
         if (response.success) {
           setQuestions(
             questions.map((q) =>
-              q._id === editingQuestion._id ? response.data : q
+              q._id === editingQuestion._id
+                ? JSON.parse(JSON.stringify(response.data))
+                : q
             )
           );
           toast.success("تم تحديث السؤال بنجاح!");
@@ -56,7 +58,10 @@ export default function QuestionsClient({
         // Create new question
         response = await createQuestion(formData);
         if (response.success) {
-          setQuestions([...questions, response.data]);
+          setQuestions([
+            JSON.parse(JSON.stringify(response.data)),
+            ...questions,
+          ]);
           toast.success("تم إضافة السؤال بنجاح!");
           setIsModalOpen(false);
         }
@@ -114,9 +119,11 @@ export default function QuestionsClient({
   const columns = [
     columnHelper.accessor("question", {
       cell: (info) => (
-        <span className="font-bold text-gray-900">{info.getValue()}</span>
+        <span className="font-bold text-gray-900 max-w-[200px] truncate text-wrap">
+          {info.getValue()}
+        </span>
       ),
-      header: "الاسم",
+      header: "السؤال",
     }),
     columnHelper.accessor("answer", {
       cell: (info) => (
@@ -124,12 +131,12 @@ export default function QuestionsClient({
           {info.getValue()}
         </span>
       ),
-      header: "الوصف",
+      header: "الإجابة",
     }),
     columnHelper.accessor("file_question", {
       cell: (info) => (
         <span className="text-gray-700">
-          {info.getValue()?.name ? (
+          {info.getValue() ? (
             <>
               <Image
                 src={info.getValue() || ""}
@@ -148,7 +155,7 @@ export default function QuestionsClient({
     columnHelper.accessor("file_answer", {
       cell: (info) => (
         <span className="text-gray-700">
-          {info.getValue()?.name ? (
+          {info.getValue() ? (
             <>
               <Image
                 src={info.getValue() || ""}

@@ -5,7 +5,12 @@ const chatSchema = new mongoose.Schema(
     game: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Game",
-      required: true,
+      default: null,
+    },
+    mafiaSession: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "MafiaSession",
+      default: null,
     },
     type: { type: String, enum: ["all", "mafia"], required: true },
     messages: [

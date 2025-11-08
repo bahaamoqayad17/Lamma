@@ -130,7 +130,7 @@ export async function createQuestion(formData: FormData) {
     return {
       success: true,
       message: "تم إنشاء السؤال بنجاح",
-      data: populatedQuestion,
+      data: JSON.parse(JSON.stringify(populatedQuestion)),
     };
   } catch (error) {
     console.error("Error creating question:", error);
@@ -261,7 +261,7 @@ export async function updateQuestion(id: string, formData: FormData) {
     return {
       success: true,
       message: "تم تحديث السؤال بنجاح",
-      data: updatedQuestion,
+      data: JSON.parse(JSON.stringify(updatedQuestion)),
     };
   } catch (error) {
     console.error("Error updating question:", error);

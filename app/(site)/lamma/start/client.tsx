@@ -10,14 +10,17 @@ import { ArrowLeft, LogOut, ArrowDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 // Type definition for category data structure
+type Subcategory = {
+  _id: string;
+  name: string;
+  image?: string;
+};
+
 type CategoryWithSubcategories = {
   _id: string;
   name: string;
-  image: string;
-  subcategories: {
-    _id: string;
-    name: string;
-  }[];
+  image?: string;
+  subcategories: Subcategory[];
 };
 
 interface StartProps {
@@ -25,21 +28,23 @@ interface StartProps {
 }
 
 export default function Start({ data }: StartProps) {
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedSubcategories, setSelectedSubcategories] = useState<string[]>(
+    []
+  );
   const maxSelections = 5;
   const router = useRouter();
 
   // Ensure data is an array
   const categories = data || [];
 
-  const handleCardClick = (cardId: string) => {
-    setSelectedCategories((prev) => {
-      if (prev.includes(cardId)) {
+  const handleCardClick = (subcategoryId: string) => {
+    setSelectedSubcategories((prev) => {
+      if (prev.includes(subcategoryId)) {
         // Remove if already selected
-        return prev.filter((id) => id !== cardId);
+        return prev.filter((id) => id !== subcategoryId);
       } else if (prev.length < maxSelections) {
         // Add if under limit
-        return [...prev, cardId];
+        return [...prev, subcategoryId];
       }
       // Do nothing if at limit
       return prev;
@@ -53,12 +58,20 @@ export default function Start({ data }: StartProps) {
     });
   };
 
-  // Get selected category data
-  const getSelectedCategoryData = () => {
+  // Get selected subcategory data
+  const getSelectedSubcategoryData = (): Subcategory[] => {
     if (categories.length === 0) return [];
-    return selectedCategories
-      .map((id) => categories.find((cat) => cat._id === id))
-      .filter(Boolean) as CategoryWithSubcategories[];
+    const selected: Subcategory[] = [];
+
+    categories.forEach((category) => {
+      category.subcategories?.forEach((subcategory) => {
+        if (selectedSubcategories.includes(subcategory._id)) {
+          selected.push(subcategory);
+        }
+      });
+    });
+
+    return selected;
   };
 
   return (
@@ -111,20 +124,45 @@ export default function Start({ data }: StartProps) {
 
         {/* Categories Section */}
         {categories.length > 0 ? (
-          <div className="mb-16">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8 mx-auto">
-              {categories.map((category) => (
-                <CategoryCard
-                  key={category._id}
-                  image={category.image || "/seen-jeem.png"}
-                  title={category.name}
-                  isSelected={selectedCategories.includes(category._id)}
-                  onClick={() => handleCardClick(category._id)}
-                  imageAlt={`Category ${category.name}`}
-                  className="w-full"
-                />
-              ))}
-            </div>
+          <div className="mb-16 space-y-12">
+            {categories.map((category) => (
+              <div key={category._id} className="space-y-6">
+                {/* Category Title Section */}
+                <div className="text-center">
+                  <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
+                    {category.name}
+                  </h2>
+                  <div className="w-12 h-1 bg-orange-400 mx-auto"></div>
+                </div>
+
+                {/* Subcategories Grid */}
+                {category.subcategories && category.subcategories.length > 0 ? (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 mx-auto">
+                    {category.subcategories.map((subcategory) => (
+                      <CategoryCard
+                        key={subcategory._id}
+                        image={
+                          subcategory.image ||
+                          category.image ||
+                          "/seen-jeem.png"
+                        }
+                        title={subcategory.name}
+                        isSelected={selectedSubcategories.includes(
+                          subcategory._id
+                        )}
+                        onClick={() => handleCardClick(subcategory._id)}
+                        imageAlt={`Subcategory ${subcategory.name}`}
+                        className="w-full"
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-4">
+                    <p className="text-gray-500 text-sm">لا توجد فئات فرعية</p>
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         ) : (
           <div className="text-center py-12">
@@ -135,9 +173,9 @@ export default function Start({ data }: StartProps) {
         {/* Selection Counter */}
         <div className="text-center mb-8">
           <p className="text-lg text-gray-600">
-            تم اختيار {selectedCategories.length} من {maxSelections} فئات
+            تم اختيار {selectedSubcategories.length} من {maxSelections} فئات
           </p>
-          {selectedCategories.length === maxSelections && (
+          {selectedSubcategories.length === maxSelections && (
             <p className="text-green-600 font-medium mt-2">
               تم الوصول للحد الأقصى من الفئات المختارة
             </p>
@@ -312,26 +350,29 @@ export default function Start({ data }: StartProps) {
         </div>
       </div>
 
-      {/* Right Sidebar - Selected Categories - Only show when categories are selected */}
-      {selectedCategories.length > 0 && (
+      {/* Right Sidebar - Selected Subcategories - Only show when subcategories are selected */}
+      {selectedSubcategories.length > 0 && (
         <div className="fixed right-[50%] translate-x-1/2 md:translate-x-0 top-20 md:right-0 bg-transparent p-2 md:h-[80vh] flex flex-col justify-between z-20">
-          {/* Scrollable categories */}
+          {/* Scrollable subcategories */}
           <div className="space-y-3 overflow-y-auto overflow-x-hidden flex-1 p-2 bg-white flex rounded-lg md:block md:bg-transparent">
-            {getSelectedCategoryData().map((category) => (
-              <div key={category?._id} className="relative w-fit md:w-[150px]">
+            {getSelectedSubcategoryData().map((subcategory) => (
+              <div
+                key={subcategory?._id}
+                className="relative w-fit md:w-[150px]"
+              >
                 <CategoryCard
-                  image={category?.image || ""}
-                  title={category?.name || ""}
+                  image={subcategory?.image || ""}
+                  title={subcategory?.name || ""}
                   isSelected={true}
-                  onClick={() => handleCardClick(category?._id || "")}
-                  imageAlt={`Selected category ${category?.name}`}
+                  onClick={() => handleCardClick(subcategory?._id || "")}
+                  imageAlt={`Selected subcategory ${subcategory?.name}`}
                   className="w-full origin-center"
                 />
 
                 <div
                   onClick={() =>
-                    setSelectedCategories((prev) =>
-                      prev.filter((cId) => cId !== category?._id)
+                    setSelectedSubcategories((prev) =>
+                      prev.filter((sId) => sId !== subcategory?._id)
                     )
                   }
                   className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center cursor-pointer hover:bg-red-600 transition-colors"

@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
-    "start": "next start",
+    "dev": "node server.js",
+    "build": "next build",
+    "start": "NODE_ENV=production node server.js",
     "lint": "eslint"
   },
   "dependencies": {
@@ -32,6 +32,8 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-toastify": "^11.0.5",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
     "tailwind-merge": "^3.3.1",
     "uuid": "^13.0.0"
   },

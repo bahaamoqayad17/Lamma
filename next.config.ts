@@ -10,6 +10,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  allowedDevOrigins: ["*"],
 
   eslint: {
     ignoreDuringBuilds: true,
