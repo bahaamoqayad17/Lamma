@@ -6,8 +6,12 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import CategoryCard from "@/components/CategoryCard";
-import { ArrowLeft, LogOut, ArrowDown } from "lucide-react";
+import HelpingCard from "@/components/HelpingCard";
+import { ArrowLeft, LogOut, ArrowDown, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { createLammaGame } from "@/actions/lamma-actions";
+import { toast } from "react-toastify";
+import helpingCardsData from "@/data/helping-cards.json";
 
 // Type definition for category data structure
 type Subcategory = {
@@ -23,6 +27,17 @@ type CategoryWithSubcategories = {
   subcategories: Subcategory[];
 };
 
+type HelpingCard = {
+  id: number;
+  image: string;
+  price: number;
+  name: string;
+  description: string;
+  isAttack: boolean;
+};
+
+const helpingCards: HelpingCard[] = helpingCardsData as HelpingCard[];
+
 interface StartProps {
   data: CategoryWithSubcategories[] | null | undefined;
 }
@@ -31,7 +46,19 @@ export default function Start({ data }: StartProps) {
   const [selectedSubcategories, setSelectedSubcategories] = useState<string[]>(
     []
   );
-  const maxSelections = 5;
+  const [teamOneSelectedCards, setTeamOneSelectedCards] = useState<number[]>(
+    []
+  );
+  const [teamTwoSelectedCards, setTeamTwoSelectedCards] = useState<number[]>(
+    []
+  );
+  const [playWithoutCards, setPlayWithoutCards] = useState(false);
+  const [gameName, setGameName] = useState("");
+  const [team1Name, setTeam1Name] = useState("");
+  const [team2Name, setTeam2Name] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const maxSelections = 6;
+  const maxCardSelections = 5;
   const router = useRouter();
 
   // Ensure data is an array
@@ -74,8 +101,107 @@ export default function Start({ data }: StartProps) {
     return selected;
   };
 
+  // Handle card selection for team one
+  const handleTeamOneCardSelect = (cardId: number) => {
+    setTeamOneSelectedCards((prev) => {
+      if (prev.includes(cardId)) {
+        return prev.filter((id) => id !== cardId);
+      } else if (prev.length < maxCardSelections) {
+        return [...prev, cardId];
+      }
+      return prev;
+    });
+  };
+
+  // Handle card selection for team two
+  const handleTeamTwoCardSelect = (cardId: number) => {
+    setTeamTwoSelectedCards((prev) => {
+      if (prev.includes(cardId)) {
+        return prev.filter((id) => id !== cardId);
+      } else if (prev.length < maxCardSelections) {
+        return [...prev, cardId];
+      }
+      return prev;
+    });
+  };
+
+  // Handle start game
+  const handleStartGame = async () => {
+    // Validation
+    if (!gameName.trim()) {
+      toast.error("يرجى إدخال اسم اللعبة");
+      return;
+    }
+
+    if (!team1Name.trim()) {
+      toast.error("يرجى إدخال اسم الفريق الأول");
+      return;
+    }
+
+    if (!team2Name.trim()) {
+      toast.error("يرجى إدخال اسم الفريق الثاني");
+      return;
+    }
+
+    if (!playWithoutCards && selectedSubcategories.length === 0) {
+      toast.error("يرجى اختيار فئات على الأقل");
+      return;
+    }
+
+    if (
+      !playWithoutCards &&
+      selectedSubcategories.length < maxSelections &&
+      !confirm(
+        `تم اختيار ${selectedSubcategories.length} من ${maxSelections} فئات. هل تريد المتابعة؟`
+      )
+    ) {
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const result = await createLammaGame({
+        name: gameName.trim(),
+        team1Name: team1Name.trim(),
+        team2Name: team2Name.trim(),
+        selectedSubcategories,
+        team1SelectedCards: teamOneSelectedCards,
+        team2SelectedCards: teamTwoSelectedCards,
+        playWithoutCards,
+      });
+
+      if (result.success) {
+        toast.success("تم إنشاء اللعبة بنجاح");
+        router.push(`/lamma/in-game?sessionId=${result.data._id}`);
+      } else {
+        toast.error(result.message || "فشل إنشاء اللعبة");
+      }
+    } catch (error) {
+      console.error("Error starting game:", error);
+      toast.error("حدث خطأ أثناء إنشاء اللعبة");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <main className="min-h-screen relative overflow-hidden bg-gray-100">
+      {/* Loading Overlay */}
+      {isLoading && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
+          <div className="bg-white rounded-lg shadow-2xl p-8 flex flex-col items-center gap-4 max-w-md mx-4">
+            <Loader2 className="w-12 h-12 text-[#6A0DAD] animate-spin" />
+            <h3 className="text-xl font-bold text-gray-800">
+              جاري إنشاء اللعبة...
+            </h3>
+            <p className="text-gray-600 text-center">
+              يرجى الانتظار بينما نقوم بإنشاء جلسة اللعبة الخاصة بك
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="relative z-10 flex items-center justify-between p-4 md:px-10 sm:p-6 bg-[#6A0DAD] backdrop-blur-sm">
         {/* Logo - Left side for RTL */}
@@ -191,6 +317,8 @@ export default function Start({ data }: StartProps) {
           <Input
             type="text"
             placeholder="أدخل اسم اللعبة"
+            value={gameName}
+            onChange={(e) => setGameName(e.target.value)}
             className="w-full px-4 py-3 bg-gray-200 border-2 border-yellow-400 rounded-lg text-gray-800 placeholder-gray-500 focus:border-yellow-500 transition-colors duration-200"
           />
         </div>
@@ -209,6 +337,8 @@ export default function Start({ data }: StartProps) {
               <Input
                 type="text"
                 placeholder="أدخل اسم الفريق الأول"
+                value={team1Name}
+                onChange={(e) => setTeam1Name(e.target.value)}
                 className="w-full px-4 py-3 bg-gray-200 rounded-lg text-gray-800 placeholder-gray-500 focus:border-yellow-500 transition-colors duration-200"
               />
             </div>
@@ -224,10 +354,30 @@ export default function Start({ data }: StartProps) {
               <Input
                 type="text"
                 placeholder="أدخل اسم الفريق الثاني"
+                value={team2Name}
+                onChange={(e) => setTeam2Name(e.target.value)}
                 className="w-full px-4 py-3 bg-gray-200 rounded-lg text-gray-800 placeholder-gray-500 focus:border-yellow-500 transition-colors duration-200"
               />
             </div>
           </div>
+        </div>
+
+        {/* Play Without Cards Checkbox */}
+        <div className="flex items-center justify-center mb-8 gap-3 p-4 bg-white rounded-lg border-2 border-gray-300 hover:border-[#6A0DAD] transition-colors duration-200 max-w-md mx-auto cursor-pointer shadow-md">
+          <input
+            type="checkbox"
+            id="playWithoutCards"
+            checked={playWithoutCards}
+            onChange={(e) => setPlayWithoutCards(e.target.checked)}
+            className="w-5 h-5 text-[#6A0DAD] border-2 border-gray-400 rounded focus:ring-2 focus:ring-[#6A0DAD] focus:ring-offset-2 cursor-pointer"
+          />
+          <label
+            htmlFor="playWithoutCards"
+            className="text-gray-800 font-semibold text-base cursor-pointer flex items-center gap-2"
+          >
+            <span className="text-lg">🎮</span>
+            <span>العب بدون كروت القوة</span>
+          </label>
         </div>
 
         {/* Power Cards Section */}
@@ -250,36 +400,35 @@ export default function Start({ data }: StartProps) {
                   </span>
                 </div>
               </div>
-              <div className="grid grid-cols-3 gap-3 md:mx-16">
-                {Array.from({ length: 9 }, (_, i) => (
-                  <div
-                    key={i}
-                    className="bg-[#192734] border border-[#FDD835] rounded-xl text-center relative shadow-lg"
-                  >
-                    {/* Main Content Area */}
-                    <div className="h-24 flex items-center justify-center">
-                      <Image
-                        src="/helping-card.png"
-                        alt="Power Card"
-                        width={130}
-                        height={130}
-                        className="object-contain"
-                      />
-                    </div>
-
-                    {/* Question Mark Icon */}
-                    <div className="w-6 h-6 bg-[#FCBB00] rounded-full flex items-center justify-center absolute bottom-0 left-0">
-                      <span className="text-black text-xl font-bold">؟</span>
-                    </div>
-
-                    {/* Bottom Section */}
-                    {/* Price */}
-                    <div className="px-2">
-                      <p className="text-white text-sm text-right mb-2 font-regular">
-                        2.2$
-                      </p>
-                    </div>
-                  </div>
+              <div className="mb-2 text-center">
+                <p className="text-sm text-gray-600">
+                  تم اختيار {teamOneSelectedCards.length} من {maxCardSelections}{" "}
+                  كروت
+                </p>
+                {teamOneSelectedCards.length === maxCardSelections && (
+                  <p className="text-green-600 text-xs mt-1">
+                    تم الوصول للحد الأقصى
+                  </p>
+                )}
+              </div>
+              <div className="grid grid-cols-4 gap-3">
+                {helpingCards.map((card) => (
+                  <HelpingCard
+                    key={card.id}
+                    id={card.id}
+                    image={card.image}
+                    price={card.price}
+                    name={card.name}
+                    description={card.description}
+                    isAttack={card.isAttack}
+                    isSelected={teamOneSelectedCards.includes(card.id)}
+                    onSelect={() => handleTeamOneCardSelect(card.id)}
+                    canSelect={
+                      !playWithoutCards &&
+                      (teamOneSelectedCards.length < maxCardSelections ||
+                        teamOneSelectedCards.includes(card.id))
+                    }
+                  />
                 ))}
               </div>
             </div>
@@ -301,36 +450,35 @@ export default function Start({ data }: StartProps) {
                   </span>
                 </div>
               </div>
-              <div className="grid grid-cols-3 gap-3 md:mx-16">
-                {Array.from({ length: 9 }, (_, i) => (
-                  <div
-                    key={i}
-                    className="bg-[#192734] border border-[#FDD835] rounded-xl text-center relative shadow-lg"
-                  >
-                    {/* Main Content Area */}
-                    <div className="h-24 flex items-center justify-center">
-                      <Image
-                        src="/helping-card.png"
-                        alt="Power Card"
-                        width={130}
-                        height={130}
-                        className="object-contain"
-                      />
-                    </div>
-
-                    {/* Question Mark Icon */}
-                    <div className="w-6 h-6 bg-[#FCBB00] rounded-full flex items-center justify-center absolute bottom-0 left-0">
-                      <span className="text-black text-xl font-bold">؟</span>
-                    </div>
-
-                    {/* Bottom Section */}
-                    {/* Price */}
-                    <div className="px-2">
-                      <p className="text-white text-sm text-right mb-2 font-regular">
-                        2.2$
-                      </p>
-                    </div>
-                  </div>
+              <div className="mb-2 text-center">
+                <p className="text-sm text-gray-600">
+                  تم اختيار {teamTwoSelectedCards.length} من {maxCardSelections}{" "}
+                  كروت
+                </p>
+                {teamTwoSelectedCards.length === maxCardSelections && (
+                  <p className="text-green-600 text-xs mt-1">
+                    تم الوصول للحد الأقصى
+                  </p>
+                )}
+              </div>
+              <div className="grid grid-cols-4 gap-3">
+                {helpingCards.map((card) => (
+                  <HelpingCard
+                    key={card.id}
+                    id={card.id}
+                    image={card.image}
+                    price={card.price}
+                    name={card.name}
+                    description={card.description}
+                    isAttack={card.isAttack}
+                    isSelected={teamTwoSelectedCards.includes(card.id)}
+                    onSelect={() => handleTeamTwoCardSelect(card.id)}
+                    canSelect={
+                      !playWithoutCards &&
+                      (teamTwoSelectedCards.length < maxCardSelections ||
+                        teamTwoSelectedCards.includes(card.id))
+                    }
+                  />
                 ))}
               </div>
             </div>
@@ -338,15 +486,31 @@ export default function Start({ data }: StartProps) {
         </div>
 
         {/* Start Match Button */}
-        <div className="text-center">
+        <div className="text-center space-y-4">
           <Button
             size="lg"
-            className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold px-12 py-4 text-lg transition-all duration-200 flex items-center gap-3 mx-auto"
-            onClick={() => router.push("/lamma/in-game")}
+            className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold px-12 py-4 text-lg transition-all duration-200 flex items-center gap-3 mx-auto disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={handleStartGame}
+            disabled={isLoading}
           >
-            ابدأ المباراة
-            <ArrowLeft />
+            {isLoading ? (
+              <>
+                جاري الإنشاء...
+                <Loader2 className="w-5 h-5 animate-spin" />
+              </>
+            ) : (
+              <>
+                ابدأ المباراة
+                <ArrowLeft />
+              </>
+            )}
           </Button>
+
+          {playWithoutCards && (
+            <p className="text-sm text-[#6A0DAD] font-medium max-w-md mx-auto">
+              سيتم بدء المباراة بدون اختيار أي كروت قوة
+            </p>
+          )}
         </div>
       </div>
 

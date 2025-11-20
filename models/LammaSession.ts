@@ -2,13 +2,34 @@ import mongoose, { InferSchemaType } from "mongoose";
 
 const LammaSessionSchema = new mongoose.Schema(
   {
-    gameId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Game",
-      required: true,
+    name: { type: String, required: true },
+    team1: {
+      name: String,
+      score: { type: Number, default: 0 },
+      selectedCards: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "HelpingCard",
+        },
+      ],
     },
-    team1: { name: String, score: { type: Number, default: 0 } },
-    team2: { name: String, score: { type: Number, default: 0 } },
+    team2: {
+      name: String,
+      score: { type: Number, default: 0 },
+      selectedCards: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "HelpingCard",
+        },
+      ],
+    },
+    selectedSubcategories: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Category",
+      },
+    ],
+    playWithoutCards: { type: Boolean, default: false },
     currentRound: { type: Number, default: 1 },
     finished: { type: Boolean, default: false },
     moves: [
@@ -18,13 +39,6 @@ const LammaSessionSchema = new mongoose.Schema(
         isCorrect: Boolean,
         pointsAwarded: Number,
         createdAt: { type: Date, default: Date.now },
-      },
-    ],
-    helpingCards: [
-      {
-        card: { type: mongoose.Schema.Types.ObjectId, ref: "HelpingCard" },
-        usedBy: String,
-        usedAt: { type: Date, default: Date.now },
       },
     ],
   },

@@ -1,0 +1,82 @@
+[
+    {
+        "id": 1,
+        "image": "/cards/LockCategories.png",
+        "price": 3.5,
+        "name": "قفل الفئة",
+        "description": "يمنع الخصم من الإجابة على فئة معينة (أسئلة 200-400)",
+        "isAttack": true
+    },
+    {
+        "id": 2,
+        "image": "/cards/PreventAnswer.png",
+        "price": 2.8,
+        "name": "منع الإجابة",
+        "description": "يمنع الخصم من الإجابة على سؤال معين",
+        "isAttack": true
+    },
+    {
+        "id": 3,
+        "image": "/cards/DoublePoints.png",
+        "price": 4.2,
+        "name": "دبل أو ناثينق",
+        "description": "يضاعف النقاط للسؤال الخاص بك",
+        "isAttack": false
+    },
+    {
+        "id": 4,
+        "image": "/cards/RandomAttack.png",
+        "price": 3.1,
+        "name": "هجوم عشوائي",
+        "description": "كرت عشوائي هجومي يظهر عند الضغط عليه",
+        "isAttack": true
+    },
+    {
+        "id": 5,
+        "image": "/cards/SwitchQuestion.png",
+        "price": 2.5,
+        "name": "تبديل السؤال",
+        "description": "يمكنك تبديل السؤال الحالي بسؤال آخر",
+        "isAttack": false
+    },
+    {
+        "id": 6,
+        "image": "/cards/SIlent.png",
+        "price": 3.9,
+        "name": "كرت الصمت",
+        "description": "يمنع فريق الخصم من الكلام لمدة 30 ثانية في دورهم",
+        "isAttack": true
+    },
+    {
+        "id": 7,
+        "image": "/cards/DoubleAnswers.png",
+        "price": 2.3,
+        "name": "إجابتان",
+        "description": "يسمح لك بالإجابة بإجابتين على السؤال",
+        "isAttack": false
+    },
+    {
+        "id": 8,
+        "image": "/cards/CounterAttack.png",
+        "price": 4.7,
+        "name": "كرت الدفاع",
+        "description": "يلغي أي كرت يتم تفعيله عليك",
+        "isAttack": false
+    },
+    {
+        "id": 9,
+        "image": "/cards/LockCard.png",
+        "price": 3.6,
+        "name": "قفل الكرت",
+        "description": "يمنع الخصم من تفعيل أي كرت على السؤال القادم",
+        "isAttack": true
+    },
+    {
+        "id": 10,
+        "image": "/cards/Extend30Seconds.png",
+        "price": 1.9,
+        "name": "تمديد الوقت",
+        "description": "يزيد وقتك بمقدار 30 ثانية إضافية",
+        "isAttack": false
+    }
+]

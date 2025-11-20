@@ -227,6 +227,21 @@ html {
   }
 }
 
+@keyframes tooltip-fade-in {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 15px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+}
+
+.animate-tooltip-fade-in {
+  animation: tooltip-fade-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 /* From Uiverse.io by Praashoo7 */
 /* Design Inspired by one of Stefan Devai's Design on Dribble */
 
