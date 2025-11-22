@@ -7,7 +7,7 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 
-export default function EndGame() {
+export default function LammaEndGame({ data }: { data: any }) {
   return (
     <main className="min-h-screen relative overflow-hidden">
       <Image
@@ -62,20 +62,20 @@ export default function EndGame() {
             {/* First Team Score */}
             <div className="text-center">
               <h3 className="text-black font-bold text-base sm:text-lg mb-2 bg-purple-200 rounded-full px-6 sm:px-12 py-2">
-                الفريق الثاني
+                {data?.session?.team2?.name}
               </h3>
               <div className="text-purple-800 font-bold text-2xl sm:text-3xl">
-                20000
+                {data?.session?.team2?.score}
               </div>
             </div>
 
             {/* Second Team Score */}
             <div className="text-center">
               <h3 className="text-black font-bold text-base sm:text-lg mb-2 bg-purple-200 rounded-full px-6 sm:px-12 py-2">
-                الفريق الثاني
+                {data?.session?.team1?.name}
               </h3>
               <div className="text-purple-800 font-bold text-2xl sm:text-3xl">
-                20000
+                {data?.session?.team1?.score}
               </div>
             </div>
           </div>
@@ -139,12 +139,12 @@ export default function EndGame() {
 
                     {/* Winner Team Name */}
                     <h3 className="text-black font-bold text-base sm:text-xl mb-1 sm:mb-2">
-                      فريق التعاون
+                      {data?.session?.team1?.name}
                     </h3>
 
                     {/* Winner Points */}
                     <div className="text-black font-bold text-sm sm:text-lg">
-                      2000 نقطة
+                      {data?.session?.team1?.score} نقطة
                     </div>
                   </div>
                 </div>

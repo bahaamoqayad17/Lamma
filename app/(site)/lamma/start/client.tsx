@@ -173,7 +173,7 @@ export default function Start({ data }: StartProps) {
 
       if (result.success) {
         toast.success("تم إنشاء اللعبة بنجاح");
-        router.push(`/lamma/in-game?sessionId=${result.data._id}`);
+        router.push(`/lamma/${result.data._id}`);
       } else {
         toast.error(result.message || "فشل إنشاء اللعبة");
       }

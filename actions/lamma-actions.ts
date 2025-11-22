@@ -5,6 +5,8 @@ import { getUserFromCookie } from "@/lib/cookie";
 import { connectToDatabase } from "@/lib/mongo";
 import LammaSession from "@/models/LammaSession";
 import HelpingCard from "@/models/HelpingCard";
+import Question from "@/models/Question";
+import Category from "@/models/Category";
 import helpingCardsData from "@/data/helping-cards.json";
 
 interface CreateLammaGameData {
@@ -49,7 +51,11 @@ export const createLammaGame = async (
 ): Promise<{ success: boolean; message: string; data: any }> => {
   const session = await getUserFromCookie();
   if (!session) {
-    return { success: false, message: "User not found", data: null };
+    return {
+      success: false,
+      message: "يرجى تسجيل الدخول للمتابعة",
+      data: null,
+    };
   }
 
   try {
@@ -119,6 +125,151 @@ export const createLammaGame = async (
     return {
       success: false,
       message: error.message || "Failed to create game",
+      data: null,
+    };
+  }
+};
+
+export const getLammaSession = async (id: string) => {
+  try {
+    await connectToDatabase();
+
+    // First, get the session to check if it exists and get selectedSubcategories
+    const lammaSession = await LammaSession.findById(id)
+      .populate("team1.selectedCards")
+      .populate("team2.selectedCards")
+      .lean();
+
+    if (!lammaSession) {
+      return { success: false, message: "Lamma session not found", data: null };
+    }
+
+    const session = lammaSession as any;
+    const selectedSubcategoryIds = Array.isArray(session.selectedSubcategories)
+      ? session.selectedSubcategories.map((id: any) =>
+          typeof id === "object" && id._id
+            ? new mongoose.Types.ObjectId(id._id)
+            : new mongoose.Types.ObjectId(id)
+        )
+      : [];
+
+    if (selectedSubcategoryIds.length === 0) {
+      return {
+        success: true,
+        message: "Lamma session fetched successfully",
+        data: [],
+      };
+    }
+
+    // Single aggregation query to get categories with their questions
+    const gameData = await Category.aggregate([
+      // Match only the selected categories
+      { $match: { _id: { $in: selectedSubcategoryIds } } },
+      // Lookup questions for each category
+      {
+        $lookup: {
+          from: "questions",
+          localField: "_id",
+          foreignField: "category",
+          as: "questions",
+        },
+      },
+      // Project and format the data
+      {
+        $project: {
+          _id: { $toString: "$_id" },
+          name: { $ifNull: ["$name", ""] },
+          description: { $ifNull: ["$description", ""] },
+          image: { $ifNull: ["$image", ""] },
+          questions: {
+            $map: {
+              input: "$questions",
+              as: "question",
+              in: {
+                _id: { $toString: "$$question._id" },
+                category: {
+                  _id: { $toString: "$_id" },
+                  name: { $ifNull: ["$name", ""] },
+                  description: { $ifNull: ["$description", ""] },
+                  image: { $ifNull: ["$image", ""] },
+                },
+                file: { $ifNull: ["$$question.file_question", ""] },
+                question: { $ifNull: ["$$question.question", ""] },
+                answer: { $ifNull: ["$$question.answer", ""] },
+                points: { $ifNull: ["$$question.points", 0] },
+              },
+            },
+          },
+        },
+      },
+    ]);
+
+    return {
+      success: true,
+      message: "Lamma session fetched successfully",
+      data: {
+        session: lammaSession,
+        gameData,
+      },
+    };
+  } catch (error) {
+    console.error("Error getting Lamma session:", error);
+    return {
+      success: false,
+      message: "Failed to get Lamma session",
+      data: null,
+    };
+  }
+};
+
+export const submitAnswer = async (
+  sessionId: string,
+  questionId: string,
+  teamName: string,
+  isCorrect: boolean,
+  points: number
+) => {
+  try {
+    await connectToDatabase();
+
+    const session = await LammaSession.findById(sessionId);
+    if (!session) {
+      return {
+        success: false,
+        message: "Session not found",
+        data: null,
+      };
+    }
+
+    // Update team score
+    if (isCorrect) {
+      session[teamName].score = (session[teamName].score || 0) + points;
+    }
+
+    // Add move to moves array
+    session.moves.push({
+      question: new mongoose.Types.ObjectId(questionId),
+      answeredBy: teamName,
+      isCorrect,
+      pointsAwarded: isCorrect ? points : 0,
+      createdAt: new Date(),
+    });
+
+    await session.save();
+
+    return {
+      success: true,
+      message: "Answer submitted successfully",
+      data: {
+        team1Score: session.team1.score,
+        team2Score: session.team2.score,
+      },
+    };
+  } catch (error) {
+    console.error("Error submitting answer:", error);
+    return {
+      success: false,
+      message: "Failed to submit answer",
       data: null,
     };
   }
