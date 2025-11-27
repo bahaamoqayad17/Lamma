@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
@@ -48,7 +48,14 @@ export default function QuestionCard({
 
   const handleQuestionClick = (question: Question) => {
     // Don't allow selecting already answered questions
-    if (answeredQuestionIds.has(question._id)) {
+    // Ensure question ID is always a string for comparison
+    const questionId =
+      typeof question._id === "string" ? question._id : question._id.toString();
+    if (answeredQuestionIds.has(questionId)) {
+      console.warn(
+        "Attempted to select already answered question:",
+        questionId
+      );
       return;
     }
     onQuestionSelect?.(question);
@@ -59,7 +66,13 @@ export default function QuestionCard({
     const questions = questionsByPoints[points];
     if (!questions || questions.length === 0) return null;
     // Find the first question that hasn't been answered
-    return questions.find((q) => !answeredQuestionIds.has(q._id)) || null;
+    // Ensure question IDs are compared as strings
+    return (
+      questions.find((q) => {
+        const questionId = typeof q._id === "string" ? q._id : q._id.toString();
+        return !answeredQuestionIds.has(questionId);
+      }) || null
+    );
   };
 
   // Check if ALL questions with specific points are answered
@@ -67,8 +80,16 @@ export default function QuestionCard({
     const questions = questionsByPoints[points];
     if (!questions || questions.length === 0) return false;
     // Check if ALL questions for this point value are answered
-    return questions.every((q) => answeredQuestionIds.has(q._id));
+    // Ensure question IDs are compared as strings
+    return questions.every((q) => {
+      const questionId = typeof q._id === "string" ? q._id : q._id.toString();
+      return answeredQuestionIds.has(questionId);
+    });
   };
+
+  useEffect(() => {
+    console.log("Screen width:", window.innerWidth);
+  }, []);
 
   return (
     <div
@@ -84,9 +105,9 @@ export default function QuestionCard({
 
       {/* Main Card Body */}
       <div className="rounded-b-lg overflow-hidden">
-        <div className="grid grid-cols-12 gap-0 min-h-[400px]">
+        <div className="flex items-center justify-center">
           {/* Left Points Column */}
-          <div className="col-span-3 border-r border-gray-300 flex flex-col">
+          <div className="border-r border-gray-300 flex flex-1 flex-col h-65 [@media(min-width:2160px)]:h-88">
             {pointValues.map((points) => {
               const question = getFirstUnansweredQuestion(points);
               const allAnswered = areAllQuestionsAnswered(points);
@@ -98,7 +119,7 @@ export default function QuestionCard({
                   }}
                   disabled={allAnswered}
                   className={cn(
-                    "flex-1 flex items-center justify-center border-b border-gray-300 last:border-b-0 transition-colors duration-200",
+                    "flex flex-1 items-center justify-center border-b border-gray-300 last:border-b-0 transition-colors duration-200",
                     allAnswered
                       ? "bg-gray-400 opacity-50 cursor-not-allowed"
                       : "hover:bg-orange-200 cursor-pointer"
@@ -118,8 +139,8 @@ export default function QuestionCard({
           </div>
 
           {/* Center - Category Image */}
-          <div className="col-span-6 flex items-center justify-center">
-            <div className="w-100 h-100 bg-gray-200 rounded-lg flex items-center justify-center">
+          <div className="flex items-center justify-center">
+            <div className="w-70 h-65 rounded-lg flex items-center justify-center [@media(min-width:2160px)]:w-96 [@media(min-width:2160px)]:h-88">
               <Image
                 src={data.image}
                 alt={data.name}
@@ -131,7 +152,7 @@ export default function QuestionCard({
           </div>
 
           {/* Right Points Column */}
-          <div className="col-span-3 border-l border-gray-300 flex flex-col">
+          <div className="border-l border-gray-300 flex flex-1 flex-col h-65 [@media(min-width:2160px)]:h-88">
             {pointValues.map((points) => {
               const question = getFirstUnansweredQuestion(points);
               const allAnswered = areAllQuestionsAnswered(points);
@@ -143,7 +164,7 @@ export default function QuestionCard({
                   }}
                   disabled={allAnswered}
                   className={cn(
-                    "flex-1 flex items-center justify-center border-b border-gray-300 last:border-b-0 transition-colors duration-200",
+                    "flex flex-1 items-center justify-center border-b border-gray-300 last:border-b-0 transition-colors duration-200",
                     allAnswered
                       ? "bg-gray-400 opacity-50 cursor-not-allowed"
                       : "hover:bg-orange-200 cursor-pointer"
