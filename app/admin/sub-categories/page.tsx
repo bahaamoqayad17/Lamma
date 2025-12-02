@@ -1,9 +1,9 @@
-import { getMainCategories } from "@/actions/category-actions";
+import { getSubCategories } from "@/actions/category-actions";
 import CategoriesClient from "./client";
 import { CategoryType } from "@/models/Category";
 
-export default async function CategoriesPage() {
-  const { success, message, data } = await getMainCategories();
+export default async function SubCategoriesPage() {
+  const { success, message, data } = await getSubCategories();
 
   if (!success) {
     return (

@@ -31,6 +31,7 @@ interface CategoryFormModalProps {
   isLoading?: boolean;
   categories?: CategoryType[];
   editingCategory?: CategoryType | null;
+  isSubCategory?: boolean;
 }
 
 export default function CategoryFormModal({
@@ -38,6 +39,7 @@ export default function CategoryFormModal({
   onClose,
   onSubmit,
   isLoading = false,
+  isSubCategory = false,
   categories = [],
   editingCategory = null,
 }: CategoryFormModalProps) {
@@ -187,35 +189,37 @@ export default function CategoryFormModal({
             </div>
 
             {/* Parent Category */}
-            <div className="md:col-span-2">
-              <Label>الفئة الأب (اختياري)</Label>
-              <FieldWrap>
-                <Select
-                  value={formData.categoryId || "none"}
-                  onValueChange={(value) =>
-                    handleInputChange(
-                      "categoryId",
-                      value === "none" ? "" : value
-                    )
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="اختر الفئة الأب (اختياري)" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">لا يوجد تصنيف أب</SelectItem>
-                    {categories.map((category) => (
-                      <SelectItem
-                        key={category._id.toString()}
-                        value={category._id.toString()}
-                      >
-                        {category.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FieldWrap>
-            </div>
+            {isSubCategory && (
+              <div className="md:col-span-2">
+                <Label>الفئة الأب (اختياري)</Label>
+                <FieldWrap>
+                  <Select
+                    value={formData.categoryId || "none"}
+                    onValueChange={(value) =>
+                      handleInputChange(
+                        "categoryId",
+                        value === "none" ? "" : value
+                      )
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="اختر الفئة الأب (اختياري)" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">لا يوجد تصنيف أب</SelectItem>
+                      {categories.map((category) => (
+                        <SelectItem
+                          key={category._id.toString()}
+                          value={category._id.toString()}
+                        >
+                          {category.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FieldWrap>
+              </div>
+            )}
 
             {/* Category Image Upload */}
             <div className="md:col-span-2">

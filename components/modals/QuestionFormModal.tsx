@@ -218,15 +218,19 @@ export default function QuestionFormModal({
             <div className="md:col-span-2">
               <Label>النقاط</Label>
               <FieldWrap>
-                <Input
-                  type="number"
-                  value={Number.isFinite(formData.points) ? formData.points : 0}
-                  onChange={(e) =>
-                    handleInputChange("points", Number(e.target.value || 0))
-                  }
-                  placeholder="أدخل عدد النقاط"
-                  min={0}
-                />
+                <Select
+                  value={formData.points?.toString() || "200"}
+                  onValueChange={(value) => handleInputChange("points", value)}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="اختر النقاط" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="200">200</SelectItem>
+                    <SelectItem value="400">400</SelectItem>
+                    <SelectItem value="600">600</SelectItem>
+                  </SelectContent>
+                </Select>
               </FieldWrap>
             </div>
 
@@ -243,7 +247,7 @@ export default function QuestionFormModal({
                     )
                   }
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="اختر الفئة" />
                   </SelectTrigger>
                   <SelectContent>

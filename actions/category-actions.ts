@@ -3,17 +3,35 @@
 import { connectToDatabase } from "@/lib/mongo";
 import { uploadFileToS3 } from "@/lib/s3-utils";
 import Category from "@/models/Category";
+import Question from "@/models/Question";
 
-export const getCategories = async () => {
+export const getSubCategories = async () => {
   try {
     await connectToDatabase();
-    const categories = await Category.find()
+    const categories = await Category.find({ category: { $ne: null } })
       .sort({ createdAt: -1 })
       .populate("category")
       .lean();
     return {
       success: true,
-      message: "تم تحميل الفئات بنجاح",
+      message: "تم تحميل الفئات الفرعية بنجاح",
+      data: categories,
+    };
+  } catch (error) {
+    console.error(error);
+    return { success: false, message: "فشل تحميل الفئات" };
+  }
+};
+
+export const getMainCategories = async () => {
+  try {
+    await connectToDatabase();
+    const categories = await Category.find({ category: null })
+      .sort({ createdAt: -1 })
+      .lean();
+    return {
+      success: true,
+      message: "تم تحميل الفئات الرئيسية بنجاح",
       data: categories,
     };
   } catch (error) {
@@ -249,5 +267,23 @@ export const getCategoriesForLamma = async () => {
   } catch (error) {
     console.error(error);
     return { success: false, message: "فشل تحميل الفئات", data: null };
+  }
+};
+
+export const getQuestionsByCategory = async (categoryId: string) => {
+  try {
+    await connectToDatabase();
+    const questions = await Question.find({ category: categoryId })
+      .sort({ createdAt: -1 })
+      .populate("category")
+      .lean();
+    return {
+      success: true,
+      message: "تم تحميل الأسئلة بنجاح",
+      data: questions,
+    };
+  } catch (error) {
+    console.error(error);
+    return { success: false, message: "فشل تحميل الأسئلة", data: null };
   }
 };

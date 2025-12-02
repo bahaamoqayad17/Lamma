@@ -9,6 +9,11 @@ import {
   Users,
   ShoppingBag,
   Phone,
+  FolderTree,
+  Folder,
+  MessageSquare,
+  HelpCircle,
+  BarChart3,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -39,23 +44,28 @@ export default function DashboardLayout({
       href: "/admin/users",
     },
     {
-      title: "الفئات",
-      icon: <Users className="w-5 h-5" />,
+      title: "الكاتوجري",
+      icon: <FolderTree className="w-5 h-5" />,
       href: "/admin/categories",
     },
     {
+      title: "الفئات",
+      icon: <Folder className="w-5 h-5" />,
+      href: "/admin/sub-categories",
+    },
+    {
       title: "رسائل التواصل",
-      icon: <Users className="w-5 h-5" />,
+      icon: <MessageSquare className="w-5 h-5" />,
       href: "/admin/contacts",
     },
     {
       title: "الأسئلة",
-      icon: <Users className="w-5 h-5" />,
+      icon: <HelpCircle className="w-5 h-5" />,
       href: "/admin/questions",
     },
     {
       title: "تقارير المالية",
-      icon: <Users className="w-5 h-5" />,
+      icon: <BarChart3 className="w-5 h-5" />,
       href: "/admin/reports",
     },
   ];

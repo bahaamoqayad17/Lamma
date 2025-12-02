@@ -119,6 +119,22 @@ export default function CategoriesClient({ data }: { data: CategoryType[] }) {
       ),
       header: "الوصف",
     }),
+    columnHelper.accessor("image", {
+      cell: (info) => (
+        <span className="text-gray-700">
+          <Image src={info.getValue()} alt="image" width={100} height={100} />
+        </span>
+      ),
+      header: "الصورة",
+    }),
+    columnHelper.accessor("category", {
+      cell: (info) => {
+        return (
+          <p className="text-gray-700">{info.getValue()?.name || "لا يوجد"}</p>
+        );
+      },
+      header: "الفئة الرئيسية",
+    }),
     columnHelper.accessor("createdAt", {
       cell: (info) => {
         const date = info.getValue();
@@ -178,9 +194,9 @@ export default function CategoriesClient({ data }: { data: CategoryType[] }) {
         }}
         onSubmit={handleSubmitCategory}
         isLoading={loading}
-        isSubCategory={false}
         categories={categories}
         editingCategory={editingCategory}
+        isSubCategory={true}
       />
     </div>
   );
