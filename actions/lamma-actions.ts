@@ -4,7 +4,6 @@ import mongoose from "mongoose";
 import { getUserFromCookie } from "@/lib/cookie";
 import { connectToDatabase } from "@/lib/mongo";
 import LammaSession from "@/models/LammaSession";
-import HelpingCard from "@/models/HelpingCard";
 import Question from "@/models/Question";
 import Category from "@/models/Category";
 import helpingCardsData from "@/data/helping-cards.json";
@@ -19,31 +18,14 @@ interface CreateLammaGameData {
   playWithoutCards: boolean;
 }
 
-// Helper function to convert numeric card IDs to ObjectIds
-const convertCardIdsToObjectIds = async (
-  cardIds: number[]
-): Promise<mongoose.Types.ObjectId[]> => {
+// Helper function to validate card IDs exist in JSON data
+const validateCardIds = (cardIds: number[]): number[] => {
   if (cardIds.length === 0) return [];
 
-  const objectIds: mongoose.Types.ObjectId[] = [];
-
-  for (const cardId of cardIds) {
-    // Find the card in JSON data by ID
-    const cardData = helpingCardsData.find((card: any) => card.id === cardId);
-    if (!cardData) continue;
-
-    // Try to find the card in database by name, or create it if it doesn't exist
-    let card = await HelpingCard.findOne({ name: cardData.name });
-    if (!card) {
-      card = await HelpingCard.create({
-        name: cardData.name,
-        description: cardData.description,
-      });
-    }
-    objectIds.push(card._id as mongoose.Types.ObjectId);
-  }
-
-  return objectIds;
+  // Filter to only include card IDs that exist in JSON data
+  return cardIds.filter((cardId) =>
+    helpingCardsData.some((card: any) => card.id === cardId)
+  );
 };
 
 export const createLammaGame = async (
@@ -84,15 +66,13 @@ export const createLammaGame = async (
       (id) => new mongoose.Types.ObjectId(id)
     );
 
-    // Convert card IDs to ObjectIds
-    const team1CardObjectIds = data.playWithoutCards
+    // Validate and store card IDs directly (no database lookup needed)
+    const team1CardIds = data.playWithoutCards
       ? []
-      : await convertCardIdsToObjectIds(data.team1SelectedCards);
-    const team2CardObjectIds = data.playWithoutCards
+      : validateCardIds(data.team1SelectedCards);
+    const team2CardIds = data.playWithoutCards
       ? []
-      : await convertCardIdsToObjectIds(data.team2SelectedCards);
-
-    console.log(session);
+      : validateCardIds(data.team2SelectedCards);
 
     // Create the session
     const lammaSession = await LammaSession.create({
@@ -100,12 +80,12 @@ export const createLammaGame = async (
       team1: {
         name: data.team1Name,
         score: 0,
-        selectedCards: team1CardObjectIds,
+        selectedCards: team1CardIds,
       },
       team2: {
         name: data.team2Name,
         score: 0,
-        selectedCards: team2CardObjectIds,
+        selectedCards: team2CardIds,
       },
       selectedSubcategories: subcategoryObjectIds,
       playWithoutCards: data.playWithoutCards,
@@ -151,8 +131,6 @@ export const getLammaSession = async (id: string) => {
       _id: id,
       user: session.user.id,
     })
-      .populate("team1.selectedCards")
-      .populate("team2.selectedCards")
       .populate("user")
       .lean();
 
@@ -211,7 +189,8 @@ export const getLammaSession = async (id: string) => {
                   description: { $ifNull: ["$description", ""] },
                   image: { $ifNull: ["$image", ""] },
                 },
-                file: { $ifNull: ["$$question.file_question", ""] },
+                file_question: { $ifNull: ["$$question.file_question", ""] },
+                file_answer: { $ifNull: ["$$question.file_answer", ""] },
                 question: { $ifNull: ["$$question.question", ""] },
                 answer: { $ifNull: ["$$question.answer", ""] },
                 points: { $ifNull: ["$$question.points", 0] },
@@ -222,11 +201,51 @@ export const getLammaSession = async (id: string) => {
       },
     ]);
 
+    // Map card IDs to full card data from JSON
+    const mapCardIdsToCardData = (cardIds: number[]) => {
+      if (!Array.isArray(cardIds)) return [];
+      return cardIds
+        .map((cardId) => {
+          const cardData = helpingCardsData.find(
+            (card: any) => card.id === cardId
+          );
+          return cardData
+            ? {
+                _id: cardId.toString(), // Use card ID as _id for compatibility
+                id: cardData.id,
+                name: cardData.name,
+                image: cardData.image,
+                description: cardData.description,
+                price: cardData.price,
+                isAttack: cardData.isAttack,
+              }
+            : null;
+        })
+        .filter((card) => card !== null);
+    };
+
+    // Map card IDs to full card data for both teams
+    const sessionWithCardData = {
+      ...lammaSession,
+      team1: {
+        ...lammaSessionData.team1,
+        selectedCards: mapCardIdsToCardData(
+          lammaSessionData.team1?.selectedCards || []
+        ),
+      },
+      team2: {
+        ...lammaSessionData.team2,
+        selectedCards: mapCardIdsToCardData(
+          lammaSessionData.team2?.selectedCards || []
+        ),
+      },
+    };
+
     return {
       success: true,
       message: "Lamma session fetched successfully",
       data: {
-        session: lammaSession,
+        session: sessionWithCardData,
         gameData,
       },
     };
@@ -458,8 +477,7 @@ export const useCard = async (
     // Check if card is already used
     const usedCardsField =
       teamName === "team1" ? "team1UsedCards" : "team2UsedCards";
-    const cardObjectId = new mongoose.Types.ObjectId(cardId);
-    if (lammaSessionData[usedCardsField].includes(cardObjectId)) {
+    if (lammaSessionData[usedCardsField].includes(cardId)) {
       return {
         success: false,
         message: "Card already used",
@@ -467,11 +485,9 @@ export const useCard = async (
       };
     }
 
-    // Check if team has this card
-    const teamCardsField =
-      teamName === "team1" ? "team1.selectedCards" : "team2.selectedCards";
-    const hasCard = lammaSessionData[teamName].selectedCards.some(
-      (card: any) => card.toString() === cardId
+    // Check if team has this card (cardId is now a number)
+    const hasCard = (lammaSessionData[teamName].selectedCards || []).includes(
+      cardId
     );
     if (!hasCard) {
       return {
@@ -495,7 +511,7 @@ export const useCard = async (
     }
 
     // Mark card as used
-    lammaSessionData[usedCardsField].push(cardObjectId);
+    lammaSessionData[usedCardsField].push(cardId);
 
     // Apply card effects based on card type
     const cardType = cardData?.cardType || "";
@@ -568,8 +584,14 @@ export const useCard = async (
 
       case "randomAttack":
         // Random Attack - randomly use one of: lockCategories, preventAnswer, silent, lockCard
-        const attackCards = ["lockCategories", "preventAnswer", "silent", "lockCard"];
-        const randomAttack = attackCards[Math.floor(Math.random() * attackCards.length)];
+        const attackCards = [
+          "lockCategories",
+          "preventAnswer",
+          "silent",
+          "lockCard",
+        ];
+        const randomAttack =
+          attackCards[Math.floor(Math.random() * attackCards.length)];
         // Apply the random attack (simplified - you might want to handle each case)
         if (randomAttack === "lockCard") {
           lammaSessionData.activeEffects.lockCard = {
@@ -593,8 +615,8 @@ export const useCard = async (
                 (lock: any) =>
                   !(
                     lock.team ===
-                      lammaSessionData.activeEffects.counterAttack.triggeredBy &&
-                    lock.targetTeam === teamName
+                      lammaSessionData.activeEffects.counterAttack
+                        .triggeredBy && lock.targetTeam === teamName
                   )
               );
           } else if (attackType === "preventAnswer") {
@@ -603,8 +625,8 @@ export const useCard = async (
                 (prevent: any) =>
                   !(
                     prevent.team ===
-                      lammaSessionData.activeEffects.counterAttack.triggeredBy &&
-                    prevent.targetTeam === teamName
+                      lammaSessionData.activeEffects.counterAttack
+                        .triggeredBy && prevent.targetTeam === teamName
                   )
               );
           }
@@ -642,7 +664,7 @@ export const useCard = async (
       success: true,
       message: "Card used successfully",
       data: {
-        usedCard: cardId,
+        usedCard: cardId, // cardId is now a number
         activeEffects: lammaSessionData.activeEffects,
       },
     };

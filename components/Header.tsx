@@ -27,13 +27,13 @@ export default function Header() {
         </p>
 
         {/* Call to Action Button */}
-        <Button
+        {/* <Button
           size="lg"
           className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold px-8 py-4 text-lg transition-all duration-200 flex items-center gap-3 mx-auto"
         >
           <Link />
           العب الان
-        </Button>
+        </Button> */}
       </div>
 
       {/* Game Cards Section */}

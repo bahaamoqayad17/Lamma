@@ -203,7 +203,7 @@ export default function Start({ data }: StartProps) {
       )}
 
       {/* Header */}
-      <div className="relative z-10 flex items-center justify-between p-4 md:px-10 sm:p-6 bg-[#6A0DAD] backdrop-blur-sm">
+      <div className="relative z-10 flex items-center justify-between p-4 md:px-10 sm:p-6 bg-[#55504C] backdrop-blur-sm">
         {/* Logo - Left side for RTL */}
         <div className="flex-shrink-0">
           <Link href="/lamma" className="flex items-center">

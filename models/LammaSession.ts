@@ -6,22 +6,12 @@ const LammaSessionSchema = new mongoose.Schema(
     team1: {
       name: String,
       score: { type: Number, default: 0 },
-      selectedCards: [
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "HelpingCard",
-        },
-      ],
+      selectedCards: [Number], // Store card IDs from JSON file
     },
     team2: {
       name: String,
       score: { type: Number, default: 0 },
-      selectedCards: [
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "HelpingCard",
-        },
-      ],
+      selectedCards: [Number], // Store card IDs from JSON file
     },
     selectedSubcategories: [
       {
@@ -42,19 +32,9 @@ const LammaSessionSchema = new mongoose.Schema(
         createdAt: { type: Date, default: Date.now },
       },
     ],
-    // Card usage tracking
-    team1UsedCards: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "HelpingCard",
-      },
-    ],
-    team2UsedCards: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "HelpingCard",
-      },
-    ],
+    // Card usage tracking - store card IDs from JSON file
+    team1UsedCards: [Number],
+    team2UsedCards: [Number],
     // Active card effects
     activeEffects: {
       // Lock Categories: { team: "team1", lockedPoints: [200, 400] }

@@ -62,19 +62,19 @@ export default function InGame({ data }: { data: any }) {
     }
   );
 
-  // Track used cards
+  // Track used cards (using card IDs from JSON)
   const [usedCards, setUsedCards] = useState<{
-    team1: Set<string>;
-    team2: Set<string>;
+    team1: Set<number>;
+    team2: Set<number>;
   }>({
     team1: new Set(
-      data?.session?.team1UsedCards?.map((card: any) =>
-        typeof card === "object" ? card._id?.toString() : card.toString()
+      data?.session?.team1UsedCards?.map((cardId: any) =>
+        typeof cardId === "number" ? cardId : Number(cardId)
       ) || []
     ),
     team2: new Set(
-      data?.session?.team2UsedCards?.map((card: any) =>
-        typeof card === "object" ? card._id?.toString() : card.toString()
+      data?.session?.team2UsedCards?.map((cardId: any) =>
+        typeof cardId === "number" ? cardId : Number(cardId)
       ) || []
     ),
   });
@@ -414,9 +414,9 @@ export default function InGame({ data }: { data: any }) {
     };
   }, []);
 
-  // Check if card is used
+  // Check if card is used (using card ID from JSON)
   const isCardUsed = useCallback(
-    (cardId: string, teamName: "team1" | "team2") => {
+    (cardId: number, teamName: "team1" | "team2") => {
       return usedCards[teamName].has(cardId);
     },
     [usedCards]
@@ -442,10 +442,15 @@ export default function InGame({ data }: { data: any }) {
         return;
       }
 
-      // Check if card is already used
-      const cardId =
-        typeof card._id === "string" ? card._id : card._id.toString();
-      if (isCardUsed(cardId, teamName)) {
+      // Get card ID from JSON data (card.id is the numeric ID from JSON)
+      const cardId = card.id || card._id;
+      if (!cardId) {
+        toast.error("خطأ في بيانات الكرت");
+        return;
+      }
+      const numericCardId =
+        typeof cardId === "number" ? cardId : Number(cardId);
+      if (isCardUsed(numericCardId, teamName)) {
         toast.error("تم استخدام هذا الكرت مسبقاً");
         return;
       }
@@ -564,14 +569,20 @@ export default function InGame({ data }: { data: any }) {
       const sessionId = getSessionId();
       if (!sessionId) return;
 
-      const cardId =
-        typeof card._id === "string" ? card._id : card._id.toString();
+      // Get card ID from JSON data (card.id is the numeric ID from JSON)
+      const cardId = card.id || card._id;
+      if (!cardId) {
+        toast.error("خطأ في بيانات الكرت");
+        return;
+      }
+      const numericCardId =
+        typeof cardId === "number" ? cardId : Number(cardId);
       const targetTeam = teamName === "team1" ? "team2" : "team1";
 
       // Optimistic update - mark card as used
       setUsedCards((prev) => {
         const newSet = new Set(prev[teamName]);
-        newSet.add(cardId);
+        newSet.add(numericCardId);
         return {
           ...prev,
           [teamName]: newSet,
@@ -683,7 +694,15 @@ export default function InGame({ data }: { data: any }) {
         const hasCounterAttack = targetTeamCards?.some(
           (c: any) => c.name === "كرت الدفاع"
         );
-        if (hasCounterAttack && !isCardUsed("counterAttack", targetTeam)) {
+        // Find counter attack card ID
+        const counterAttackCard = helpingCardsData.find(
+          (c: any) => c.name === "كرت الدفاع"
+        );
+        if (
+          hasCounterAttack &&
+          counterAttackCard &&
+          !isCardUsed(counterAttackCard.id, targetTeam)
+        ) {
           setActiveEffects((prev: any) => ({
             ...prev,
             counterAttack: {
@@ -795,24 +814,13 @@ export default function InGame({ data }: { data: any }) {
 
   return (
     <main className="overflow-hidden min-h-screen bg-[#E6E6E6]">
-      <div className="relative z-10 flex items-center justify-between p-4 md:px-10 sm:p-6 bg-[#6A0DAD] h-full backdrop-blur-sm">
-        {/* Logo - Left side for RTL */}
-        <div className="flex-shrink-0">
-          <Link href="/lamma" className="flex items-center">
-            <Image
-              src="/logo.png"
-              alt="لمة"
-              width={80}
-              height={30}
-              className="h-6 sm:h-8 w-auto"
-              priority
-            />
-          </Link>
-        </div>
+      <div className="relative z-10 flex items-center justify-between p-6 md:px-10 bg-[#55504C] h-full backdrop-blur-sm">
+        {/* Exit button - Left side for RTL */}
 
-        <div className="flex justify-center text-white">
+        {/* Team Turn - Right side for RTL */}
+        <div className="flex-shrink-0">
           <div className="bg-white/20 px-4 py-2 rounded-full">
-            <span className="font-bold">
+            <span className="text-[#FCBB00]">
               دور فريق :{" "}
               {currentTurn === "team1"
                 ? data?.session?.team1?.name
@@ -821,7 +829,11 @@ export default function InGame({ data }: { data: any }) {
           </div>
         </div>
 
-        {/* Exit button - Right side for RTL */}
+        {/* Game Name - Center */}
+        <div className="flex justify-center text-white">
+          <span className="font-bold text-lg">{data?.session?.name}</span>
+        </div>
+
         <div className="flex gap-2 items-center">
           <Link href="/lamma/start">
             <Button
@@ -852,11 +864,11 @@ export default function InGame({ data }: { data: any }) {
           </Button>
         </div>
       </div>
-      <div className="py-4 h-full">
+      <div className="pt-4 h-full">
         <div className="mx-auto px-4">
           {/* Main Game Grid - 6 Question Cards */}
           {step === "list" && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
               {data?.gameData?.map((category: any) => (
                 <div key={category._id} className="w-full items-stretch">
                   <QuestionCard
@@ -897,7 +909,7 @@ export default function InGame({ data }: { data: any }) {
                 </div>
 
                 {/* Question Content */}
-                <div className="p-8">
+                <div className="px-8">
                   {/* Question Text */}
                   <div className="text-center mb-8 flex flex-col items-center justify-center gap-6">
                     {showAnswer ? (
@@ -909,15 +921,33 @@ export default function InGame({ data }: { data: any }) {
                         {selectedQuestion.question}
                       </h1>
                     )}
-                    {selectedQuestion.file && (
-                      <div className="w-full h-180 relative">
-                        <Image
-                          src={`/${selectedQuestion.file}`}
-                          alt="Question Image"
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
+
+                    {!showAnswer ? (
+                      <>
+                        {selectedQuestion.file_question && (
+                          <div className="w-1/2 h-100 relative flex items-center justify-center">
+                            <Image
+                              src={selectedQuestion.file_question}
+                              alt="Question Image"
+                              fill
+                              className="object-contain"
+                            />
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        {selectedQuestion.file_answer && (
+                          <div className="w-1/2 h-100 relative flex items-center justify-center">
+                            <Image
+                              src={selectedQuestion.file_answer}
+                              alt="Question Image"
+                              fill
+                              className="object-contain"
+                            />
+                          </div>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>
@@ -935,7 +965,7 @@ export default function InGame({ data }: { data: any }) {
                     </div>
                   ) : (
                     <>
-                      <div className="flex w-[58%] justify-between items-center gap-4">
+                      <div className="flex w-[60%] justify-between items-center gap-4">
                         <div className="flex">
                           <button
                             className="text-[#FF6F00] hover:text-white hover:bg-[#FF6F00] px-6 py-3 rounded-lg font-medium transition-colors duration-200 cursor-pointer"
@@ -955,36 +985,29 @@ export default function InGame({ data }: { data: any }) {
                               disabled={currentTurn !== "team1"}
                               className={`
                                 text-black font-bold text-md border border-gray-300 rounded-xl px-4 py-2 transition-all duration-200
-                                ${
-                                  currentTurn === "team1"
-                                    ? "hover:bg-gray-300 cursor-pointer"
-                                    : "opacity-50 cursor-not-allowed bg-gray-200"
-                                }
+                                hover:bg-gray-300 cursor-pointer
                               `}
                             >
                               {data?.session?.team1?.name}
                             </button>
                             <button
                               onClick={() => handleTeamAnswer("team2")}
-                              disabled={currentTurn !== "team2"}
                               className={`
-                                text-black font-bold text-md border border-gray-300 rounded-xl px-4 py-2 transition-all duration-200
-                                ${
-                                  currentTurn === "team2"
-                                    ? "hover:bg-gray-300 cursor-pointer"
-                                    : "opacity-50 cursor-not-allowed bg-gray-200"
-                                }
+                                text-black font-bold text-md border border-gray-300 rounded-xl px-4 py-2 transition-all duration-200 hover:bg-gray-300 cursor-pointer
                               `}
                             >
                               {data?.session?.team2?.name}
                             </button>
+
+                            <button
+                              onClick={handleNoOneAnswers}
+                              className={`
+                                text-black font-bold text-md border border-gray-300 rounded-xl px-4 py-2 transition-all duration-200 hover:bg-gray-300 cursor-pointer
+                              `}
+                            >
+                              لا أحد أجاب
+                            </button>
                           </div>
-                          <button
-                            onClick={handleNoOneAnswers}
-                            className="mt-4 text-red-600 hover:text-white hover:bg-red-600 px-6 py-3 rounded-lg font-medium transition-colors duration-200 cursor-pointer border border-red-600"
-                          >
-                            لا أحد أجاب
-                          </button>
                         </div>
                       </div>
                     </>
@@ -993,208 +1016,199 @@ export default function InGame({ data }: { data: any }) {
               </div>
             </div>
           )}
+        </div>
+        {/* Bottom Section - Teams, Logo, and Cards */}
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8 md:px-16 py-4 bg-[#55504C] bottom-0 fixed w-full">
+          {/* Left Section - Team 2 */}
+          <div className="flex flex-row items-center justify-around gap-4 flex-1">
+            {/* Team 2 Cards */}
+            {!data?.session?.playWithoutCards && (
+              <div className="flex items-center gap-2">
+                {data?.session?.team2?.selectedCards?.map(
+                  (card: any, index: number) => {
+                    const cardId = card.id || card._id;
+                    const numericCardId =
+                      typeof cardId === "number" ? cardId : Number(cardId);
+                    const isUsed = isCardUsed(numericCardId, "team2");
+                    const canUse = canUseCards("team2");
+                    const isClickable =
+                      currentTurn === "team2" && !isUsed && canUse;
 
-          {/* Bottom Section - Teams, Logo, and Cards */}
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8 md:mx-16">
-            {/* Left Section - Team 2 */}
-            <div className="flex flex-col items-center gap-4 flex-1">
-              {/* Team 2 Score Display */}
-              <div className="bg-[#E0D9EB] rounded-xl px-6 md:px-8 py-2 shadow-md border border-gray-200 w-full max-w-xs">
-                <div className="flex flex-col items-center space-y-3">
-                  {/* Team Name with Plus Button */}
-                  <div className="flex items-center justify-center gap-2">
-                    <button
-                      onClick={() => handleScoreAdjust("team2", 1)}
-                      className="w-6 h-6 md:w-7 md:h-7 bg-[#6A0DAD] rounded-full flex items-center justify-center hover:bg-[#5a0a9d] transition-colors cursor-pointer"
-                      type="button"
-                    >
-                      <PlusIcon className="w-4 h-4 text-white" />
-                    </button>
-                    <span className="text-black font-bold text-base md:text-lg">
-                      {data?.session?.team2?.name}
-                    </span>
-                    <button
-                      onClick={() => handleScoreAdjust("team2", -1)}
-                      className="w-6 h-6 md:w-7 md:h-7 bg-[#6A0DAD] rounded-full flex items-center justify-center hover:bg-[#5a0a9d] transition-colors cursor-pointer"
-                      type="button"
-                    >
-                      <MinusIcon className="w-4 h-4 text-white" />
-                    </button>
-                  </div>
-
-                  {/* Score Display */}
-                  <span className="text-[#6A0DAD] font-bold text-3xl md:text-4xl">
-                    {localScores.team2}
-                  </span>
-                </div>
-              </div>
-
-              {/* Team 2 Cards */}
-              {!data?.session?.playWithoutCards && (
-                <div className="flex flex-col items-center gap-2 mt-2">
-                  <div className="flex justify-center gap-2 flex-wrap">
-                    {data?.session?.team2?.selectedCards?.map(
-                      (card: any, index: number) => {
-                        const cardId =
-                          typeof card._id === "string"
-                            ? card._id
-                            : card._id.toString();
-                        const isUsed = isCardUsed(cardId, "team2");
-                        const canUse = canUseCards("team2");
-                        const isClickable =
-                          currentTurn === "team2" && !isUsed && canUse;
-
-                        return (
-                          <button
-                            key={`team2-card-${index}`}
-                            onClick={() => handleCardClick(card, "team2")}
-                            disabled={!isClickable}
-                            className={`
-                              relative rounded-lg transition-all duration-200
-                              ${
-                                isClickable
-                                  ? "hover:scale-110 hover:shadow-lg cursor-pointer"
-                                  : "opacity-50 cursor-not-allowed"
-                              }
-                              ${isUsed ? "grayscale" : ""}
-                            `}
-                            type="button"
-                            title={
-                              isUsed
-                                ? "تم استخدام هذا الكرت"
-                                : !canUse
-                                ? "الكروت مقفلة"
-                                : currentTurn !== "team2"
-                                ? "ليس دورك"
-                                : card.name
+                    return (
+                      <button
+                        key={`team2-card-${index}`}
+                        onClick={() => handleCardClick(card, "team2")}
+                        disabled={!isClickable}
+                        className={`
+                            relative rounded-lg transition-all duration-200
+                            ${
+                              isClickable
+                                ? "hover:scale-110 hover:shadow-lg cursor-pointer"
+                                : "opacity-50 cursor-not-allowed"
                             }
-                          >
-                            <Image
-                              src={card.image}
-                              alt={card.name || "Power Card"}
-                              width={60}
-                              height={60}
-                              className="rounded-lg"
-                            />
-                            {isUsed && (
-                              <div className="absolute inset-0 bg-black/50 rounded-lg flex items-center justify-center">
-                                <span className="text-white text-xs">✓</span>
-                              </div>
-                            )}
-                          </button>
-                        );
-                      }
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Center Section - Logo */}
-            <div className="flex items-center justify-center flex-shrink-0">
-              <Image
-                src="/logo-footer.png"
-                alt="لمة"
-                width={150}
-                height={56}
-                className="h-12 md:h-16 w-auto"
-                priority
-              />
-            </div>
-
-            {/* Right Section - Team 1 */}
-            <div className="flex flex-col items-center gap-4 flex-1">
-              {/* Team 1 Score Display */}
-              <div className="bg-[#E0D9EB] rounded-xl px-6 md:px-8 py-2 shadow-md border border-gray-200 w-full max-w-xs">
-                <div className="flex flex-col items-center space-y-3">
-                  {/* Team Name with Plus Button */}
-                  <div className="flex items-center justify-center gap-2">
-                    <button
-                      onClick={() => handleScoreAdjust("team1", 1)}
-                      className="w-6 h-6 md:w-7 md:h-7 bg-[#6A0DAD] rounded-full flex items-center justify-center hover:bg-[#5a0a9d] transition-colors cursor-pointer"
-                      type="button"
-                    >
-                      <PlusIcon className="w-4 h-4 text-white" />
-                    </button>
-                    <span className="text-black font-bold text-base md:text-lg">
-                      {data?.session?.team1?.name}
-                    </span>
-                    <button
-                      onClick={() => handleScoreAdjust("team1", -1)}
-                      className="w-6 h-6 md:w-7 md:h-7 bg-[#6A0DAD] rounded-full flex items-center justify-center hover:bg-[#5a0a9d] transition-colors cursor-pointer"
-                      type="button"
-                    >
-                      <MinusIcon className="w-4 h-4 text-white" />
-                    </button>
-                  </div>
-
-                  {/* Score Display */}
-                  <span className="text-[#6A0DAD] font-bold text-3xl md:text-4xl">
-                    {localScores.team1}
-                  </span>
-                </div>
+                            ${isUsed ? "grayscale" : ""}
+                          `}
+                        type="button"
+                        title={
+                          isUsed
+                            ? "تم استخدام هذا الكرت"
+                            : !canUse
+                            ? "الكروت مقفلة"
+                            : currentTurn !== "team2"
+                            ? "ليس دورك"
+                            : card.name
+                        }
+                      >
+                        <Image
+                          src={card.image}
+                          alt={card.name || "Power Card"}
+                          width={60}
+                          height={60}
+                          className="rounded-lg"
+                        />
+                        {isUsed && (
+                          <div className="absolute inset-0 bg-black/50 rounded-lg flex items-center justify-center">
+                            <span className="text-white text-xs">✓</span>
+                          </div>
+                        )}
+                      </button>
+                    );
+                  }
+                )}
               </div>
-
-              {/* Team 1 Cards */}
-              {!data?.session?.playWithoutCards && (
-                <div className="flex flex-col items-center gap-2 mt-2">
-                  <div className="flex justify-center gap-2 flex-wrap">
-                    {data?.session?.team1?.selectedCards?.map(
-                      (card: any, index: number) => {
-                        const cardId =
-                          typeof card._id === "string"
-                            ? card._id
-                            : card._id.toString();
-                        const isUsed = isCardUsed(cardId, "team1");
-                        const canUse = canUseCards("team1");
-                        const isClickable =
-                          currentTurn === "team1" && !isUsed && canUse;
-
-                        return (
-                          <button
-                            key={`team1-card-${index}`}
-                            onClick={() => handleCardClick(card, "team1")}
-                            disabled={!isClickable}
-                            className={`
-                              relative rounded-lg transition-all duration-200
-                              ${
-                                isClickable
-                                  ? "hover:scale-110 hover:shadow-lg cursor-pointer"
-                                  : "opacity-50 cursor-not-allowed"
-                              }
-                              ${isUsed ? "grayscale" : ""}
-                            `}
-                            type="button"
-                            title={
-                              isUsed
-                                ? "تم استخدام هذا الكرت"
-                                : !canUse
-                                ? "الكروت مقفلة"
-                                : currentTurn !== "team1"
-                                ? "ليس دورك"
-                                : card.name
-                            }
-                          >
-                            <Image
-                              src={card.image}
-                              alt={card.name || "Power Card"}
-                              width={60}
-                              height={60}
-                              className="rounded-lg"
-                            />
-                            {isUsed && (
-                              <div className="absolute inset-0 bg-black/50 rounded-lg flex items-center justify-center">
-                                <span className="text-white text-xs">✓</span>
-                              </div>
-                            )}
-                          </button>
-                        );
-                      }
-                    )}
-                  </div>
+            )}
+            {/* Team 2 Score Display */}
+            <div className="bg-[#2F2C22] rounded-xl px-6 md:px-8 py-2 shadow-md border border-[#FDD57E] w-full max-w-xs">
+              <div className="flex flex-col items-center">
+                {/* Team Name with Plus Button */}
+                <div className="flex items-center justify-center gap-2">
+                  <button
+                    onClick={() => handleScoreAdjust("team2", 100)}
+                    className="w-6 h-6 md:w-7 md:h-7 bg-[#FCCB97] rounded-full flex items-center justify-center transition-colors cursor-pointer"
+                    type="button"
+                  >
+                    <PlusIcon className="w-4 h-4 text-black" />
+                  </button>
+                  <span className="text-[#FCCB97] font-bold text-base md:text-lg">
+                    {data?.session?.team2?.name}
+                  </span>
+                  <button
+                    onClick={() => handleScoreAdjust("team2", -100)}
+                    className="w-6 h-6 md:w-7 md:h-7 bg-[#FCCB97] rounded-full flex items-center justify-center transition-colors cursor-pointer"
+                    type="button"
+                  >
+                    <MinusIcon className="w-4 h-4 text-black" />
+                  </button>
                 </div>
-              )}
+
+                {/* Score Display */}
+                <span className="text-[#FCCB97] font-bold text-3xl md:text-4xl">
+                  {localScores.team2}
+                </span>
+              </div>
             </div>
+          </div>
+
+          {/* Center Section - Logo */}
+          <div className="flex items-center justify-center flex-shrink-0">
+            <Image
+              src="/logo.png"
+              alt="لمة"
+              width={150}
+              height={56}
+              className="h-12 md:h-16 w-auto"
+              priority
+            />
+          </div>
+
+          {/* Right Section - Team 1 */}
+          <div className="flex flex-row items-center justify-around gap-4 flex-1">
+            {/* Team 1 Score Display */}
+            <div className="bg-[#2F2C22] rounded-xl px-6 md:px-8 py-2 shadow-md border border-[#FDD57E] w-full max-w-xs">
+              <div className="flex flex-col items-center">
+                {/* Team Name with Plus Button */}
+                <div className="flex items-center justify-center gap-2">
+                  <button
+                    onClick={() => handleScoreAdjust("team1", 100)}
+                    className="w-6 h-6 md:w-7 md:h-7 bg-[#FCCB97] rounded-full flex items-center justify-center transition-colors cursor-pointer"
+                    type="button"
+                  >
+                    <PlusIcon className="w-4 h-4 text-black" />
+                  </button>
+                  <span className="text-[#FCCB97] font-bold text-base md:text-lg">
+                    {data?.session?.team1?.name}
+                  </span>
+                  <button
+                    onClick={() => handleScoreAdjust("team1", -100)}
+                    className="w-6 h-6 md:w-7 md:h-7 bg-[#FCCB97] rounded-full flex items-center justify-center transition-colors cursor-pointer"
+                    type="button"
+                  >
+                    <MinusIcon className="w-4 h-4 text-black" />
+                  </button>
+                </div>
+
+                {/* Score Display */}
+                <span className="text-[#FCCB97] font-bold text-3xl md:text-4xl">
+                  {localScores.team1}
+                </span>
+              </div>
+            </div>
+            {/* Team 1 Cards */}
+            {!data?.session?.playWithoutCards && (
+              <div className="flex items-center gap-2">
+                {data?.session?.team1?.selectedCards?.map(
+                  (card: any, index: number) => {
+                    const cardId = card.id || card._id;
+                    const numericCardId =
+                      typeof cardId === "number" ? cardId : Number(cardId);
+                    const isUsed = isCardUsed(numericCardId, "team1");
+                    const canUse = canUseCards("team1");
+                    const isClickable =
+                      currentTurn === "team1" && !isUsed && canUse;
+
+                    return (
+                      <button
+                        key={`team1-card-${index}`}
+                        onClick={() => handleCardClick(card, "team1")}
+                        disabled={!isClickable}
+                        className={`
+                            relative rounded-lg transition-all duration-200
+                            ${
+                              isClickable
+                                ? "hover:scale-110 hover:shadow-lg cursor-pointer"
+                                : "opacity-50 cursor-not-allowed"
+                            }
+                            ${isUsed ? "grayscale" : ""}
+                          `}
+                        type="button"
+                        title={
+                          isUsed
+                            ? "تم استخدام هذا الكرت"
+                            : !canUse
+                            ? "الكروت مقفلة"
+                            : currentTurn !== "team1"
+                            ? "ليس دورك"
+                            : card.name
+                        }
+                      >
+                        <Image
+                          src={card.image}
+                          alt={card.name || "Power Card"}
+                          width={60}
+                          height={60}
+                          className="rounded-lg"
+                        />
+                        {isUsed && (
+                          <div className="absolute inset-0 bg-black/50 rounded-lg flex items-center justify-center">
+                            <span className="text-white text-xs">✓</span>
+                          </div>
+                        )}
+                      </button>
+                    );
+                  }
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
