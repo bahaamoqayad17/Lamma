@@ -22,8 +22,9 @@ interface CategoryData {
 
 interface QuestionCardProps {
   data: CategoryData;
-  onQuestionSelect?: (question: Question) => void;
+  onQuestionSelect?: (question: Question, blockKey?: string) => void;
   answeredQuestionIds?: Set<string>;
+  blockedBlocks?: Set<string>;
   className?: string;
 }
 
@@ -31,6 +32,7 @@ export default function QuestionCard({
   data,
   onQuestionSelect,
   answeredQuestionIds = new Set(),
+  blockedBlocks = new Set(),
   className,
 }: QuestionCardProps) {
   // Group questions by points for display
@@ -46,11 +48,11 @@ export default function QuestionCard({
     .map(Number)
     .sort((a, b) => a - b);
 
-  const handleQuestionClick = (question: Question) => {
+  const handleQuestionClick = (question: Question, blockKey: string) => {
     // Don't allow selecting already answered questions
     // Ensure question ID is always a string for comparison
     const questionId =
-      typeof question._id === "string" ? question._id : question._id.toString();
+      typeof question._id === "string" ? question._id : String(question._id);
     if (answeredQuestionIds.has(questionId)) {
       console.warn(
         "Attempted to select already answered question:",
@@ -58,7 +60,12 @@ export default function QuestionCard({
       );
       return;
     }
-    onQuestionSelect?.(question);
+    // Don't allow selecting from blocked blocks
+    if (blockedBlocks.has(blockKey)) {
+      console.warn("Attempted to select from blocked block:", blockKey);
+      return;
+    }
+    onQuestionSelect?.(question, blockKey);
   };
 
   // Find the first unanswered question for a specific point value
@@ -69,7 +76,7 @@ export default function QuestionCard({
     // Ensure question IDs are compared as strings
     return (
       questions.find((q) => {
-        const questionId = typeof q._id === "string" ? q._id : q._id.toString();
+        const questionId = typeof q._id === "string" ? q._id : String(q._id);
         return !answeredQuestionIds.has(questionId);
       }) || null
     );
@@ -82,7 +89,7 @@ export default function QuestionCard({
     // Check if ALL questions for this point value are answered
     // Ensure question IDs are compared as strings
     return questions.every((q) => {
-      const questionId = typeof q._id === "string" ? q._id : q._id.toString();
+      const questionId = typeof q._id === "string" ? q._id : String(q._id);
       return answeredQuestionIds.has(questionId);
     });
   };
@@ -99,9 +106,6 @@ export default function QuestionCard({
       )}
     >
       {/* Category Header */}
-      <div className="bg-yellow-400 rounded-t-lg px-6 py-4 text-center w-full">
-        <h1 className="text-3xl font-bold text-black">{data.name}</h1>
-      </div>
 
       {/* Main Card Body */}
       <div className="rounded-b-lg overflow-hidden">
@@ -110,25 +114,29 @@ export default function QuestionCard({
           <div className="border-r border-gray-300 flex flex-1 flex-col h-65 [@media(min-width:2160px)]:h-88">
             {pointValues.map((points) => {
               const question = getFirstUnansweredQuestion(points);
+              const blockKey = `${data._id}-${points}-left`;
+              const isBlocked = blockedBlocks.has(blockKey);
               const allAnswered = areAllQuestionsAnswered(points);
+              const isDisabled = isBlocked || allAnswered || !question;
               return (
                 <button
                   key={`left-${points}`}
                   onClick={() => {
-                    if (question) handleQuestionClick(question);
+                    if (question && !isBlocked)
+                      handleQuestionClick(question, blockKey);
                   }}
-                  disabled={allAnswered}
+                  disabled={isDisabled}
                   className={cn(
                     "flex flex-1 items-center justify-center border-b border-gray-300 last:border-b-0 transition-colors duration-200",
-                    allAnswered
+                    isDisabled
                       ? "bg-gray-400 opacity-50 cursor-not-allowed"
                       : "hover:bg-orange-200 cursor-pointer"
                   )}
                 >
                   <span
                     className={cn(
-                      "text-lg font-bold",
-                      allAnswered ? "text-gray-600 line-through" : "text-black"
+                      "text-2xl font-extrabold",
+                      isDisabled ? "text-gray-600 line-through" : "text-black"
                     )}
                   >
                     {points}
@@ -139,8 +147,8 @@ export default function QuestionCard({
           </div>
 
           {/* Center - Category Image */}
-          <div className="flex items-center justify-center">
-            <div className="w-70 h-65 rounded-lg flex items-center justify-center [@media(min-width:2160px)]:w-96 [@media(min-width:2160px)]:h-88">
+          <div className="flex items-center justify-center relative">
+            <div className="w-70 h-80 rounded-lg flex items-center justify-center [@media(min-width:2160px)]:w-96 [@media(min-width:2160px)]:h-120">
               <Image
                 src={data.image}
                 alt={data.name}
@@ -149,31 +157,38 @@ export default function QuestionCard({
                 className="w-full h-full object-cover rounded-lg"
               />
             </div>
+            <div className="bg-yellow-400 rounded-t-lg px-6 py-4 text-center w-full absolute top-0 left-0">
+              <h1 className="text-2xl font-bold text-black">{data.name}</h1>
+            </div>
           </div>
 
           {/* Right Points Column */}
           <div className="border-l border-gray-300 flex flex-1 flex-col h-65 [@media(min-width:2160px)]:h-88">
             {pointValues.map((points) => {
               const question = getFirstUnansweredQuestion(points);
+              const blockKey = `${data._id}-${points}-right`;
+              const isBlocked = blockedBlocks.has(blockKey);
               const allAnswered = areAllQuestionsAnswered(points);
+              const isDisabled = isBlocked || allAnswered || !question;
               return (
                 <button
                   key={`right-${points}`}
                   onClick={() => {
-                    if (question) handleQuestionClick(question);
+                    if (question && !isBlocked)
+                      handleQuestionClick(question, blockKey);
                   }}
-                  disabled={allAnswered}
+                  disabled={isDisabled}
                   className={cn(
                     "flex flex-1 items-center justify-center border-b border-gray-300 last:border-b-0 transition-colors duration-200",
-                    allAnswered
+                    isDisabled
                       ? "bg-gray-400 opacity-50 cursor-not-allowed"
                       : "hover:bg-orange-200 cursor-pointer"
                   )}
                 >
                   <span
                     className={cn(
-                      "text-lg font-bold",
-                      allAnswered ? "text-gray-600 line-through" : "text-black"
+                      "text-2xl font-extrabold",
+                      isDisabled ? "text-gray-600 line-through" : "text-black"
                     )}
                   >
                     {points}

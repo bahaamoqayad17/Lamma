@@ -40,7 +40,7 @@ export default function CategoryCard({
               : "bg-[#D5D5D5]" // Light gray background when not selected
           )}
         >
-          <h3 className="text-sm font-medium text-gray-800 leading-tight">
+          <h3 className="text-lg font-medium text-gray-800 leading-tight">
             {title}
           </h3>
         </div>

@@ -1,12 +1,12 @@
 import { getQuestions } from "@/actions/question-actions";
 import QuestionsClient from "./client";
 import { QuestionType } from "@/models/Question";
-import { getCategories } from "@/actions/category-actions";
+import { getSubCategories } from "@/actions/category-actions";
 import { CategoryType } from "@/models/Category";
 
 export default async function QuestionsPage() {
   const { success, message, data } = await getQuestions();
-  const categoriesResult = await getCategories();
+  const categoriesResult = await getSubCategories();
 
   if (!success) {
     return (

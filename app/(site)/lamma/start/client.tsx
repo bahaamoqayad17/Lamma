@@ -236,34 +236,34 @@ export default function Start({ data }: StartProps) {
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 px-4 py-8 md:px-10 mx-60">
+      <div className="relative z-10 px-4 py-4 sm:py-6 md:py-8 md:px-6 lg:px-10 max-w-7xl mx-auto">
         {/* Page Title Section */}
-        <div className="text-center mb-12">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+        <div className="text-center mb-8 sm:mb-10 md:mb-12">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-3 sm:mb-4 px-2">
             فئات الاسئلة
           </h1>
-          <div className="w-16 h-1 bg-orange-400 mx-auto mb-4"></div>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            اختر 5 من الفئات والتي ستكون الاسالة ضمن نطاقها
+          <div className="w-12 sm:w-16 h-1 bg-orange-400 mx-auto mb-3 sm:mb-4"></div>
+          <p className="text-sm sm:text-base md:text-lg text-gray-600 max-w-2xl mx-auto px-4">
+            اختر 6 من الفئات والتي ستكون الاسالة ضمن نطاقها
           </p>
         </div>
 
         {/* Categories Section */}
         {categories.length > 0 ? (
-          <div className="mb-16 space-y-12">
+          <div className="mb-10 sm:mb-12 md:mb-16 space-y-8 sm:space-y-10 md:space-y-12">
             {categories.map((category) => (
-              <div key={category._id} className="space-y-6">
+              <div key={category._id} className="space-y-4 sm:space-y-6">
                 {/* Category Title Section */}
                 <div className="text-center">
-                  <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
+                  <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 mb-2 px-2">
                     {category.name}
                   </h2>
-                  <div className="w-12 h-1 bg-orange-400 mx-auto"></div>
+                  <div className="w-10 sm:w-12 h-1 bg-orange-400 mx-auto"></div>
                 </div>
 
                 {/* Subcategories Grid */}
                 {category.subcategories && category.subcategories.length > 0 ? (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 mx-auto">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-6 mx-auto">
                     {category.subcategories.map((subcategory) => (
                       <CategoryCard
                         key={subcategory._id}
@@ -297,22 +297,24 @@ export default function Start({ data }: StartProps) {
         )}
 
         {/* Selection Counter */}
-        <div className="text-center mb-8">
-          <p className="text-lg text-gray-600">
+        <div className="text-center mb-6 sm:mb-8">
+          <p className="text-base sm:text-lg text-gray-600 px-2">
             تم اختيار {selectedSubcategories.length} من {maxSelections} فئات
           </p>
           {selectedSubcategories.length === maxSelections && (
-            <p className="text-green-600 font-medium mt-2">
+            <p className="text-green-600 font-medium mt-2 text-sm sm:text-base px-2">
               تم الوصول للحد الأقصى من الفئات المختارة
             </p>
           )}
         </div>
 
         {/* Game Name Input Section */}
-        <div className="max-w-md mx-auto mb-8">
+        <div className="max-w-md mx-auto mb-6 sm:mb-8 px-4 sm:px-0">
           <div className="flex justify-between items-center mb-3">
-            <span className="text-sm font-bold text-gray-800">اسم اللعبة</span>
-            <span className="text-sm text-gray-500">اقترح مسمى</span>
+            <span className="text-xs sm:text-sm font-bold text-gray-800">
+              اسم اللعبة
+            </span>
+            <span className="text-xs sm:text-sm text-gray-500">اقترح مسمى</span>
           </div>
           <Input
             type="text"
@@ -324,8 +326,8 @@ export default function Start({ data }: StartProps) {
         </div>
 
         {/* Team Setup Section */}
-        <div className="max-w-6xl mx-auto mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="max-w-6xl mx-auto mb-6 sm:mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
             {/* Team One */}
             <div>
               <div className="flex justify-between items-center mb-3">
@@ -363,45 +365,45 @@ export default function Start({ data }: StartProps) {
         </div>
 
         {/* Play Without Cards Checkbox */}
-        <div className="flex items-center justify-center mb-8 gap-3 p-4 bg-white rounded-lg border-2 border-gray-300 hover:border-[#6A0DAD] transition-colors duration-200 max-w-md mx-auto cursor-pointer shadow-md">
+        <div className="flex items-center justify-center mb-6 sm:mb-8 gap-2 sm:gap-3 p-3 sm:p-4 bg-white rounded-lg border-2 border-gray-300 hover:border-[#6A0DAD] transition-colors duration-200 max-w-md mx-auto cursor-pointer shadow-md mx-4 sm:mx-auto">
           <input
             type="checkbox"
             id="playWithoutCards"
             checked={playWithoutCards}
             onChange={(e) => setPlayWithoutCards(e.target.checked)}
-            className="w-5 h-5 text-[#6A0DAD] border-2 border-gray-400 rounded focus:ring-2 focus:ring-[#6A0DAD] focus:ring-offset-2 cursor-pointer"
+            className="w-4 h-4 sm:w-5 sm:h-5 text-[#6A0DAD] border-2 border-gray-400 rounded focus:ring-2 focus:ring-[#6A0DAD] focus:ring-offset-2 cursor-pointer"
           />
           <label
             htmlFor="playWithoutCards"
-            className="text-gray-800 font-semibold text-base cursor-pointer flex items-center gap-2"
+            className="text-gray-800 font-semibold text-sm sm:text-base cursor-pointer flex items-center gap-2"
           >
-            <span className="text-lg">🎮</span>
+            <span className="text-base sm:text-lg">🎮</span>
             <span>العب بدون كروت القوة</span>
           </label>
         </div>
 
         {/* Power Cards Section */}
-        <div className="max-w-6xl mx-auto mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="max-w-6xl mx-auto mb-6 sm:mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
             {/* Team One Power Cards */}
             <div>
-              <div className="flex justify-between items-center mb-3">
-                <h3 className="text-lg font-bold text-gray-800 mb-4 text-center">
+              <div className="flex flex-col sm:flex-row justify-between items-center mb-3 gap-2">
+                <h3 className="text-base sm:text-lg font-bold text-gray-800 text-center">
                   اختر وسائل القوة المناسبة
                 </h3>
                 <div
-                  className="text-white px-4 py-2 rounded-full text-center mb-4"
+                  className="text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-center"
                   style={{
                     backgroundColor: "rgba(106, 13, 173, 0.1)",
                   }}
                 >
-                  <span className="text-sm font-medium text-[#6A0DAD]">
+                  <span className="text-xs sm:text-sm font-medium text-[#6A0DAD]">
                     رصيدك 22$
                   </span>
                 </div>
               </div>
               <div className="mb-2 text-center">
-                <p className="text-sm text-gray-600">
+                <p className="text-xs sm:text-sm text-gray-600">
                   تم اختيار {teamOneSelectedCards.length} من {maxCardSelections}{" "}
                   كروت
                 </p>
@@ -411,7 +413,7 @@ export default function Start({ data }: StartProps) {
                   </p>
                 )}
               </div>
-              <div className="grid grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3">
                 {helpingCards.map((card) => (
                   <HelpingCard
                     key={card.id}
@@ -435,23 +437,23 @@ export default function Start({ data }: StartProps) {
 
             {/* Team Two Power Cards */}
             <div>
-              <div className="flex justify-between items-center mb-3">
-                <h3 className="text-lg font-bold text-gray-800 mb-4 text-center">
+              <div className="flex flex-col sm:flex-row justify-between items-center mb-3 gap-2">
+                <h3 className="text-base sm:text-lg font-bold text-gray-800 text-center">
                   اختر وسائل القوة المناسبة
                 </h3>
                 <div
-                  className="text-white px-4 py-2 rounded-full text-center mb-4"
+                  className="text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-center"
                   style={{
                     backgroundColor: "rgba(106, 13, 173, 0.1)",
                   }}
                 >
-                  <span className="text-sm font-medium text-[#6A0DAD]">
+                  <span className="text-xs sm:text-sm font-medium text-[#6A0DAD]">
                     رصيدك 22$
                   </span>
                 </div>
               </div>
               <div className="mb-2 text-center">
-                <p className="text-sm text-gray-600">
+                <p className="text-xs sm:text-sm text-gray-600">
                   تم اختيار {teamTwoSelectedCards.length} من {maxCardSelections}{" "}
                   كروت
                 </p>
@@ -461,7 +463,7 @@ export default function Start({ data }: StartProps) {
                   </p>
                 )}
               </div>
-              <div className="grid grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3">
                 {helpingCards.map((card) => (
                   <HelpingCard
                     key={card.id}
@@ -486,28 +488,28 @@ export default function Start({ data }: StartProps) {
         </div>
 
         {/* Start Match Button */}
-        <div className="text-center space-y-4">
+        <div className="text-center space-y-3 sm:space-y-4 px-4 sm:px-0">
           <Button
             size="lg"
-            className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold px-12 py-4 text-lg transition-all duration-200 flex items-center gap-3 mx-auto disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold px-6 sm:px-8 md:px-12 py-3 sm:py-4 text-base sm:text-lg transition-all duration-200 flex items-center gap-2 sm:gap-3 mx-auto disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
             onClick={handleStartGame}
             disabled={isLoading}
           >
             {isLoading ? (
               <>
                 جاري الإنشاء...
-                <Loader2 className="w-5 h-5 animate-spin" />
+                <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
               </>
             ) : (
               <>
                 ابدأ المباراة
-                <ArrowLeft />
+                <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
               </>
             )}
           </Button>
 
           {playWithoutCards && (
-            <p className="text-sm text-[#6A0DAD] font-medium max-w-md mx-auto">
+            <p className="text-xs sm:text-sm text-[#6A0DAD] font-medium max-w-md mx-auto px-2">
               سيتم بدء المباراة بدون اختيار أي كروت قوة
             </p>
           )}
@@ -516,13 +518,13 @@ export default function Start({ data }: StartProps) {
 
       {/* Right Sidebar - Selected Subcategories - Only show when subcategories are selected */}
       {selectedSubcategories.length > 0 && (
-        <div className="fixed right-[50%] translate-x-1/2 md:translate-x-0 top-20 md:right-0 bg-transparent p-2 md:h-[80vh] flex flex-col justify-between z-20">
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 md:translate-x-0 md:left-auto md:right-0 md:top-20 bg-transparent p-2 md:h-[80vh] flex flex-col justify-between z-20 max-w-[90vw] md:max-w-none">
           {/* Scrollable subcategories */}
-          <div className="space-y-3 overflow-y-auto overflow-x-hidden flex-1 p-2 bg-white flex rounded-lg md:block md:bg-transparent">
+          <div className="space-y-2 sm:space-y-3 overflow-y-auto overflow-x-auto md:overflow-x-hidden flex-1 p-2 bg-white/95 backdrop-blur-sm md:bg-transparent flex flex-row md:flex-col rounded-lg shadow-lg md:shadow-none max-h-[120px] md:max-h-none">
             {getSelectedSubcategoryData().map((subcategory) => (
               <div
                 key={subcategory?._id}
-                className="relative w-fit md:w-[150px]"
+                className="relative w-[80px] sm:w-[100px] md:w-[150px] flex-shrink-0 md:flex-shrink"
               >
                 <CategoryCard
                   image={subcategory?.image || ""}
@@ -539,16 +541,18 @@ export default function Start({ data }: StartProps) {
                       prev.filter((sId) => sId !== subcategory?._id)
                     )
                   }
-                  className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center cursor-pointer hover:bg-red-600 transition-colors"
+                  className="absolute -top-1 -right-1 w-5 h-5 sm:w-6 sm:h-6 bg-red-500 rounded-full flex items-center justify-center cursor-pointer hover:bg-red-600 transition-colors z-10"
                 >
-                  <span className="text-white text-lg font-bold">×</span>
+                  <span className="text-white text-sm sm:text-lg font-bold">
+                    ×
+                  </span>
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Arrow fixed below the scroll */}
-          <div className="mt-4 flex justify-center">
+          {/* Arrow fixed below the scroll - Hidden on mobile */}
+          <div className="hidden md:flex mt-4 justify-center">
             <button
               onClick={handleScrollDown}
               className="w-10 h-10 bg-yellow-400 hover:bg-yellow-500 rounded-full shadow-lg flex items-center justify-center transition-all duration-200 cursor-pointer"

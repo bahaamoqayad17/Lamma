@@ -11,7 +11,13 @@ import Image from "next/image";
 import QuestionCard from "@/components/QuestionCard";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { LogOut, PlusIcon, SkipForward } from "lucide-react";
+import {
+  ArrowBigDown,
+  ArrowDown,
+  LogOut,
+  PlusIcon,
+  SkipForward,
+} from "lucide-react";
 import TimerComponent from "@/components/Timer";
 import { MinusIcon } from "lucide-react";
 import {
@@ -25,6 +31,7 @@ import {
 import { toast } from "react-toastify";
 import helpingCardsData from "@/data/helping-cards.json";
 import LammaEndGame from "@/components/LammaEndGame";
+import AnswerCorrectionModal from "@/components/modals/AnswerCorrectionModal";
 
 export default function InGame({ data }: { data: any }) {
   const [step, setStep] = useState<"list" | "question">("list");
@@ -32,7 +39,10 @@ export default function InGame({ data }: { data: any }) {
     data?.session?.finished || false
   );
   const [selectedQuestion, setSelectedQuestion] = useState<any>(null);
+  const [selectedBlockKey, setSelectedBlockKey] = useState<string | null>(null);
   const [showAnswer, setShowAnswer] = useState(false);
+  const [showAnswerCorrectionModal, setShowAnswerCorrectionModal] =
+    useState(false);
 
   // Local state for scores (optimistic updates)
   const [localScores, setLocalScores] = useState({
@@ -115,6 +125,9 @@ export default function InGame({ data }: { data: any }) {
   // Extract answered question IDs from moves (combine server and local)
   const answeredQuestionIds = localAnsweredQuestions;
 
+  // Track blocked points blocks (categoryId-points-side)
+  const [blockedBlocks, setBlockedBlocks] = useState<Set<string>>(new Set());
+
   // Debounce timer for score updates
   const scoreUpdateTimerRef = useRef<NodeJS.Timeout | null>(null);
   const pendingScoreUpdateRef = useRef<{
@@ -132,12 +145,18 @@ export default function InGame({ data }: { data: any }) {
       : data?.session?.id;
   }, [data?.session?._id, data?.session?.id]);
 
-  const handleQuestionSelect = (question: any) => {
+  const handleQuestionSelect = (question: any, blockKey?: string) => {
     // Don't allow selecting already answered questions
     const questionId =
       typeof question._id === "string" ? question._id : question._id.toString();
     if (answeredQuestionIds.has(questionId)) {
       console.warn("Question already answered:", questionId);
+      return;
+    }
+
+    // Check if block is already blocked
+    if (blockKey && blockedBlocks.has(blockKey)) {
+      console.warn("Block already blocked:", blockKey);
       return;
     }
 
@@ -165,6 +184,7 @@ export default function InGame({ data }: { data: any }) {
     }
 
     setSelectedQuestion(question);
+    setSelectedBlockKey(blockKey || null);
     setShowAnswer(false);
     setStep("question");
 
@@ -210,6 +230,7 @@ export default function InGame({ data }: { data: any }) {
       // Reset UI state
       setShowAnswer(false);
       setSelectedQuestion(null);
+      setSelectedBlockKey(null);
       setStep("list");
       return;
     }
@@ -226,6 +247,15 @@ export default function InGame({ data }: { data: any }) {
       newSet.add(questionId);
       return newSet;
     });
+
+    // Block the specific points block that was clicked
+    if (selectedBlockKey) {
+      setBlockedBlocks((prev) => {
+        const newSet = new Set<string>(prev);
+        newSet.add(selectedBlockKey);
+        return newSet;
+      });
+    }
 
     // Handle double answers
     let shouldSwitchTurn = true;
@@ -766,6 +796,15 @@ export default function InGame({ data }: { data: any }) {
     setSelectedQuestion(null);
     setStep("list");
 
+    // Block the specific points block that was clicked
+    if (selectedBlockKey) {
+      setBlockedBlocks((prev) => {
+        const newSet = new Set<string>(prev);
+        newSet.add(selectedBlockKey);
+        return newSet;
+      });
+    }
+
     // Clear double points if active
     if (activeEffects?.doublePoints?.active) {
       setActiveEffects((prev: any) => ({
@@ -818,15 +857,13 @@ export default function InGame({ data }: { data: any }) {
         {/* Exit button - Left side for RTL */}
 
         {/* Team Turn - Right side for RTL */}
-        <div className="flex-shrink-0">
-          <div className="bg-white/20 px-4 py-2 rounded-full">
-            <span className="text-[#FCBB00]">
-              دور فريق :{" "}
-              {currentTurn === "team1"
-                ? data?.session?.team1?.name
-                : data?.session?.team2?.name}
-            </span>
-          </div>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <span className="text-[#FCBB00]">
+            {currentTurn === "team1"
+              ? data?.session?.team1?.name
+              : data?.session?.team2?.name}
+          </span>
+          <ArrowBigDown className="w-4 h-4 text-[#FCBB00]" />
         </div>
 
         {/* Game Name - Center */}
@@ -875,6 +912,7 @@ export default function InGame({ data }: { data: any }) {
                     data={category}
                     onQuestionSelect={handleQuestionSelect}
                     answeredQuestionIds={answeredQuestionIds}
+                    blockedBlocks={blockedBlocks}
                     // className="h-full"
                   />
                 </div>
@@ -901,8 +939,8 @@ export default function InGame({ data }: { data: any }) {
                   <TimerComponent key={selectedQuestion._id} />
                   {/* Left - Category Button */}
 
-                  <div className="bg-purple-100 px-8 py-3 rounded-full">
-                    <span className="text-black font-bold text-lg">
+                  <div className="bg-[#2F2C22] px-12 py-3 rounded-full">
+                    <span className="text-[#FCCB97] font-bold text-xl">
                       {selectedQuestion.category.name}
                     </span>
                   </div>
@@ -925,7 +963,7 @@ export default function InGame({ data }: { data: any }) {
                     {!showAnswer ? (
                       <>
                         {selectedQuestion.file_question && (
-                          <div className="w-1/2 h-100 relative flex items-center justify-center">
+                          <div className="w-1/2 h-100 [@media(min-width:2160px)]:h-170 relative flex items-center justify-center">
                             <Image
                               src={selectedQuestion.file_question}
                               alt="Question Image"
@@ -938,7 +976,7 @@ export default function InGame({ data }: { data: any }) {
                     ) : (
                       <>
                         {selectedQuestion.file_answer && (
-                          <div className="w-1/2 h-100 relative flex items-center justify-center">
+                          <div className="w-1/2 h-100 [@media(min-width:2160px)]:h-170 relative flex items-center justify-center">
                             <Image
                               src={selectedQuestion.file_answer}
                               alt="Question Image"
@@ -957,23 +995,24 @@ export default function InGame({ data }: { data: any }) {
                   {!showAnswer ? (
                     <div className="flex">
                       <button
-                        className="text-purple-600 hover:text-white hover:bg-purple-700 px-6 py-3 rounded-lg font-medium transition-colors duration-200 cursor-pointer"
+                        className="text-black font-extrabold text-xl hover:text-white hover:bg-black px-6 py-3 rounded-lg transition-colors duration-200 cursor-pointer"
                         onClick={() => setShowAnswer(true)}
                       >
                         عرض الاجابة
                       </button>
                     </div>
                   ) : (
-                    <>
-                      <div className="flex w-[60%] justify-between items-center gap-4">
-                        <div className="flex">
-                          <button
-                            className="text-[#FF6F00] hover:text-white hover:bg-[#FF6F00] px-6 py-3 rounded-lg font-medium transition-colors duration-200 cursor-pointer"
-                            onClick={() => setShowAnswer(true)}
-                          >
-                            تصحيح الإجابة
-                          </button>
-                        </div>
+                    <div className="relative">
+                      {/* make it center to right side */}
+                      <div className="absolute top-1/2 right-0 -translate-y-1/2">
+                        <button
+                          className="text-black font-extrabold text-xl hover:text-white hover:bg-black px-6 py-3 rounded-lg transition-colors duration-200 cursor-pointer"
+                          onClick={() => setShowAnswerCorrectionModal(true)}
+                        >
+                          تصحيح الإجابة
+                        </button>
+                      </div>
+                      <div className="flex justify-center items-center gap-4">
                         <div className="flex justify-center items-center flex-col gap-4">
                           <h2 className="text-black font-bold text-lg">
                             أي الفريقين أجاب بشكل صحيح
@@ -1010,7 +1049,7 @@ export default function InGame({ data }: { data: any }) {
                           </div>
                         </div>
                       </div>
-                    </>
+                    </div>
                   )}
                 </div>
               </div>
@@ -1062,8 +1101,8 @@ export default function InGame({ data }: { data: any }) {
                         <Image
                           src={card.image}
                           alt={card.name || "Power Card"}
-                          width={60}
-                          height={60}
+                          width={80}
+                          height={80}
                           className="rounded-lg"
                         />
                         {isUsed && (
@@ -1078,10 +1117,10 @@ export default function InGame({ data }: { data: any }) {
               </div>
             )}
             {/* Team 2 Score Display */}
-            <div className="bg-[#2F2C22] rounded-xl px-6 md:px-8 py-2 shadow-md border border-[#FDD57E] w-full max-w-xs">
+            <div className="bg-[#2F2C22] rounded-full px-6 md:px-8 py-2 shadow-md border border-[#FDD57E] w-full max-w-xs">
               <div className="flex flex-col items-center">
                 {/* Team Name with Plus Button */}
-                <div className="flex items-center justify-center gap-2">
+                <div className="flex items-center justify-between gap-2">
                   <button
                     onClick={() => handleScoreAdjust("team2", 100)}
                     className="w-6 h-6 md:w-7 md:h-7 bg-[#FCCB97] rounded-full flex items-center justify-center transition-colors cursor-pointer"
@@ -1089,9 +1128,16 @@ export default function InGame({ data }: { data: any }) {
                   >
                     <PlusIcon className="w-4 h-4 text-black" />
                   </button>
-                  <span className="text-[#FCCB97] font-bold text-base md:text-lg">
-                    {data?.session?.team2?.name}
-                  </span>
+                  <div className="flex flex-col items-center justify-center px-2">
+                    <span className="text-[#FCCB97] font-bold text-base md:text-lg">
+                      {data?.session?.team2?.name}
+                    </span>
+
+                    {/* Score Display */}
+                    <span className="text-[#FCCB97] font-bold text-3xl md:text-4xl">
+                      {localScores.team2}
+                    </span>
+                  </div>
                   <button
                     onClick={() => handleScoreAdjust("team2", -100)}
                     className="w-6 h-6 md:w-7 md:h-7 bg-[#FCCB97] rounded-full flex items-center justify-center transition-colors cursor-pointer"
@@ -1100,11 +1146,6 @@ export default function InGame({ data }: { data: any }) {
                     <MinusIcon className="w-4 h-4 text-black" />
                   </button>
                 </div>
-
-                {/* Score Display */}
-                <span className="text-[#FCCB97] font-bold text-3xl md:text-4xl">
-                  {localScores.team2}
-                </span>
               </div>
             </div>
           </div>
@@ -1124,10 +1165,10 @@ export default function InGame({ data }: { data: any }) {
           {/* Right Section - Team 1 */}
           <div className="flex flex-row items-center justify-around gap-4 flex-1">
             {/* Team 1 Score Display */}
-            <div className="bg-[#2F2C22] rounded-xl px-6 md:px-8 py-2 shadow-md border border-[#FDD57E] w-full max-w-xs">
+            <div className="bg-[#2F2C22] rounded-full px-6 md:px-8 py-2 shadow-md border border-[#FDD57E] w-full max-w-xs">
               <div className="flex flex-col items-center">
                 {/* Team Name with Plus Button */}
-                <div className="flex items-center justify-center gap-2">
+                <div className="flex items-center justify-between gap-2">
                   <button
                     onClick={() => handleScoreAdjust("team1", 100)}
                     className="w-6 h-6 md:w-7 md:h-7 bg-[#FCCB97] rounded-full flex items-center justify-center transition-colors cursor-pointer"
@@ -1135,9 +1176,16 @@ export default function InGame({ data }: { data: any }) {
                   >
                     <PlusIcon className="w-4 h-4 text-black" />
                   </button>
-                  <span className="text-[#FCCB97] font-bold text-base md:text-lg">
-                    {data?.session?.team1?.name}
-                  </span>
+                  <div className="flex flex-col items-center justify-center px-2">
+                    <span className="text-[#FCCB97] font-bold text-base md:text-lg">
+                      {data?.session?.team1?.name}
+                    </span>
+
+                    {/* Score Display */}
+                    <span className="text-[#FCCB97] font-bold text-3xl md:text-4xl">
+                      {localScores.team1}
+                    </span>
+                  </div>
                   <button
                     onClick={() => handleScoreAdjust("team1", -100)}
                     className="w-6 h-6 md:w-7 md:h-7 bg-[#FCCB97] rounded-full flex items-center justify-center transition-colors cursor-pointer"
@@ -1146,11 +1194,6 @@ export default function InGame({ data }: { data: any }) {
                     <MinusIcon className="w-4 h-4 text-black" />
                   </button>
                 </div>
-
-                {/* Score Display */}
-                <span className="text-[#FCCB97] font-bold text-3xl md:text-4xl">
-                  {localScores.team1}
-                </span>
               </div>
             </div>
             {/* Team 1 Cards */}
@@ -1194,8 +1237,8 @@ export default function InGame({ data }: { data: any }) {
                         <Image
                           src={card.image}
                           alt={card.name || "Power Card"}
-                          width={60}
-                          height={60}
+                          width={80}
+                          height={80}
                           className="rounded-lg"
                         />
                         {isUsed && (
@@ -1308,6 +1351,27 @@ export default function InGame({ data }: { data: any }) {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Answer Correction Modal */}
+      {selectedQuestion && (
+        <AnswerCorrectionModal
+          isOpen={showAnswerCorrectionModal}
+          onClose={() => setShowAnswerCorrectionModal(false)}
+          questionId={
+            typeof selectedQuestion._id === "string"
+              ? selectedQuestion._id
+              : selectedQuestion._id.toString()
+          }
+          questionText={selectedQuestion.question || ""}
+          sessionId={getSessionId() || ""}
+          teamName={
+            currentTurn === "team1"
+              ? data?.session?.team1?.name || "الفريق الأول"
+              : data?.session?.team2?.name || "الفريق الثاني"
+          }
+          categoryName={selectedQuestion.category?.name}
+        />
       )}
     </main>
   );

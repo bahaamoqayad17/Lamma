@@ -59,6 +59,11 @@ export default function DashboardLayout({
       href: "/admin/contacts",
     },
     {
+      title: "رسائل تصحيح الإجابات",
+      icon: <HelpCircle className="w-5 h-5" />,
+      href: "/admin/answer-corrections",
+    },
+    {
       title: "الأسئلة",
       icon: <HelpCircle className="w-5 h-5" />,
       href: "/admin/questions",

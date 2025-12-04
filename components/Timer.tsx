@@ -83,7 +83,7 @@ export default function Timer({ className }: TimerProps) {
 
   return (
     <div
-      className={`border border-[#6A0DAD] rounded-full px-4 py-2 flex items-center space-x-2 ${
+      className={`border-2 border-[#2F2C22] rounded-full px-4 py-2 flex items-center space-x-2 ${
         className || ""
       }`}
     >
@@ -99,7 +99,7 @@ export default function Timer({ className }: TimerProps) {
         {formatTime(seconds)}
       </span>
       <span className="text-black">
-        <TimerIcon color="#6A0DAD" />
+        <TimerIcon color="#2F2C22" />
       </span>
     </div>
   );

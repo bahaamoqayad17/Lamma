@@ -18,6 +18,11 @@ const contactSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    type: {
+      type: String,
+      enum: ["contact", "answer_correction"],
+      default: "contact",
+    },
   },
   {
     timestamps: true,
