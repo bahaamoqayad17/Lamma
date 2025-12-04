@@ -1037,7 +1037,8 @@ export default function InGame({ data }: { data: any }) {
                             >
                               {data?.session?.team2?.name}
                             </button>
-
+                          </div>
+                          <div className="flex justify-center items-center">
                             <button
                               onClick={handleNoOneAnswers}
                               className={`

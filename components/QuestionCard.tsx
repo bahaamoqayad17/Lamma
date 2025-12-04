@@ -111,7 +111,7 @@ export default function QuestionCard({
       <div className="rounded-b-lg overflow-hidden">
         <div className="flex items-center justify-center">
           {/* Left Points Column */}
-          <div className="border-r border-gray-300 flex flex-1 flex-col h-65 [@media(min-width:2160px)]:h-88">
+          <div className="border-r border-gray-300 flex flex-1 flex-col h-80 [@media(min-width:2160px)]:h-88">
             {pointValues.map((points) => {
               const question = getFirstUnansweredQuestion(points);
               const blockKey = `${data._id}-${points}-left`;
@@ -135,7 +135,7 @@ export default function QuestionCard({
                 >
                   <span
                     className={cn(
-                      "text-2xl font-extrabold",
+                      "text-3xl font-extrabold",
                       isDisabled ? "text-gray-600 line-through" : "text-black"
                     )}
                   >
@@ -147,15 +147,17 @@ export default function QuestionCard({
           </div>
 
           {/* Center - Category Image */}
-          <div className="flex items-center justify-center relative">
-            <div className="w-70 h-80 rounded-lg flex items-center justify-center [@media(min-width:2160px)]:w-96 [@media(min-width:2160px)]:h-120">
-              <Image
-                src={data.image}
-                alt={data.name}
-                width={200}
-                height={128}
-                className="w-full h-full object-cover rounded-lg"
-              />
+          <div className="relative bg-[#CCE0F4]">
+            <div className="w-70 h-80 rounded-lg [@media(min-width:2160px)]:w-80 [@media(min-width:2160px)]:h-100">
+              <div className="flex flex-1 w-full h-full justify-center items-center">
+                <Image
+                  src={data.image}
+                  alt={data.name}
+                  width={200}
+                  height={200}
+                  className="w-full h-full object-contain rounded-lg"
+                />
+              </div>
             </div>
             <div className="bg-yellow-400 rounded-t-lg px-6 py-4 text-center w-full absolute top-0 left-0">
               <h1 className="text-2xl font-bold text-black">{data.name}</h1>
@@ -163,7 +165,7 @@ export default function QuestionCard({
           </div>
 
           {/* Right Points Column */}
-          <div className="border-l border-gray-300 flex flex-1 flex-col h-65 [@media(min-width:2160px)]:h-88">
+          <div className="border-l border-gray-300 flex flex-1 flex-col h-80 [@media(min-width:2160px)]:h-88">
             {pointValues.map((points) => {
               const question = getFirstUnansweredQuestion(points);
               const blockKey = `${data._id}-${points}-right`;
@@ -187,7 +189,7 @@ export default function QuestionCard({
                 >
                   <span
                     className={cn(
-                      "text-2xl font-extrabold",
+                      "text-3xl font-extrabold",
                       isDisabled ? "text-gray-600 line-through" : "text-black"
                     )}
                   >
