@@ -856,3 +856,93 @@ const checkAndFinishGameIfComplete = async (
     console.error("Error checking game completion:", error);
   }
 };
+
+export const getLastCategoriesForLamma = async () => {
+  try {
+    await connectToDatabase();
+
+    // Using aggregation - single query, more efficient
+    // Get last 5 subcategories, group by parent, and fetch parent details
+    const categories = await Category.aggregate([
+      // Step 1: Get only subcategories (categories with parents)
+      {
+        $match: {
+          category: { $ne: null },
+        },
+      },
+      // Step 2: Sort by creation date (newest first)
+      {
+        $sort: { createdAt: -1 },
+      },
+      // Step 3: Limit to last 5
+      {
+        $limit: 5,
+      },
+      // Step 4: Lookup parent category details
+      {
+        $lookup: {
+          from: "categories",
+          localField: "category",
+          foreignField: "_id",
+          as: "parentInfo",
+        },
+      },
+      // Step 5: Unwind parent info (convert array to object)
+      {
+        $unwind: "$parentInfo",
+      },
+      // Step 6: Group by parent ID
+      {
+        $group: {
+          _id: "$category",
+          parent: {
+            $first: {
+              _id: "$parentInfo._id",
+              name: "$parentInfo.name",
+              description: "$parentInfo.description",
+              image: "$parentInfo.image",
+              createdAt: "$parentInfo.createdAt",
+            },
+          },
+          subcategories: {
+            $push: {
+              _id: "$_id",
+              name: "$name",
+              description: "$description",
+              image: "$image",
+              createdAt: "$createdAt",
+            },
+          },
+        },
+      },
+      // Step 7: Reshape the output
+      {
+        $project: {
+          _id: "$parent._id",
+          name: "$parent.name",
+          description: "$parent.description",
+          image: "$parent.image",
+          createdAt: "$parent.createdAt",
+          subcategories: 1,
+        },
+      },
+      // Step 8: Sort by parent creation date
+      {
+        $sort: { createdAt: -1 },
+      },
+    ]);
+
+    return {
+      success: true,
+      message: "Categories fetched successfully",
+      data: categories,
+    };
+  } catch (error) {
+    console.error("Error fetching last categories:", error);
+    return {
+      success: false,
+      message: "Failed to fetch last categories",
+      data: null,
+    };
+  }
+};

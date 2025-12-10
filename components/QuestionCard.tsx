@@ -101,17 +101,17 @@ export default function QuestionCard({
   return (
     <div
       className={cn(
-        "w-full max-w-4xl mx-auto bg-[#FCCB97] rounded-xl",
+        "w-full h-full bg-[#FCCB97] rounded-xl flex flex-col",
         className
       )}
     >
       {/* Category Header */}
 
       {/* Main Card Body */}
-      <div className="rounded-b-lg overflow-hidden">
-        <div className="flex items-center justify-center">
+      <div className="rounded-b-lg overflow-hidden flex-1 flex">
+        <div className="flex items-stretch justify-center flex-1">
           {/* Left Points Column */}
-          <div className="border-r border-gray-300 flex flex-1 flex-col h-80 [@media(min-width:2160px)]:h-88">
+          <div className="border-r border-gray-300 flex flex-1 flex-col">
             {pointValues.map((points) => {
               const question = getFirstUnansweredQuestion(points);
               const blockKey = `${data._id}-${points}-left`;
@@ -127,7 +127,7 @@ export default function QuestionCard({
                   }}
                   disabled={isDisabled}
                   className={cn(
-                    "flex flex-1 items-center justify-center border-b border-gray-300 last:border-b-0 transition-colors duration-200",
+                    "flex flex-1 items-center justify-center border-b border-gray-300 last:border-b-0 transition-colors duration-200 min-h-0",
                     isDisabled
                       ? "bg-gray-400 opacity-50 cursor-not-allowed"
                       : "hover:bg-orange-200 cursor-pointer"
@@ -135,7 +135,7 @@ export default function QuestionCard({
                 >
                   <span
                     className={cn(
-                      "text-3xl font-extrabold",
+                      "text-[clamp(1.5rem,2.5vh,3rem)] font-extrabold",
                       isDisabled ? "text-gray-600 line-through" : "text-black"
                     )}
                   >
@@ -147,25 +147,29 @@ export default function QuestionCard({
           </div>
 
           {/* Center - Category Image */}
-          <div className="relative bg-[#CCE0F4]">
-            <div className="w-70 h-80 rounded-lg [@media(min-width:2160px)]:w-80 [@media(min-width:2160px)]:h-100">
-              <div className="flex flex-1 w-full h-full justify-center items-center">
+          <div
+            className="relative bg-[#CCE0F4] flex-shrink-0"
+            style={{ width: "clamp(200px, 25vw, 400px)" }}
+          >
+            <div className="w-full h-full rounded-lg relative">
+              <div className="flex flex-1 w-full h-full justify-center items-center absolute inset-0">
                 <Image
                   src={data.image}
                   alt={data.name}
-                  width={200}
-                  height={200}
-                  className="w-full h-full object-contain rounded-lg"
+                  fill
+                  className="object-contain rounded-lg"
                 />
               </div>
             </div>
-            <div className="bg-yellow-400 rounded-t-lg px-6 py-4 text-center w-full absolute top-0 left-0">
-              <h1 className="text-2xl font-bold text-black">{data.name}</h1>
+            <div className="bg-yellow-400 rounded-t-lg px-[clamp(0.5rem,1.5vw,1.5rem)] py-[clamp(0.5rem,1.5vh,1rem)] text-center w-full absolute top-0 left-0">
+              <h1 className="text-[clamp(1rem,2vh,1.5rem)] font-bold text-black">
+                {data.name}
+              </h1>
             </div>
           </div>
 
           {/* Right Points Column */}
-          <div className="border-l border-gray-300 flex flex-1 flex-col h-80 [@media(min-width:2160px)]:h-88">
+          <div className="border-l border-gray-300 flex flex-1 flex-col">
             {pointValues.map((points) => {
               const question = getFirstUnansweredQuestion(points);
               const blockKey = `${data._id}-${points}-right`;
@@ -181,7 +185,7 @@ export default function QuestionCard({
                   }}
                   disabled={isDisabled}
                   className={cn(
-                    "flex flex-1 items-center justify-center border-b border-gray-300 last:border-b-0 transition-colors duration-200",
+                    "flex flex-1 items-center justify-center border-b border-gray-300 last:border-b-0 transition-colors duration-200 min-h-0",
                     isDisabled
                       ? "bg-gray-400 opacity-50 cursor-not-allowed"
                       : "hover:bg-orange-200 cursor-pointer"
@@ -189,7 +193,7 @@ export default function QuestionCard({
                 >
                   <span
                     className={cn(
-                      "text-3xl font-extrabold",
+                      "text-[clamp(1.5rem,2.5vh,3rem)] font-extrabold",
                       isDisabled ? "text-gray-600 line-through" : "text-black"
                     )}
                   >

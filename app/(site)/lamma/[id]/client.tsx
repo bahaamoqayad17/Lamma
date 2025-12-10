@@ -852,75 +852,77 @@ export default function InGame({ data }: { data: any }) {
   }
 
   return (
-    <main className="overflow-hidden min-h-screen bg-[#E6E6E6]">
-      <div className="relative z-10 flex items-center justify-between p-6 md:px-10 bg-[#55504C] h-full backdrop-blur-sm">
+    <main className="h-screen flex flex-col overflow-hidden bg-[#E6E6E6]">
+      <div className="relative z-10 flex items-center justify-between p-[1.5vh] md:p-[2vh] bg-[#55504C] flex-shrink-0 backdrop-blur-sm">
         {/* Exit button - Left side for RTL */}
 
         {/* Team Turn - Right side for RTL */}
-        <div className="flex items-center gap-2 flex-shrink-0">
-          <span className="text-[#FCBB00]">
+        <div className="flex items-center gap-[clamp(0.25rem,0.5vw,0.5rem)] flex-shrink-0">
+          <span className="text-[#FCBB00] text-[clamp(0.875rem,1.5vh,1.125rem)]">
             {currentTurn === "team1"
               ? data?.session?.team1?.name
               : data?.session?.team2?.name}
           </span>
-          <ArrowBigDown className="w-4 h-4 text-[#FCBB00]" />
+          <ArrowBigDown className="w-[clamp(0.75rem,1.5vh,1rem)] h-[clamp(0.75rem,1.5vh,1rem)] text-[#FCBB00]" />
         </div>
 
         {/* Game Name - Center */}
         <div className="flex justify-center text-white">
-          <span className="font-bold text-lg">{data?.session?.name}</span>
+          <span className="font-bold text-[clamp(1rem,2vh,1.125rem)]">
+            {data?.session?.name}
+          </span>
         </div>
 
-        <div className="flex gap-2 items-center">
+        <div className="flex gap-[clamp(0.25rem,0.5vw,0.5rem)] items-center">
           <Link href="/lamma/start">
             <Button
               variant="ghost"
-              className="flex items-center gap-2 text-white hover:text-yellow-400 hover:bg-white/10 transition-all duration-200"
+              className="flex items-center gap-[clamp(0.25rem,0.5vw,0.5rem)] text-white hover:text-yellow-400 hover:bg-white/10 transition-all duration-200"
               style={{
                 boxShadow: "none",
               }}
             >
-              <span className="text-sm sm:text-lg font-medium text-[#FCBB00]">
+              <span className="text-[clamp(0.75rem,1.5vh,1.125rem)] font-medium text-[#FCBB00]">
                 خروج
               </span>
-              <LogOut className="w-4 h-4 sm:w-5 sm:h-5 text-[#FCBB00]" />
+              <LogOut className="w-[clamp(0.75rem,1.5vh,1.25rem)] h-[clamp(0.75rem,1.5vh,1.25rem)] text-[#FCBB00]" />
             </Button>
           </Link>
           <Button
             onClick={handleFinishGame}
             variant="ghost"
-            className="flex items-center gap-2 text-white hover:text-yellow-400 hover:bg-white/10 transition-all duration-200"
+            className="flex items-center gap-[clamp(0.25rem,0.5vw,0.5rem)] text-white hover:text-yellow-400 hover:bg-white/10 transition-all duration-200"
             style={{
               boxShadow: "none",
             }}
           >
-            <span className="text-sm sm:text-lg font-medium text-[#FCBB00]">
+            <span className="text-[clamp(0.75rem,1.5vh,1.125rem)] font-medium text-[#FCBB00]">
               انتهاء اللعبة
             </span>
-            <SkipForward className="w-4 h-4 sm:w-5 sm:h-5 text-[#FCBB00]" />
+            <SkipForward className="w-[clamp(0.75rem,1.5vh,1.25rem)] h-[clamp(0.75rem,1.5vh,1.25rem)] text-[#FCBB00]" />
           </Button>
         </div>
       </div>
-      <div className="pt-4 h-full">
-        <div className="mx-auto px-4">
+      <div className="flex-1 overflow-hidden flex flex-col">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden mx-auto px-[1vw] py-[1vh] w-full">
           {/* Main Game Grid - 6 Question Cards */}
           {step === "list" && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-[1.5vh] h-full">
               {data?.gameData?.map((category: any) => (
-                <div key={category._id} className="w-full items-stretch">
+                <div key={category._id} className="w-full h-full flex">
                   <QuestionCard
                     data={category}
                     onQuestionSelect={handleQuestionSelect}
                     answeredQuestionIds={answeredQuestionIds}
                     blockedBlocks={blockedBlocks}
-                    // className="h-full"
+                    className="h-full"
                   />
                 </div>
               ))}
             </div>
           )}
           {step === "question" && selectedQuestion && (
-            <div className="mx-20 mb-8">
+            <div className="mx-auto max-w-[90vw] my-[2vh]">
               {/* Question Display Container */}
               <div
                 className="rounded-xl bg-white border border-[#FCCB97]"
@@ -929,9 +931,9 @@ export default function InGame({ data }: { data: any }) {
                 }}
               >
                 {/* Top Header Bar */}
-                <div className="px-6 py-4 flex items-center justify-between">
+                <div className="px-[clamp(1rem,2vw,1.5rem)] py-[clamp(0.75rem,1.5vh,1rem)] flex items-center justify-between">
                   {/* Right - Points */}
-                  <div className="text-black font-bold text-lg">
+                  <div className="text-black font-bold text-[clamp(1rem,2vh,1.25rem)]">
                     {selectedQuestion.points} نقطة
                   </div>
 
@@ -939,23 +941,23 @@ export default function InGame({ data }: { data: any }) {
                   <TimerComponent key={selectedQuestion._id} />
                   {/* Left - Category Button */}
 
-                  <div className="bg-[#2F2C22] px-12 py-3 rounded-full">
-                    <span className="text-[#FCCB97] font-bold text-xl">
+                  <div className="bg-[#2F2C22] px-[clamp(2rem,4vw,3rem)] py-[clamp(0.5rem,1vh,0.75rem)] rounded-full">
+                    <span className="text-[#FCCB97] font-bold text-[clamp(1rem,2vh,1.25rem)]">
                       {selectedQuestion.category.name}
                     </span>
                   </div>
                 </div>
 
                 {/* Question Content */}
-                <div className="px-8">
+                <div className="px-[clamp(1rem,2vw,2rem)]">
                   {/* Question Text */}
-                  <div className="text-center mb-8 flex flex-col items-center justify-center gap-6">
+                  <div className="text-center mb-[clamp(1rem,2vh,2rem)] flex flex-col items-center justify-center gap-[clamp(1rem,2vh,1.5rem)]">
                     {showAnswer ? (
-                      <h1 className="text-black text-xl md:text-2xl font-medium leading-relaxed text-green-500">
+                      <h1 className="text-black text-[clamp(1.125rem,2.5vh,1.5rem)] font-medium leading-relaxed text-green-500">
                         الإجابة الصحيحة هي : {selectedQuestion.answer}
                       </h1>
                     ) : (
-                      <h1 className="text-black text-xl md:text-2xl font-medium leading-relaxed">
+                      <h1 className="text-black text-[clamp(1.125rem,2.5vh,1.5rem)] font-medium leading-relaxed">
                         {selectedQuestion.question}
                       </h1>
                     )}
@@ -963,7 +965,7 @@ export default function InGame({ data }: { data: any }) {
                     {!showAnswer ? (
                       <>
                         {selectedQuestion.file_question && (
-                          <div className="w-1/2 h-100 [@media(min-width:2160px)]:h-170 relative flex items-center justify-center">
+                          <div className="w-[clamp(300px,50vw,600px)] h-[clamp(200px,30vh,400px)] relative flex items-center justify-center">
                             <Image
                               src={selectedQuestion.file_question}
                               alt="Question Image"
@@ -976,7 +978,7 @@ export default function InGame({ data }: { data: any }) {
                     ) : (
                       <>
                         {selectedQuestion.file_answer && (
-                          <div className="w-1/2 h-100 [@media(min-width:2160px)]:h-170 relative flex items-center justify-center">
+                          <div className="w-[clamp(300px,50vw,600px)] h-[clamp(200px,30vh,400px)] relative flex items-center justify-center">
                             <Image
                               src={selectedQuestion.file_answer}
                               alt="Question Image"
@@ -991,11 +993,11 @@ export default function InGame({ data }: { data: any }) {
                 </div>
 
                 {/* Bottom Section */}
-                <div className="border-t border-gray-300 px-6 py-4">
+                <div className="border-t border-gray-300 px-[clamp(1rem,2vw,1.5rem)] py-[clamp(0.75rem,1.5vh,1rem)]">
                   {!showAnswer ? (
                     <div className="flex">
                       <button
-                        className="text-black font-extrabold text-xl hover:text-white hover:bg-black px-6 py-3 rounded-lg transition-colors duration-200 cursor-pointer"
+                        className="text-black font-extrabold text-[clamp(1rem,2vh,1.25rem)] hover:text-white hover:bg-black px-[clamp(1rem,2vw,1.5rem)] py-[clamp(0.5rem,1vh,0.75rem)] rounded-lg transition-colors duration-200 cursor-pointer"
                         onClick={() => setShowAnswer(true)}
                       >
                         عرض الاجابة
@@ -1006,24 +1008,24 @@ export default function InGame({ data }: { data: any }) {
                       {/* make it center to right side */}
                       <div className="absolute top-1/2 right-0 -translate-y-1/2">
                         <button
-                          className="text-black font-extrabold text-xl hover:text-white hover:bg-black px-6 py-3 rounded-lg transition-colors duration-200 cursor-pointer"
+                          className="text-black font-extrabold text-[clamp(1rem,2vh,1.25rem)] hover:text-white hover:bg-black px-[clamp(1rem,2vw,1.5rem)] py-[clamp(0.5rem,1vh,0.75rem)] rounded-lg transition-colors duration-200 cursor-pointer"
                           onClick={() => setShowAnswerCorrectionModal(true)}
                         >
                           تصحيح الإجابة
                         </button>
                       </div>
-                      <div className="flex justify-center items-center gap-4">
-                        <div className="flex justify-center items-center flex-col gap-4">
-                          <h2 className="text-black font-bold text-lg">
+                      <div className="flex justify-center items-center gap-[clamp(0.5rem,1vw,1rem)]">
+                        <div className="flex justify-center items-center flex-col gap-[clamp(0.5rem,1vh,1rem)]">
+                          <h2 className="text-black font-bold text-[clamp(1rem,2vh,1.125rem)]">
                             أي الفريقين أجاب بشكل صحيح
                           </h2>
 
-                          <div className="flex gap-4">
+                          <div className="flex gap-[clamp(0.5rem,1vw,1rem)]">
                             <button
                               onClick={() => handleTeamAnswer("team1")}
                               disabled={currentTurn !== "team1"}
                               className={`
-                                text-black font-bold text-md border border-gray-300 rounded-xl px-4 py-2 transition-all duration-200
+                                text-black font-bold text-[clamp(0.875rem,1.5vh,1rem)] border border-gray-300 rounded-xl px-[clamp(0.75rem,1.5vw,1rem)] py-[clamp(0.5rem,1vh,0.5rem)] transition-all duration-200
                                 hover:bg-gray-300 cursor-pointer
                               `}
                             >
@@ -1032,7 +1034,7 @@ export default function InGame({ data }: { data: any }) {
                             <button
                               onClick={() => handleTeamAnswer("team2")}
                               className={`
-                                text-black font-bold text-md border border-gray-300 rounded-xl px-4 py-2 transition-all duration-200 hover:bg-gray-300 cursor-pointer
+                                text-black font-bold text-[clamp(0.875rem,1.5vh,1rem)] border border-gray-300 rounded-xl px-[clamp(0.75rem,1.5vw,1rem)] py-[clamp(0.5rem,1vh,0.5rem)] transition-all duration-200 hover:bg-gray-300 cursor-pointer
                               `}
                             >
                               {data?.session?.team2?.name}
@@ -1042,7 +1044,7 @@ export default function InGame({ data }: { data: any }) {
                             <button
                               onClick={handleNoOneAnswers}
                               className={`
-                                text-black font-bold text-md border border-gray-300 rounded-xl px-4 py-2 transition-all duration-200 hover:bg-gray-300 cursor-pointer
+                                text-black font-bold text-[clamp(0.875rem,1.5vh,1rem)] border border-gray-300 rounded-xl px-[clamp(0.75rem,1.5vw,1rem)] py-[clamp(0.5rem,1vh,0.5rem)] transition-all duration-200 hover:bg-gray-300 cursor-pointer
                               `}
                             >
                               لا أحد أجاب
@@ -1058,12 +1060,12 @@ export default function InGame({ data }: { data: any }) {
           )}
         </div>
         {/* Bottom Section - Teams, Logo, and Cards */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8 md:px-16 py-4 bg-[#55504C] bottom-0 fixed w-full">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-[1.5vh] md:gap-[2vh] md:px-[4vw] py-[1.5vh] bg-[#55504C] flex-shrink-0 w-full">
           {/* Left Section - Team 2 */}
           <div className="flex flex-row items-center justify-around gap-4 flex-1">
             {/* Team 2 Cards */}
             {!data?.session?.playWithoutCards && (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-[clamp(0.25rem,0.5vw,0.5rem)]">
                 {data?.session?.team2?.selectedCards?.map(
                   (card: any, index: number) => {
                     const cardId = card.id || card._id;
@@ -1104,7 +1106,7 @@ export default function InGame({ data }: { data: any }) {
                           alt={card.name || "Power Card"}
                           width={80}
                           height={80}
-                          className="rounded-lg"
+                          className="rounded-lg w-[clamp(3rem,6vh,5rem)] h-[clamp(3rem,6vh,5rem)] object-contain"
                         />
                         {isUsed && (
                           <div className="absolute inset-0 bg-black/50 rounded-lg flex items-center justify-center">
@@ -1118,33 +1120,33 @@ export default function InGame({ data }: { data: any }) {
               </div>
             )}
             {/* Team 2 Score Display */}
-            <div className="bg-[#2F2C22] rounded-full px-6 md:px-8 py-2 shadow-md border border-[#FDD57E] w-full max-w-xs">
+            <div className="bg-[#2F2C22] rounded-full px-[clamp(1rem,2vw,2rem)] py-[clamp(0.5rem,1vh,0.75rem)] shadow-md border border-[#FDD57E] w-full max-w-[clamp(200px,25vw,300px)]">
               <div className="flex flex-col items-center">
                 {/* Team Name with Plus Button */}
-                <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center justify-between gap-[clamp(0.25rem,0.5vw,0.5rem)]">
                   <button
                     onClick={() => handleScoreAdjust("team2", 100)}
-                    className="w-6 h-6 md:w-7 md:h-7 bg-[#FCCB97] rounded-full flex items-center justify-center transition-colors cursor-pointer"
+                    className="w-[clamp(1.25rem,2.5vh,1.75rem)] h-[clamp(1.25rem,2.5vh,1.75rem)] bg-[#FCCB97] rounded-full flex items-center justify-center transition-colors cursor-pointer"
                     type="button"
                   >
-                    <PlusIcon className="w-4 h-4 text-black" />
+                    <PlusIcon className="w-[clamp(0.75rem,1.5vh,1rem)] h-[clamp(0.75rem,1.5vh,1rem)] text-black" />
                   </button>
-                  <div className="flex flex-col items-center justify-center px-2">
-                    <span className="text-[#FCCB97] font-bold text-base md:text-lg">
+                  <div className="flex flex-col items-center justify-center px-[clamp(0.25rem,0.5vw,0.5rem)]">
+                    <span className="text-[#FCCB97] font-bold text-[clamp(0.875rem,1.5vh,1.125rem)]">
                       {data?.session?.team2?.name}
                     </span>
 
                     {/* Score Display */}
-                    <span className="text-[#FCCB97] font-bold text-3xl md:text-4xl">
+                    <span className="text-[#FCCB97] font-bold text-[clamp(1.5rem,4vh,2.5rem)]">
                       {localScores.team2}
                     </span>
                   </div>
                   <button
                     onClick={() => handleScoreAdjust("team2", -100)}
-                    className="w-6 h-6 md:w-7 md:h-7 bg-[#FCCB97] rounded-full flex items-center justify-center transition-colors cursor-pointer"
+                    className="w-[clamp(1.25rem,2.5vh,1.75rem)] h-[clamp(1.25rem,2.5vh,1.75rem)] bg-[#FCCB97] rounded-full flex items-center justify-center transition-colors cursor-pointer"
                     type="button"
                   >
-                    <MinusIcon className="w-4 h-4 text-black" />
+                    <MinusIcon className="w-[clamp(0.75rem,1.5vh,1rem)] h-[clamp(0.75rem,1.5vh,1rem)] text-black" />
                   </button>
                 </div>
               </div>
@@ -1158,48 +1160,48 @@ export default function InGame({ data }: { data: any }) {
               alt="لمة"
               width={150}
               height={56}
-              className="h-12 md:h-16 w-auto"
+              className="h-[clamp(2.5rem,5vh,4rem)] w-auto"
               priority
             />
           </div>
 
           {/* Right Section - Team 1 */}
-          <div className="flex flex-row items-center justify-around gap-4 flex-1">
+          <div className="flex flex-row items-center justify-around gap-[clamp(0.5rem,1vw,1rem)] flex-1">
             {/* Team 1 Score Display */}
-            <div className="bg-[#2F2C22] rounded-full px-6 md:px-8 py-2 shadow-md border border-[#FDD57E] w-full max-w-xs">
+            <div className="bg-[#2F2C22] rounded-full px-[clamp(1rem,2vw,2rem)] py-[clamp(0.5rem,1vh,0.75rem)] shadow-md border border-[#FDD57E] w-full max-w-[clamp(200px,25vw,300px)]">
               <div className="flex flex-col items-center">
                 {/* Team Name with Plus Button */}
-                <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center justify-between gap-[clamp(0.25rem,0.5vw,0.5rem)]">
                   <button
                     onClick={() => handleScoreAdjust("team1", 100)}
-                    className="w-6 h-6 md:w-7 md:h-7 bg-[#FCCB97] rounded-full flex items-center justify-center transition-colors cursor-pointer"
+                    className="w-[clamp(1.25rem,2.5vh,1.75rem)] h-[clamp(1.25rem,2.5vh,1.75rem)] bg-[#FCCB97] rounded-full flex items-center justify-center transition-colors cursor-pointer"
                     type="button"
                   >
-                    <PlusIcon className="w-4 h-4 text-black" />
+                    <PlusIcon className="w-[clamp(0.75rem,1.5vh,1rem)] h-[clamp(0.75rem,1.5vh,1rem)] text-black" />
                   </button>
-                  <div className="flex flex-col items-center justify-center px-2">
-                    <span className="text-[#FCCB97] font-bold text-base md:text-lg">
+                  <div className="flex flex-col items-center justify-center px-[clamp(0.25rem,0.5vw,0.5rem)]">
+                    <span className="text-[#FCCB97] font-bold text-[clamp(0.875rem,1.5vh,1.125rem)]">
                       {data?.session?.team1?.name}
                     </span>
 
                     {/* Score Display */}
-                    <span className="text-[#FCCB97] font-bold text-3xl md:text-4xl">
+                    <span className="text-[#FCCB97] font-bold text-[clamp(1.5rem,4vh,2.5rem)]">
                       {localScores.team1}
                     </span>
                   </div>
                   <button
                     onClick={() => handleScoreAdjust("team1", -100)}
-                    className="w-6 h-6 md:w-7 md:h-7 bg-[#FCCB97] rounded-full flex items-center justify-center transition-colors cursor-pointer"
+                    className="w-[clamp(1.25rem,2.5vh,1.75rem)] h-[clamp(1.25rem,2.5vh,1.75rem)] bg-[#FCCB97] rounded-full flex items-center justify-center transition-colors cursor-pointer"
                     type="button"
                   >
-                    <MinusIcon className="w-4 h-4 text-black" />
+                    <MinusIcon className="w-[clamp(0.75rem,1.5vh,1rem)] h-[clamp(0.75rem,1.5vh,1rem)] text-black" />
                   </button>
                 </div>
               </div>
             </div>
             {/* Team 1 Cards */}
             {!data?.session?.playWithoutCards && (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-[clamp(0.25rem,0.5vw,0.5rem)]">
                 {data?.session?.team1?.selectedCards?.map(
                   (card: any, index: number) => {
                     const cardId = card.id || card._id;
@@ -1240,7 +1242,7 @@ export default function InGame({ data }: { data: any }) {
                           alt={card.name || "Power Card"}
                           width={80}
                           height={80}
-                          className="rounded-lg"
+                          className="rounded-lg w-[clamp(3rem,6vh,5rem)] h-[clamp(3rem,6vh,5rem)] object-contain"
                         />
                         {isUsed && (
                           <div className="absolute inset-0 bg-black/50 rounded-lg flex items-center justify-center">
