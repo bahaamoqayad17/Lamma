@@ -518,7 +518,7 @@ export default function Start({ data }: StartProps) {
 
       {/* Right Sidebar - Selected Subcategories - Only show when subcategories are selected */}
       {selectedSubcategories.length > 0 && (
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 md:translate-x-0 md:left-auto md:right-0 md:top-20 bg-transparent p-2 md:h-[80vh] flex flex-col justify-between z-20 max-w-[90vw] md:max-w-none">
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 md:translate-x-0 md:left-auto md:right-0 md:top-20 bg-transparent p-2 md:h-[80vh] flex flex-col justify-between z-20 max-w-[90vw] md:max-w-none">
           {/* Scrollable subcategories */}
           <div className="space-y-2 sm:space-y-3 overflow-y-auto overflow-x-auto md:overflow-x-hidden flex-1 p-2 bg-white/95 backdrop-blur-sm md:bg-transparent flex flex-row md:flex-col rounded-lg shadow-lg md:shadow-none max-h-[120px] md:max-h-none">
             {getSelectedSubcategoryData().map((subcategory) => (

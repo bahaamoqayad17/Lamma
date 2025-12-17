@@ -1132,7 +1132,7 @@ export default function InGame({ data }: { data: any }) {
                     <PlusIcon className="w-[clamp(0.75rem,1.5vh,1rem)] h-[clamp(0.75rem,1.5vh,1rem)] text-black" />
                   </button>
                   <div className="flex flex-col items-center justify-center px-[clamp(0.25rem,0.5vw,0.5rem)]">
-                    <span className="text-[#FCCB97] font-bold text-[clamp(0.875rem,1.5vh,1.125rem)]">
+                    <span className="text-[#FCCB97] font-bold text-[clamp(0.875rem,1.5vh,1.125rem)] text-center">
                       {data?.session?.team2?.name}
                     </span>
 
@@ -1180,7 +1180,7 @@ export default function InGame({ data }: { data: any }) {
                     <PlusIcon className="w-[clamp(0.75rem,1.5vh,1rem)] h-[clamp(0.75rem,1.5vh,1rem)] text-black" />
                   </button>
                   <div className="flex flex-col items-center justify-center px-[clamp(0.25rem,0.5vw,0.5rem)]">
-                    <span className="text-[#FCCB97] font-bold text-[clamp(0.875rem,1.5vh,1.125rem)]">
+                    <span className="text-[#FCCB97] font-bold text-[clamp(0.875rem,1.5vh,1.125rem)] text-center">
                       {data?.session?.team1?.name}
                     </span>
 
